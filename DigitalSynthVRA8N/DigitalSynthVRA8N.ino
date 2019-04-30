@@ -11,7 +11,6 @@
 #define TRANSPOSE (0)    // Min: -24, Max: +24
 
 //#define ENABLE_VOLTAGE_CONTROL    // Make the sketch operate as **VRA8-N mini**
-                                  // - Sub Oscillator disabled
                                   // - See "cv-in.h"
 #define USE_PITCH_CV_IN           // Comment out this line, if you use a MIDI keyboard
 

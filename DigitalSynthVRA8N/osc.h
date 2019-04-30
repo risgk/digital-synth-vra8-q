@@ -344,7 +344,6 @@ public:
 
   INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
     if ((count & 0x01) == 1) {
-#if !defined(ENABLE_VOLTAGE_CONTROL)
       int8_t wave_0_sub;
       if (m_sub_waveform == SUB_WAVEFORM_NOISE) {
         wave_0_sub = lfsr_noise<1>();
@@ -357,69 +356,74 @@ public:
         mix_sub = mix_sub >> 1;
       }
       m_level_sub = wave_0_sub * mix_sub;
-#endif
     }
     else if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
-      uint8_t idx = (count >> OSC_CONTROL_INTERVAL_BITS) & 0x0F;
-      switch (idx) {
-      case 0x0:
+      #if defined(__cpp_static_assert)
+        static_assert(OSC_CONTROL_INTERVAL_BITS == 2, "OSC_CONTROL_INTERVAL_BITS must be 2");
+      #endif
+      switch (count & (0x0F << OSC_CONTROL_INTERVAL_BITS)) {
+      case (0x0 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_0th<0>();
         break;
-      case 0x1:
+      case (0x1 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_1st<0>(eg_level);
         break;
-      case 0x2:
+      case (0x2 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_2nd<0>();
         break;
-      case 0x3:
+      case (0x3 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_3rd<0>();
         break;
-      case 0x4:
+      case (0x4 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_4th<0>();
         break;
-      case 0x5:
+      case (0x5 << OSC_CONTROL_INTERVAL_BITS):
         ++m_rnd_cnt;
         if ((m_rnd_cnt & 0x07) == 0x00) {
-          update_rnd();
-          m_red_noise = m_rnd_prev + m_rnd;
-        } else if ((m_rnd_cnt & 0x01) == 0x01) {
+          update_rnd_1st();
+        } else if ((m_rnd_cnt & 0x07) == 0x04) {
+          update_rnd_2nd();
+        } else if ((m_rnd_cnt & 0x03) == 0x01) {
+          update_mix();
+        } else if ((m_rnd_cnt & 0x03) == 0x03) {
           update_sub_mix();
         }
         break;
-      case 0x6:
-        update_mix();
+      case (0x6 << OSC_CONTROL_INTERVAL_BITS):
+        update_lfo_1st(eg_level);
         break;
-      case 0x7:
-        update_lfo_0th(eg_level);
+      case (0x7 << OSC_CONTROL_INTERVAL_BITS):
+        update_lfo_2nd();
         break;
-      case 0x8:
+      case (0x8 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_0th<1>();
         break;
-      case 0x9:
+      case (0x9 << OSC_CONTROL_INTERVAL_BITS):
         update_freq_1st<1>(eg_level);
         break;
-      case 0xA:
+      case (0xA << OSC_CONTROL_INTERVAL_BITS):
         update_freq_2nd<1>();
         break;
-      case 0xB:
+      case (0xB << OSC_CONTROL_INTERVAL_BITS):
         update_freq_3rd<1>();
         break;
-      case 0xC:
+      case (0xC << OSC_CONTROL_INTERVAL_BITS):
         update_freq_4th<1>();
         break;
-      case 0xD:
+      case (0xD << OSC_CONTROL_INTERVAL_BITS):
         if ((m_rnd_cnt & 0x07) == 0x00) {
-          update_rnd();
-          m_red_noise = m_rnd_prev + m_rnd;
+          update_rnd_1st();
+        } else if ((m_rnd_cnt & 0x07) == 0x04) {
+          update_rnd_2nd();
         } else if ((m_rnd_cnt & 0x01) == 0x01) {
           update_sub_waveform();
         }
         break;
-      case 0xE:
-        update_lfo_1st();
+      case (0xE << OSC_CONTROL_INTERVAL_BITS):
+        update_lfo_3rd();
         break;
-      case 0xF:
-        update_lfo_2nd();
+      case (0xF << OSC_CONTROL_INTERVAL_BITS):
+        update_lfo_4th();
         break;
       }
     }
@@ -438,11 +442,7 @@ public:
     // amp and mix
     int16_t level_main   = wave_0_main   * m_mix_0;
     int16_t level_detune = wave_0_detune * m_mix_1;
-#if !defined(ENABLE_VOLTAGE_CONTROL)
     int16_t result       = level_main + level_detune + m_level_sub;
-#else
-    int16_t result       = level_main + level_detune;
-#endif
 
     return result;
   }
@@ -466,12 +466,7 @@ private:
     uint8_t next_data = high_byte(two_data);
 
     // lerp
-    int8_t result;
-    if (static_cast<int8_t>(curr_data) < static_cast<int8_t>(next_data)) {
-      result = curr_data + high_byte(static_cast<uint8_t>(next_data - curr_data) * next_weight);
-    } else {
-      result = curr_data - high_byte(static_cast<uint8_t>(curr_data - next_data) * next_weight);
-    }
+    int8_t result = curr_data + high_sbyte(static_cast<int8_t>(next_data - curr_data) * next_weight);
 
     return result;
   }
@@ -599,25 +594,27 @@ private:
   }
 
   INLINE static void update_sub_waveform() {
-#if !defined(ENABLE_VOLTAGE_CONTROL)
     if (m_sub_waveform == SUB_WAVEFORM_SQ) {
       uint8_t coarse = high_byte(m_pitch_real[0]);
       m_wave_table[2] = get_wave_table(OSC_WAVEFORM_SQ, coarse);
     } else {
       m_wave_table[2] = g_osc_sin_wave_table_h1;
     }
-#endif
   }
 
-  INLINE static void update_rnd() {
+  INLINE static void update_rnd_1st() {
     m_rnd_temp = m_rnd_temp ^ (m_rnd_temp << 5);
     m_rnd_temp = m_rnd_temp ^ (m_rnd_temp >> 9);
+  }
+
+  INLINE static void update_rnd_2nd() {
     m_rnd_temp = m_rnd_temp ^ (m_rnd_temp << 8);
     m_rnd_prev = m_rnd;
     m_rnd = low_byte(m_rnd_temp) >> 1;
+    m_red_noise = m_rnd_prev + m_rnd;
   }
 
-  INLINE static void update_lfo_0th(uint8_t eg_level) {
+  INLINE static void update_lfo_1st(uint8_t eg_level) {
     int8_t lfo_rate_mod = high_sbyte(m_lfo_rate_eg_amt * eg_level);
     int16_t lfo_rate = m_lfo_rate + lfo_rate_mod + lfo_rate_mod;
     if (lfo_rate > 127) {
@@ -632,7 +629,9 @@ private:
     } else {
       m_lfo_rate_actual = ((lfo_rate >> 1) + 2) * 12;
     }
+  }
 
+  INLINE static void update_lfo_2nd() {
     --m_lfo_fade_cnt;
     if (m_lfo_fade_cnt == 0) {
       m_lfo_fade_cnt = m_lfo_fade_coef;
@@ -640,11 +639,12 @@ private:
         m_lfo_fade_level += 2;
       }
     }
-  }
 
-  INLINE static void update_lfo_1st() {
     m_lfo_phase += m_lfo_rate_actual;
     m_lfo_wave_level = get_lfo_wave_level(m_lfo_phase);
+  }
+
+  INLINE static void update_lfo_3rd() {
     uint8_t lfo_depth = high_byte((m_lfo_depth[0] << 1) * m_lfo_fade_level) + m_lfo_depth[1];
     if (lfo_depth > 127) {
       lfo_depth = 127;
@@ -657,7 +657,7 @@ private:
     m_lfo_level = (lfo_depth * m_lfo_wave_level) << 1;
   }
 
-  INLINE static void update_lfo_2nd() {
+  INLINE static void update_lfo_4th() {
     m_lfo_mod_level[1] = -mul_q15_q7(m_lfo_level, m_pitch_lfo_amt);
     if (m_pitch_lfo_target_both) {
       m_lfo_mod_level[0] = m_lfo_mod_level[1];
@@ -711,7 +711,6 @@ private:
   }
 
   INLINE static void update_sub_mix() {
-#if !defined(ENABLE_VOLTAGE_CONTROL)
     if (m_mix_sub_current < m_mix_sub_target) {
       ++m_mix_sub_current;
     } else if (m_mix_sub_current > m_mix_sub_target) {
@@ -719,7 +718,6 @@ private:
     }
 
     m_mix_sub = m_mix_table[m_mix_sub_current];
-#endif
   }
 };
 
