@@ -51,7 +51,7 @@ class Osc {
   static const uint8_t* m_wave_table_temp[2];
   static __uint24       m_freq[2];
   static __uint24       m_freq_temp[2];
-  static __uint24       m_phase[2];
+  static __uint24       m_phase[4];
   static uint8_t        m_rnd_cnt;
   static uint16_t       m_rnd_temp;
   static uint8_t        m_rnd;
@@ -66,7 +66,7 @@ public:
   INLINE static void initialize() {
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
       m_mix_table[i] = static_cast<uint8_t>(sqrtf(static_cast<float>(i) /
-                                                  (OSC_MIX_TABLE_LENGTH - 1)) * 80);
+                                                  (OSC_MIX_TABLE_LENGTH - 1)) * 60);
     }
     m_mix_0 = 0;
     m_mix_1 = 0;
@@ -111,6 +111,8 @@ public:
     m_freq_temp[1] = g_osc_freq_table[0];
     m_phase[0] = 0;
     m_phase[1] = 0;
+    m_phase[2] = 0;
+    m_phase[3] = 0;
     m_rnd_cnt = 0;
     m_rnd_temp = 1;
     m_rnd = 0;
@@ -389,19 +391,20 @@ public:
 
     m_phase[0] += m_freq[0];
     m_phase[1] += m_freq[1];
+    m_phase[2] += m_freq[0] + 1024;
+    m_phase[3] += m_freq[1] + 2048;
 
-    int8_t wave_0_main   = get_wave_level(m_wave_table[0], static_cast<uint16_t>(m_phase[0] >> 8) << 1);
-    int8_t wave_0_detune;
-    if (m_waveform[1] == OSC_WAVEFORM_NOISE) {
-      wave_0_detune = lfsr_noise<0>();
-    } else {
-      wave_0_detune = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[1] >> 8) << 1);
-    }
+    int8_t wave_0 = get_wave_level(m_wave_table[0], static_cast<uint16_t>(m_phase[0] >> 8));
+    int8_t wave_1 = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[1] >> 8));
+    int8_t wave_2 = get_wave_level(m_wave_table[0], static_cast<uint16_t>(m_phase[2] >> 8));
+    int8_t wave_3 = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[3] >> 8));
 
     // amp and mix
-    int16_t level_main   = wave_0_main   * m_mix_0;
-    int16_t level_detune = wave_0_detune * m_mix_1;
-    int16_t result       = level_main + level_detune;
+    int16_t level_0 = wave_0 * m_mix_0;
+    int16_t level_1 = wave_1 * m_mix_1;
+    int16_t level_2 = wave_2 * m_mix_0;
+    int16_t level_3 = wave_3 * m_mix_1;
+    int16_t result  = level_0 + level_1 + level_2 + level_3;
 
     return result;
   }
@@ -697,7 +700,7 @@ template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table[3];
 template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table_temp[2];
 template <uint8_t T> __uint24        Osc<T>::m_freq[2];
 template <uint8_t T> __uint24        Osc<T>::m_freq_temp[2];
-template <uint8_t T> __uint24        Osc<T>::m_phase[2];
+template <uint8_t T> __uint24        Osc<T>::m_phase[4];
 template <uint8_t T> uint8_t         Osc<T>::m_rnd_cnt;
 template <uint8_t T> uint16_t        Osc<T>::m_rnd_temp;
 template <uint8_t T> uint8_t         Osc<T>::m_rnd;
