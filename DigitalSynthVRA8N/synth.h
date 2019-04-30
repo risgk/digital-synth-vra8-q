@@ -10,7 +10,6 @@
 #define IAmp        Amp
 #define IEnvGen     EnvGen
 #define IVoice      Voice
-#define ICVIn       CVIn
 #define ISynthCore  SynthCore
 
 #include "osc.h"

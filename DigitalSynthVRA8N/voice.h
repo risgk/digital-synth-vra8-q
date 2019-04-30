@@ -46,10 +46,7 @@ public:
     m_rnd = 1;
   }
 
-#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
-  INLINE
-#endif
-  static void note_on(uint8_t note_number, uint8_t velocity) {
+  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_legato_portamento) {
       if (m_last_note_number != NOTE_NUMBER_INVALID) {
         IOsc<0>::set_portamento(m_portamento);
@@ -99,10 +96,7 @@ public:
     }
   }
 
-#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
-  INLINE
-#endif
-  static void note_off(uint8_t note_number) {
+  INLINE static void note_off(uint8_t note_number) {
     clear_on_note(note_number);
     if (m_key_assign == KEY_ASSIGN_LAST) {
       if (m_last_note_number == note_number) {
@@ -150,10 +144,7 @@ public:
     }
   }
 
-#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
-  INLINE
-#endif
-  static void all_note_off() {
+  INLINE static void all_note_off() {
     for (uint8_t i = 0; i < 16; ++i) {
       m_on_note[i] = 0x00;
     }
@@ -236,7 +227,6 @@ public:
 
     case SUB_OSC_WAVE:
       break;
-#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
     case LEGATO:
       if (controller_value < 64) {
         m_legato_portamento = false;
@@ -244,7 +234,6 @@ public:
         m_legato_portamento = true;
       }
       break;
-#endif
     case AMP_EG_ON:
       m_amp_env_gen = controller_value;
       update_env_gen();
@@ -263,7 +252,6 @@ public:
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
-#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
     case PB_RANGE:
       IOsc<0>::set_pitch_bend_minus_range(controller_value);
       IOsc<0>::set_pitch_bend_plus_range(controller_value);
@@ -279,7 +267,6 @@ public:
         m_key_assign = KEY_ASSIGN_LAST;
       }
       break;
-#endif
 
     case EG_RELEASE:
       m_release = controller_value;
