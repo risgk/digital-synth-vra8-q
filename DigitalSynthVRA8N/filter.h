@@ -8,9 +8,9 @@
 
 template <uint8_t T>
 class Filter {
-  static const uint16_t* m_lpf_table;
+  static const uint8_t*  m_lpf_table;
   static int16_t         m_b_2_over_a_0;
-  static int16_t         m_a_1_over_a_0;
+  static int8_t          m_a_1_over_a_0_high;
   static int16_t         m_a_2_over_a_0;
   static int16_t         m_x_1;
   static int16_t         m_x_2;
@@ -30,7 +30,7 @@ class Filter {
 public:
   INLINE static void initialize() {
     m_b_2_over_a_0 = 0;
-    m_a_1_over_a_0 = 0;
+    m_a_1_over_a_0_high = 0;
     m_a_2_over_a_0 = 0;
     m_x_1 = 0;
     m_x_2 = 0;
@@ -126,7 +126,7 @@ public:
 
     int16_t x_0  = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int16_t tmp  = mul_q15_q15(x_0 + (m_x_1 << 1) + m_x_2, m_b_2_over_a_0);
-    tmp         -= mul_q15_q15(m_y_1,                      m_a_1_over_a_0);
+    tmp         -= mul_q15_q7( m_y_1,                      m_a_1_over_a_0_high);
     tmp         -= mul_q15_q15(m_y_2,                      m_a_2_over_a_0);
     int16_t y_0  = tmp << (16 - FILTER_TABLE_FRACTION_BITS);
 
@@ -178,18 +178,18 @@ private:
   }
 
   INLINE static void update_coefs_3rd() {
-    const uint16_t* p = m_lpf_table + static_cast<uint8_t>(m_cutoff_current << 1);
+    const uint8_t* p = m_lpf_table + static_cast<uint8_t>(m_cutoff_current << 1) + m_cutoff_current;
     m_b_2_over_a_0 = pgm_read_word(p);
-    p++;
-    m_a_1_over_a_0 = pgm_read_word(p);
-    m_a_2_over_a_0 = (m_b_2_over_a_0 << 2) - m_a_1_over_a_0 -
+    p += 2;
+    m_a_1_over_a_0_high = pgm_read_byte(p);
+    m_a_2_over_a_0 = (m_b_2_over_a_0 << 2) - static_cast<int16_t>(m_a_1_over_a_0_high << 8) -
                      (1 << FILTER_TABLE_FRACTION_BITS);
   }
 };
 
-template <uint8_t T> const uint16_t* Filter<T>::m_lpf_table;
+template <uint8_t T> const uint8_t*  Filter<T>::m_lpf_table;
 template <uint8_t T> int16_t         Filter<T>::m_b_2_over_a_0;
-template <uint8_t T> int16_t         Filter<T>::m_a_1_over_a_0;
+template <uint8_t T> int8_t          Filter<T>::m_a_1_over_a_0_high;
 template <uint8_t T> int16_t         Filter<T>::m_a_2_over_a_0;
 template <uint8_t T> int16_t         Filter<T>::m_x_1;
 template <uint8_t T> int16_t         Filter<T>::m_x_2;
