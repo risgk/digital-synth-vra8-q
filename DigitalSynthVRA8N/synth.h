@@ -10,7 +10,6 @@
 #define IAmp        Amp
 #define IEnvGen     NewEnvGen
 #define IVoice      Voice
-#define ICVIn       CVIn
 #define ISynthCore  SynthCore
 
 #include "osc.h"
@@ -18,7 +17,6 @@
 #include "amp.h"
 #include "env-gen.h"
 #include "voice.h"
-#include "cv-in.h"
 #include "synth-core.h"
 
 template <uint8_t T>
