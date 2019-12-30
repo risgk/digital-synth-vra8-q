@@ -32,7 +32,7 @@ public:
 
   INLINE static void write(int8_t level) {
     if (m_data_size < m_max_size) {
-      uint8_t a[1] = {level + 0x80};
+      uint8_t a[1] = {static_cast<uint8_t>(level + 0x80)};
       fwrite(a, 1, 1, m_file);
       ++m_data_size;
     } else {
@@ -43,14 +43,13 @@ public:
 
   INLINE static void close() {
     if (!m_closed) {
-      fpos_t file_size = 0;
       fseek(m_file, 0, SEEK_END);
-      fgetpos(m_file, &file_size);
+      long file_size = ftell(m_file);
       fseek(m_file, 4, SEEK_SET);
-      uint32_t a[1] = {file_size - 8};
+      uint32_t a[1] = {static_cast<uint32_t>(file_size) - 8};
       fwrite(a, 4, 1, m_file);
       fseek(m_file, 40, SEEK_SET);
-      uint32_t a2[1] = {file_size - 36};
+      uint32_t a2[1] = {static_cast<uint32_t>(file_size) - 36};
       fwrite(a2, 4, 1, m_file);
       fclose(m_file);
       printf("End Of Recording\n");

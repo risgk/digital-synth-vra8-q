@@ -25,6 +25,7 @@ inline uint32_t pgm_read_dword(const void* addr) {
 }
 
 #define TRANSPOSE (0)    // Min: -24, Max: +24
+#define ENABLE_OSCILLATOR_2
 
 #include "./DigitalSynthVRA8N/common.h"
 #include "./DigitalSynthVRA8N/synth.h"

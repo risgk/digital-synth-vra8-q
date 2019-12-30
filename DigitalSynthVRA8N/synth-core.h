@@ -15,6 +15,7 @@ class SynthCore {
 public:
   INLINE static void initialize() {
     IVoice<0>::initialize();
+    ICVIn<0>::initialize();
     m_system_exclusive = false;
     m_system_data_remaining = 0;
     m_running_status = STATUS_BYTE_INVALID;
@@ -107,6 +108,7 @@ public:
   }
 
   INLINE static int8_t clock() {
+    ICVIn<0>::clock();
     return IVoice<0>::clock();
   }
 

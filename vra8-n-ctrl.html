@@ -41,160 +41,226 @@ td.keyh {
 }
 </style>
 <script>
+const APP_NAME_VERSION = "VRA8-N CTRL v2.4.4";
+
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
 const NOTE_ON        = 0x90;
 const CONTROL_CHANGE = 0xB0;
 const PITCH_BEND     = 0xE0;
 
-const MODULATION    = 1;
-const EXPRESSION    = 11;
+const MODULATION      = 1;
+const EXPRESSION      = 11;
 
-const OSC_WAVE      = 24;
-const OSC_MIX       = 25;
-const OSC2_COARSE   = 20;
-const OSC2_FINE     = 21;
+const OSC1_2_WAVE     = 24;
+const OSC_MIX         = 25;
+const OSC2_COARSE     = 20;
+const OSC2_FINE       = 21;
 
-const SUB_OSC_WAVE  = 29;
-const SUB_OSC_LEVEL = 26;
-const PITCH_EG_AMT  = 104;
-const PITCH_EG_TGT  = 105;
+const SUB_WAVE        = 29;
+const SUB_LEVEL       = 26;
+const EG_TO_PITCH     = 104;
+const EG_TO_P_TGT     = 105;
 
-const FILTER_CUTOFF = 16;
-const FILTER_RESO   = 17;
-const CUTOFF_EG_AMT = 18;
-const AMP_EG_ON     = 31;
+const CUTOFF          = 16;
+const RESONANCE       = 17;
+const EG_TO_CUTOFF    = 18;
+const AMP_EG          = 31;
 
-const EG_ATTACK     = 23;
-const EG_DECAY      = 19;
-const EG_SUSTAIN    = 27;
-const EG_RELEASE    = 28;
+const ATTACK          = 23;
+const DECAY           = 19;
+const SUSTAIN         = 27;
+const RELEASE         = 28;
 
-const LFO_WAVE      = 14;
-const LFO_RATE      = 80;
-const PITCH_LFO_AMT = 82;
-const CO_LFO_AMT    = 83;
+const LFO_WAVE        = 14;
+const LFO_RATE        = 80;
+const LFO_TO_PITCH    = 82;
+const LFO_TO_CUTOFF   = 83;
 
-const LFO_DEPTH     = 81;
-const LFO_RT_EG_AMT = 3;
-const PITCH_LFO_TGT = 9;
-const LFO_FADE_TIME = 15;
+const LFO_DEPTH       = 81;
+const EG_TO_LFO_RATE  = 3;
+const LFO_TO_P_TGT    = 9;
+const LFO_FADE_TIME   = 15;
 
-const PB_RANGE      = 85;
-const CC86          = 86;
-const CO_EXP_AMT    = 106;
-const AMP_EXP_AMT   = 107;
+const P_BEND_RANGE    = 85;
+const PITCH_TO_CUTOFF = 86;
+const EXP_TO_CUTOFF   = 106;
+const EXP_TO_AMP_LEV  = 107;
 
-const PORTAMENTO    = 22;
-const LEGATO        = 30;
-const KEY_ASSIGN    = 87;
-const EXP_BY_VEL    = 89;
+const PORTAMENTO      = 22;
+const LEGATO          = 30;
+const KEY_ASSIGN      = 87;
+const EXP_BY_VEL      = 89;
 
-// Special Program Change (only for VRA8-N CTRL)
-const SP_PROG_CHG_0 = 112;
-const SP_PROG_CHG_1 = 113;
-const SP_PROG_CHG_2 = 114;
-const SP_PROG_CHG_3 = 115;
+const OSC_LEVEL       = 108;
+const RESONANCE_LIMIT = 109;
+const AMP_LEVEL       = 110;
+const DAMP_AND_ATTACK = 111;
 
-const SP_PROG_CHG_4 = 116;
-const SP_PROG_CHG_5 = 117;
-const SP_PROG_CHG_6 = 118;
-const SP_PROG_CHG_7 = 119;
+// Special Program Change (for VRA8-N CTRL)
+const SP_PROG_CHG_0   = 112;
+const SP_PROG_CHG_1   = 113;
+const SP_PROG_CHG_2   = 114;
+const SP_PROG_CHG_3   = 115;
 
-// Special Random Control (only for VRA8-N CTRL)
-const SP_RAND_CTRL  = 90;
+const SP_PROG_CHG_4   = 116;
+const SP_PROG_CHG_5   = 117;
+const SP_PROG_CHG_6   = 118;
+const SP_PROG_CHG_7   = 119;
 
-const ALL_NOTES_OFF = 123;
+// Special Random Control (for VRA8-N CTRL)
+const SP_RAND_CTRL    = 90;
+
+const ALL_NOTES_OFF   = 123;
+
+var controlNumberToStringMap = new Map([
+  [ OSC1_2_WAVE    , "OSC1_2_WAVE    " ],
+  [ OSC_MIX        , "OSC_MIX        " ],
+  [ OSC2_COARSE    , "OSC2_COARSE    " ],
+  [ OSC2_FINE      , "OSC2_FINE      " ],
+
+  [ SUB_WAVE       , "SUB_WAVE       " ],
+  [ SUB_LEVEL      , "SUB_LEVEL      " ],
+  [ EG_TO_PITCH    , "EG_TO_PITCH    " ],
+  [ EG_TO_P_TGT    , "EG_TO_P_TGT    " ],
+
+  [ CUTOFF         , "CUTOFF         " ],
+  [ RESONANCE      , "RESONANCE      " ],
+  [ EG_TO_CUTOFF   , "EG_TO_CUTOFF   " ],
+  [ AMP_EG         , "AMP_EG         " ],
+
+  [ ATTACK         , "ATTACK         " ],
+  [ DECAY          , "DECAY          " ],
+  [ SUSTAIN        , "SUSTAIN        " ],
+  [ RELEASE        , "RELEASE        " ],
+
+  [ LFO_WAVE       , "LFO_WAVE       " ],
+  [ LFO_RATE       , "LFO_RATE       " ],
+  [ LFO_TO_PITCH   , "LFO_TO_PITCH   " ],
+  [ LFO_TO_CUTOFF  , "LFO_TO_CUTOFF  " ],
+
+  [ LFO_DEPTH      , "LFO_DEPTH      " ],
+  [ EG_TO_LFO_RATE , "EG_TO_LFO_RATE " ],
+  [ LFO_TO_P_TGT   , "LFO_TO_P_TGT   " ],
+  [ LFO_FADE_TIME  , "LFO_FADE_TIME  " ],
+
+  [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
+  [ PITCH_TO_CUTOFF, "PITCH_TO_CUTOFF" ],
+  [ EXP_TO_CUTOFF  , "EXP_TO_CUTOFF  " ],
+  [ EXP_TO_AMP_LEV , "EXP_TO_AMP_LEV " ],
+
+  [ PORTAMENTO     , "PORTAMENTO     " ],
+  [ LEGATO         , "LEGATO         " ],
+  [ KEY_ASSIGN     , "KEY_ASSIGN     " ],
+  [ EXP_BY_VEL     , "EXP_BY_VEL     " ],
+
+  [ OSC_LEVEL      , "OSC_LEVEL      " ],
+  [ RESONANCE_LIMIT, "RESONANCE_LIMIT" ],
+  [ AMP_LEVEL      , "AMP_LEVEL      " ],
+  [ DAMP_AND_ATTACK, "DAMP_AND_ATTACK" ],
+]);
 
 var controllersInLocalStorage = [
-  OSC_WAVE     ,
-  OSC_MIX      ,
-  OSC2_COARSE  ,
-  OSC2_FINE    ,
+  OSC1_2_WAVE    ,
+  OSC_MIX        ,
+  OSC2_COARSE    ,
+  OSC2_FINE      ,
 
-  SUB_OSC_WAVE ,
-  SUB_OSC_LEVEL,
-  PITCH_EG_AMT ,
-  PITCH_EG_TGT ,
+  SUB_WAVE       ,
+  SUB_LEVEL      ,
+  EG_TO_PITCH    ,
+  EG_TO_P_TGT    ,
 
-  FILTER_CUTOFF,
-  FILTER_RESO  ,
-  CUTOFF_EG_AMT,
-  AMP_EG_ON    ,
+  CUTOFF         ,
+  RESONANCE      ,
+  EG_TO_CUTOFF   ,
+  AMP_EG         ,
 
-  EG_ATTACK    ,
-  EG_DECAY     ,
-  EG_SUSTAIN   ,
-  EG_RELEASE   ,
+  ATTACK         ,
+  DECAY          ,
+  SUSTAIN        ,
+  RELEASE        ,
 
-  LFO_WAVE     ,
-  LFO_RATE     ,
-  PITCH_LFO_AMT,
-  CO_LFO_AMT   ,
+  LFO_WAVE       ,
+  LFO_RATE       ,
+  LFO_TO_PITCH   ,
+  LFO_TO_CUTOFF  ,
 
-  LFO_DEPTH    ,
-  LFO_RT_EG_AMT,
-  PITCH_LFO_TGT,
-  LFO_FADE_TIME,
+  LFO_DEPTH      ,
+  EG_TO_LFO_RATE ,
+  LFO_TO_P_TGT   ,
+  LFO_FADE_TIME  ,
 
-  PB_RANGE     ,
-//CC86         ,
-  CO_EXP_AMT   ,
-  AMP_EXP_AMT  ,
+  P_BEND_RANGE   ,
+  PITCH_TO_CUTOFF,
+  EXP_TO_CUTOFF  ,
+  EXP_TO_AMP_LEV ,
 
-  PORTAMENTO   ,
-  LEGATO       ,
-  KEY_ASSIGN   ,
-  EXP_BY_VEL   ,
+  PORTAMENTO     ,
+  LEGATO         ,
+  KEY_ASSIGN     ,
+  EXP_BY_VEL     ,
+
+  OSC_LEVEL      ,
+  RESONANCE_LIMIT,
+  AMP_LEVEL      ,
+  DAMP_AND_ATTACK,
 ];
 
 var presetControllers = {};
 
-// PRESET                           #0   #1   #2   #3   #4   #5   #6   #7   
-presetControllers[OSC_WAVE     ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
-presetControllers[OSC_MIX      ] = [64 , 64 , 64 , 64 , 0  , 64 , 0  , 0  ];
-presetControllers[OSC2_COARSE  ] = [71 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[OSC2_FINE    ] = [68 , 72 , 66 , 72 , 68 , 56 , 64 , 64 ];
+// PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
+presetControllers[OSC1_2_WAVE    ] = [0  , 0  , 0  , 127, 127, 0  , 48 , 0  ];
+presetControllers[OSC_MIX        ] = [64 , 64 , 64 , 64 , 0  , 32 , 127, 0  ];
+presetControllers[OSC2_COARSE    ] = [71 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[OSC2_FINE      ] = [68 , 72 , 66 , 72 , 72 , 48 , 68 , 64 ];
 
-presetControllers[SUB_OSC_WAVE ] = [127, 0  , 0  , 0  , 127, 0  , 0  , 0  ];
-presetControllers[SUB_OSC_LEVEL] = [127, 127, 127, 0  , 0  , 0  , 0  , 0  ];
-presetControllers[PITCH_EG_AMT ] = [64 , 62 , 64 , 64 , 64 , 72 , 64 , 64 ];
-presetControllers[PITCH_EG_TGT ] = [0  , 127, 0  , 0  , 0  , 127, 0  , 0  ];
+presetControllers[SUB_WAVE       ] = [127, 0  , 0  , 0  , 64 , 127, 0  , 0  ];
+presetControllers[SUB_LEVEL      ] = [127, 127, 127, 0  , 8  , 0  , 0  , 0  ];
+presetControllers[EG_TO_PITCH    ] = [64 , 62 , 64 , 64 , 64 , 80 , 120, 64 ];
+presetControllers[EG_TO_P_TGT    ] = [0  , 127, 0  , 0  , 0  , 127, 0  , 0  ];
 
-presetControllers[FILTER_CUTOFF] = [76 , 28 , 0  , 127, 127, 118, 127, 127];
-presetControllers[FILTER_RESO  ] = [80 , 64 , 127, 0  , 0  , 32 , 0  , 0  ];
-presetControllers[CUTOFF_EG_AMT] = [82 , 112, 94,  64 , 64 , 60 , 64 , 64 ];
-presetControllers[AMP_EG_ON    ] = [127, 0  , 127, 0  , 127, 127, 127, 127];
+presetControllers[CUTOFF         ] = [64 , 16 , 16 , 112, 0  , 100, 64 , 127];
+presetControllers[RESONANCE      ] = [96 , 80 , 127, 0  , 0  , 64 , 64 , 0  ];
+presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 94 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[AMP_EG         ] = [127, 0  , 127, 0  , 127, 127, 127, 127];
 
-presetControllers[EG_ATTACK    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[EG_DECAY     ] = [64 , 96 , 96 , 96 , 0  , 32 , 0  , 0  ];
-presetControllers[EG_SUSTAIN   ] = [127, 0  , 0  , 0  , 127, 96 , 127, 127];
-presetControllers[EG_RELEASE   ] = [127, 127, 127, 127, 127, 0  , 127, 127];
+presetControllers[ATTACK         ] = [0  , 0  , 0  , 0  , 32 , 16 , 0  , 0  ];
+presetControllers[DECAY          ] = [64 , 96 , 96 , 96 , 32 , 32 , 64 , 0  ];
+presetControllers[SUSTAIN        ] = [127, 0  , 0  , 0  , 127, 96 , 0  , 127];
+presetControllers[RELEASE        ] = [127, 127, 127, 127, 127, 0  , 127, 127];
 
-presetControllers[LFO_WAVE     ] = [0  , 0  , 0  , 127, 0  , 32 , 0  , 0  ];
-presetControllers[LFO_RATE     ] = [64 , 64 , 64 , 80 , 64 , 64 , 64 , 64 ];
-presetControllers[PITCH_LFO_AMT] = [65 , 65 , 64 , 88 , 65 , 65 , 64 , 64 ];
-presetControllers[CO_LFO_AMT   ] = [64 , 64 , 52 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[LFO_WAVE       ] = [0  , 0  , 32 , 127, 32 , 32 , 0  , 0  ];
+presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 80 , 64 , 64 , 0  , 64 ];
+presetControllers[LFO_TO_PITCH   ] = [66 , 66 , 64 , 88 , 66 , 66 , 64 , 64 ];
+presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 40 , 64 , 64 , 64 , 112, 64 ];
 
-presetControllers[LFO_DEPTH    ] = [16 , 16 , 0  , 0  , 0  , 16 , 0  , 0  ];
-presetControllers[LFO_RT_EG_AMT] = [64 , 64 , 64 , 72 , 64 , 64 , 64 , 64 ];
-presetControllers[PITCH_LFO_TGT] = [127, 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[LFO_FADE_TIME] = [64 , 64 , 0  , 0  , 0  , 64 , 0  , 0  ];
+presetControllers[LFO_DEPTH      ] = [8  , 8  , 0  , 0  , 8  , 8  , 0  , 0  ];
+presetControllers[EG_TO_LFO_RATE ] = [64 , 64 , 64 , 72 , 64 , 64 , 64 , 64 ];
+presetControllers[LFO_TO_P_TGT   ] = [127, 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[LFO_FADE_TIME  ] = [64 , 64 , 0  , 0  , 64 , 64 , 0  , 0  ];
 
-presetControllers[PB_RANGE     ] = [2  , 2  , 2  , 2  , 12 , 2  , 2  , 2  ];
-presetControllers[CC86         ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[CO_EXP_AMT   ] = [64 , 64 , 64 , 64 , 64 , 94 , 64 , 64 ];
-presetControllers[AMP_EXP_AMT  ] = [127, 127, 127, 127, 127, 127, 127, 127];
+presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 12 , 2  ];
+presetControllers[PITCH_TO_CUTOFF] = [0  , 0  , 0  , 0  , 127, 127, 127, 0  ];
+presetControllers[EXP_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 88 , 112, 64 , 64 ];
+presetControllers[EXP_TO_AMP_LEV ] = [0  , 0  , 0  , 0  , 127, 127, 127, 0  ];
 
-presetControllers[PORTAMENTO   ] = [0  , 32 , 32 , 0  , 0  , 32 , 0  , 0  ];
-presetControllers[LEGATO       ] = [0  , 127, 127, 0  , 0  , 127, 0  , 0  ];
-presetControllers[KEY_ASSIGN   ] = [0  , 64 , 0  , 127, 0  , 127, 0  , 0  ];
-presetControllers[EXP_BY_VEL   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[PORTAMENTO     ] = [0  , 32 , 32 , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[LEGATO         ] = [0  , 127, 127, 0  , 0  , 127, 0  , 0  ];
+presetControllers[KEY_ASSIGN     ] = [0  , 64 , 0  , 127, 127, 127, 127, 0  ];
+presetControllers[EXP_BY_VEL     ] = [0  , 0  , 0  , 0  , 0  , 0  , 127, 0  ];
+
+presetControllers[OSC_LEVEL      ] = [80 , 80 , 80 , 80 , 120, 107, 80 , 80 ];
+presetControllers[RESONANCE_LIMIT] = [127, 127, 127, 127, 96 , 96 , 127, 127];
+presetControllers[AMP_LEVEL      ] = [127, 127, 127, 127, 127, 127, 127, 127];
+presetControllers[DAMP_AND_ATTACK] = [0  , 0  , 0  , 0  , 64 , 64 , 0  , 0  ];
 
 const PRESET_NUMBER_NEUTRAL = 7;
 </script>
 <script>
 var transpose = 0;
+var fileReaderImportAll = new FileReader();
+var fileReaderImportCurrent = new FileReader();
 
 document.addEventListener("touchstart", function(event) {
   if (event.target.tagName.toUpperCase() != "INPUT" &&
@@ -204,6 +270,8 @@ document.addEventListener("touchstart", function(event) {
 });
 
 window.onload = function() {
+  document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
+
   if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   } else {
@@ -215,6 +283,11 @@ window.onload = function() {
     onChangeTranspose(0);
     preset(0);
   }
+
+  document.getElementById("fileImportAll").addEventListener("change", fileImportAllChange, false);
+  document.getElementById("fileImportCurrent").addEventListener("change", fileImportCurrentChange, false);
+  fileReaderImportAll.addEventListener("load", fileReaderImportAllLoad, false);
+  fileReaderImportCurrent.addEventListener("load", fileReaderImportCurrentLoad, false);
 };
 
 function sleep(msec) {
@@ -284,9 +357,9 @@ function onMIDIMessage(event) {
     var value = event.data[2];
     if (controllersInLocalStorage.indexOf(number) >= 0) {
       updateDisplayOfControl(number, value);
-    } else if (number == MODULATION) {
+    } else if (number == MODULATION     ) {
       document.getElementById("spanCC1").innerHTML = value;
-    } else if (number == EXPRESSION) {
+    } else if (number == EXPRESSION     ) {
       if (document.getElementById("spanCC89").innerHTML < 64) {
         // Expression by Velocity: Off
         document.getElementById("spanCC11").innerHTML = value;
@@ -300,7 +373,7 @@ function onMIDIMessage(event) {
         loadControllers(programIndex + 8);
         return;
       }
-    } else if (number == SP_RAND_CTRL) {
+    } else if (number == SP_RAND_CTRL   ) {
       // Special Random Control (only for VRA8-N CTRL)
       var oldValue = specialRandomControlCCValue;
       specialRandomControlCCValue = value;
@@ -415,14 +488,14 @@ function updateDisplayOfControl(number, value) {
   document.getElementById("inputCC" + String(number)).value = parseInt(value);
 
   switch (number) {
-  case OSC2_COARSE:
-  case OSC2_FINE:
-  case PITCH_EG_AMT:
-  case CUTOFF_EG_AMT:
-  case PITCH_LFO_AMT:
-  case CO_LFO_AMT:
-  case LFO_RT_EG_AMT:
-  case CO_EXP_AMT:
+  case OSC2_COARSE    :
+  case OSC2_FINE      :
+  case EG_TO_PITCH    :
+  case EG_TO_CUTOFF   :
+  case LFO_TO_PITCH   :
+  case LFO_TO_CUTOFF  :
+  case EG_TO_LFO_RATE :
+  case EXP_TO_CUTOFF  :
     if (value >= 64) {
       document.getElementById("spanCC" + String(number)).innerHTML = "+" + String(value - 64);
     } else {
@@ -453,8 +526,20 @@ function preset(number) {
 
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
-    onChangeControlChange(i, rand(128));
+    if((i != OSC_LEVEL      ) &&
+       (i != RESONANCE_LIMIT) &&
+       (i != AMP_LEVEL      ) &&
+       (i != DAMP_AND_ATTACK)) {
+      onChangeControlChange(i, rand(128));
+    }
   });
+
+  // Reset EXPRESSION
+  document.getElementById("spanCC11").innerHTML = "-";
+  if (midiOutput) {
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), EXPRESSION, 127]);
+    sleep(2);
+  }
 }
 
 function rand(n) {
@@ -473,7 +558,7 @@ function loadControllers(number) {
 }
 
 function saveControllers(number) {
-  var r = confirm("Store control values to the program #" + String(number) + "?");
+  var r = confirm("Store the current control values to the program #" + String(number) + "?");
   if (r == false) {
     return;
   }
@@ -497,12 +582,187 @@ function noteOff(noteNumber) {
     sleep(2);
   }
 }
+
+
+
+function fileImportAll() {
+  document.getElementById("fileImportAll").click();
+}
+
+function fileImportCurrent() {
+  document.getElementById("fileImportCurrent").click();
+}
+
+function fileImportCurrentChange(event) {
+  fileReaderImportCurrent.readAsText(event.target.files[0]);
+}
+
+function fileImportAllChange(event) {
+  fileReaderImportAll.readAsText(event.target.files[0]);
+}
+
+function fileReaderImportAllLoad(event) {
+  var r = confirm("Import the current control values and the stored programs?");
+  if (r == false) {
+    document.getElementById("fileImportAll").value = "";
+    return;
+  }
+
+  var obj = JSON.parse(event.target.result);
+
+  for (var number = 8; number < 16; number++) {
+    controllersInLocalStorage.forEach(function(i) {
+      var line = obj[controlNumberToStringMap.get(i)];
+      if (line != null) {
+        var value = line[1][number - 8];
+        if (value != null) {
+          localStorage.setItem("keyMemory" + String(number) + "CC" + String(i), value);
+        }
+      }
+    });
+  }
+
+  controllersInLocalStorage.forEach(function(i) {
+    var line = obj[controlNumberToStringMap.get(i)];
+    if (line != null) {
+      var value = line[0];
+      if (value != null) {
+        localStorage.setItem("keyCC" + String(i), value);
+      }
+    }
+  });
+
+  var result = restoreControllers();
+  if (!result) {
+    onChangeTranspose(0);
+    preset(0);
+  }
+
+  document.getElementById("fileImportAll").value = "";
+}
+
+function fileReaderImportCurrentLoad(event) {
+  var r = confirm("Import the current control values?");
+  if (r == false) {
+    document.getElementById("fileImportCurrent").value = "";
+    return;
+  }
+
+  var obj = JSON.parse(event.target.result);
+
+  controllersInLocalStorage.forEach(function(i) {
+    var line = obj[controlNumberToStringMap.get(i)];
+    if (line != null) {
+      var value = line[0];
+      if (value != null) {
+        localStorage.setItem("keyCC" + String(i), value);
+      }
+    }
+  });
+
+  var result = restoreControllers();
+  if (!result) {
+    onChangeTranspose(0);
+    preset(0);
+  }
+
+  document.getElementById("fileImportCurrent").value = "";
+}
+
+function fileExport() {
+  var str = "{\n";
+
+  str += "  \"_version     \" : \"" + APP_NAME_VERSION + "\",\n";
+  str += "  \"_comment     \" : \"  CURRENT  #8   #9   #10  #11  #12  #13  #14  #15  \",\n";
+  str += fileExportOneLine(OSC1_2_WAVE    );
+  str += fileExportOneLine(OSC_MIX        );
+  str += fileExportOneLine(OSC2_COARSE    );
+  str += fileExportOneLine(OSC2_FINE      );
+  str += "\n";
+  str += fileExportOneLine(SUB_WAVE       );
+  str += fileExportOneLine(SUB_LEVEL      );
+  str += fileExportOneLine(EG_TO_PITCH    );
+  str += fileExportOneLine(EG_TO_P_TGT    );
+  str += "\n";
+  str += fileExportOneLine(CUTOFF         );
+  str += fileExportOneLine(RESONANCE      );
+  str += fileExportOneLine(EG_TO_CUTOFF   );
+  str += fileExportOneLine(AMP_EG         );
+  str += "\n";
+  str += fileExportOneLine(ATTACK         );
+  str += fileExportOneLine(DECAY          );
+  str += fileExportOneLine(SUSTAIN        );
+  str += fileExportOneLine(RELEASE        );
+  str += "\n";
+  str += fileExportOneLine(LFO_WAVE       );
+  str += fileExportOneLine(LFO_RATE       );
+  str += fileExportOneLine(LFO_TO_PITCH   );
+  str += fileExportOneLine(LFO_TO_CUTOFF  );
+  str += "\n";
+  str += fileExportOneLine(LFO_DEPTH      );
+  str += fileExportOneLine(EG_TO_LFO_RATE );
+  str += fileExportOneLine(LFO_TO_P_TGT   );
+  str += fileExportOneLine(LFO_FADE_TIME  );
+  str += "\n";
+  str += fileExportOneLine(P_BEND_RANGE   );
+  str += fileExportOneLine(PITCH_TO_CUTOFF);
+  str += fileExportOneLine(EXP_TO_CUTOFF  );
+  str += fileExportOneLine(EXP_TO_AMP_LEV );
+  str += "\n";
+  str += fileExportOneLine(PORTAMENTO     );
+  str += fileExportOneLine(LEGATO         );
+  str += fileExportOneLine(KEY_ASSIGN     );
+  str += fileExportOneLine(EXP_BY_VEL     );
+  str += "\n";
+  str += fileExportOneLine(OSC_LEVEL      );
+  str += fileExportOneLine(RESONANCE_LIMIT);
+  str += fileExportOneLine(AMP_LEVEL      );
+  str += fileExportOneLine(DAMP_AND_ATTACK);
+  str += "  \"_end         \" : \"\"\n";
+  str += "}\n";
+
+  var blob = new Blob([str]);
+  const a = document.createElement('a');
+  a.download = 'vra8-n-prog.json';
+  document.body.appendChild(a);
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function fileExportOneLine(number) {
+  var str = "  \"" + controlNumberToStringMap.get(number) + "\" : [ [" + getCCValueString(number) + "], [";
+  str += getStoredCCValueString(8 , number) + ", ";
+  str += getStoredCCValueString(9 , number) + ", ";
+  str += getStoredCCValueString(10, number) + ", ";
+  str += getStoredCCValueString(11, number) + ", ";
+  str += getStoredCCValueString(12, number) + ", ";
+  str += getStoredCCValueString(13, number) + ", ";
+  str += getStoredCCValueString(14, number) + ", ";
+  str += getStoredCCValueString(15, number) + "] ],\n";
+  return str;
+}
+
+function getCCValueString(number) {
+  var value = document.getElementById("inputCC" + String(number)).value;
+  var str = (value + "   ").slice(0, 3);
+  return str;
+}
+
+function getStoredCCValueString(index, number) {
+  var value = localStorage.getItem("keyMemory" + String(index) + "CC" + String(number));
+  if (!value) {
+    value = presetControllers[number][PRESET_NUMBER_NEUTRAL];
+  }
+  var str = (value + "   ").slice(0, 3);
+  return str;
+}
 </script>
 </head>
 <body>
 
 <table>
-<tr><td><strong>VRA8-N CTRL v2.2.0</strong>&nbsp;&nbsp;Digital Synth VRA8-N Controller (<a href="https://github.com/risgk/digital-synth-vra8-n">View on GitHub</a>), We recommend Google Chrome</td></tr>
+<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth VRA8-N Controller (<a href="https://github.com/risgk/digital-synth-vra8-n">View on GitHub</a>), We recommend Google Chrome</td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
@@ -542,19 +802,28 @@ function noteOff(noteNumber) {
 
 <table>
 <tr><td>PRESET</td>
-    <td><input type="button" value="#0 FIFTH"       onclick="preset(0)"></td>
+    <td><input type="button" value="#4 PAN FLUTE"   onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#1 LEAD"        onclick="preset(1)"></td>
+    <td><input type="button" value="#5 WIND SYNTH"  onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#2 BASS"        onclick="preset(2)"></td>
+    <td><input type="button" value="#6 NOISE DRUM"  onclick="preset(6)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#3 SQ"          onclick="preset(3)"></td>
+    <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td><input type="button" value="#4 SAW"         onclick="preset(4)"></td>
+    <td>MISC</td>
+    <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td></tr>
+<tr><td></td>
+    <td><input type="button" value="#0 FIFTH LEAD"  onclick="preset(0)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 WS"          onclick="preset(5)"></td>
+    <td><input type="button" value="#1 UNISON LEAD" onclick="preset(1)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td></tr>
+    <td><input type="button" value="#2 SYNTH BASS"  onclick="preset(2)"></td>
+    <td>&nbsp;</td>
+    <td><input type="button" value="#3 SQ LEAD"     onclick="preset(3)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><input type="button" value="ALL NOTES OFF"  onclick="allNotesOff()"></td></tr>
+<tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
@@ -576,8 +845,12 @@ function noteOff(noteNumber) {
     <td>&nbsp;</td>
     <td><input type="button" value="#15"           onclick="saveControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>MISC</td>
-    <td><input type="button" value="ALL NOTES OFF" onclick="allNotesOff()"      ></td></tr>
+    <td>IMPORT</td>
+    <td><input type="file" id="fileImportAll" style="display:none" accept=".json"/>
+        <input type="button" value="ALL"           onclick="fileImportAll()"></td>
+    <td>&nbsp;</td>
+    <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
+        <input type="button" value="CURRENT"       onclick="fileImportCurrent()"></td></tr>
 <tr><td>&nbsp;</td>
     <td><input type="button" value="#8 "           onclick="loadControllers(8)" ></td>
     <td>&nbsp;</td>
@@ -596,8 +869,8 @@ function noteOff(noteNumber) {
     <td>&nbsp;</td>
     <td><input type="button" value="#11"           onclick="saveControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>&nbsp;</td>
-    <td><input type="button" value="RANDOM CTRL"   onclick="setRandom()"        ></td></tr>
+    <td>EXPORT</td>
+    <td><input type="button" value="ALL"           onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
@@ -606,101 +879,114 @@ function noteOff(noteNumber) {
     <td>OSC MIX (1/2)         </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>OSC2 COARSE (-/+)     </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>OSC2 FINE (-/+)       </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
-<tr><td><input id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_WAVE, value)"></td>
+<tr><td><input id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC1_2_WAVE    , value)"></td>
     <td><span   id="spanCC24">-1</span></td>
-    <td><input id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_MIX, value)"></td>
+    <td><input id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_MIX        , value)"></td>
     <td><span   id="spanCC25">-1</span></td>
-    <td><input id="inputCC20" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC2_COARSE, value)"></td>
+    <td><input id="inputCC20" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC2_COARSE    , value)"></td>
     <td><span   id="spanCC20">-1</span></td>
-    <td><input id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC2_FINE, value)"></td>
+    <td><input id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC2_FINE      , value)"></td>
     <td><span   id="spanCC21">-1</span></td></tr>
 <tr><td>SUB (SIN/NOISE/SQ)    </td><td></td>
     <td>SUB LEVEL             </td><td></td>
     <td>EG > PITCH (-/+)      </td><td></td>
     <td>EG > P. TGT (1&2/2)   </td><td></td></tr>
-<tr><td><input id="inputCC29" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUB_OSC_WAVE, value)"></td>
+<tr><td><input id="inputCC29" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUB_WAVE       , value)"></td>
     <td><span   id="spanCC29">-1</span></td>
-    <td><input id="inputCC26" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUB_OSC_LEVEL, value)"></td>
+    <td><input id="inputCC26" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUB_LEVEL      , value)"></td>
     <td><span   id="spanCC26">-1</span></td>
-    <td><input id="inputCC104" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PITCH_EG_AMT, value)"></td>
+    <td><input id="inputCC104" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_PITCH    , value)"></td>
     <td><span   id="spanCC104">-1</span></td>
-    <td><input id="inputCC105" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PITCH_EG_TGT, value)"></td>
+    <td><input id="inputCC105" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_P_TGT    , value)"></td>
     <td><span   id="spanCC105">-1</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>CUTOFF                </td><td></td>
     <td>RESONANCE             </td><td></td>
     <td>EG > CUTOFF (-/+)     </td><td></td>
     <td>AMP EG (OFF/ON)       </td><td></td></tr>
-<tr><td><input id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF, value)"></td>
+<tr><td><input id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF         , value)"></td>
     <td><span   id="spanCC16">-1</span></td>
-    <td><input id="inputCC17" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_RESO, value)"></td>
+    <td><input id="inputCC17" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RESONANCE      , value)"></td>
     <td><span   id="spanCC17">-1</span></td>
-    <td><input id="inputCC18" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF_EG_AMT, value)"></td>
+    <td><input id="inputCC18" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_CUTOFF   , value)"></td>
     <td><span   id="spanCC18">-1</span></td>
-    <td><input id="inputCC31" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EG_ON, value)"></td>
+    <td><input id="inputCC31" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EG         , value)"></td>
     <td><span   id="spanCC31">-1</span></td></tr>
 <tr><td>ATTACK                </td><td></td>
     <td>DECAY                 </td><td></td>
     <td>SUSTAIN               </td><td></td>
     <td>RELEASE (OFF/ON)      </td><td></td></tr>
-<tr><td><input id="inputCC23" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_ATTACK, value)"></td>
+<tr><td><input id="inputCC23" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(ATTACK         , value)"></td>
     <td><span   id="spanCC23">-1</span></td>
-    <td><input id="inputCC19" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_DECAY, value)"></td>
+    <td><input id="inputCC19" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DECAY          , value)"></td>
     <td><span   id="spanCC19">-1</span></td>
-    <td><input id="inputCC27" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_SUSTAIN, value)"></td>
+    <td><input id="inputCC27" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUSTAIN        , value)"></td>
     <td><span   id="spanCC27">-1</span></td>
-    <td><input id="inputCC28" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_RELEASE, value)"></td>
+    <td><input id="inputCC28" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RELEASE        , value)"></td>
     <td><span   id="spanCC28">-1</span></td></tr>
 <tr><td>&nbsp;</td></tr>
     <td>LFO (T/2/SA/RND/SQ)   </td><td></td>
     <td>LFO RATE              </td><td></td>
     <td>LFO > PITCH (-/+)     </td><td></td>
     <td>LFO > CUTOFF (-/+)    </td><td></td></tr>
-<tr><td><input id="inputCC14" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE, value)"></td>
+<tr><td><input id="inputCC14" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
     <td><span   id="spanCC14">-1</span></td>
-    <td><input id="inputCC80" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE, value)"></td>
+    <td><input id="inputCC80" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
     <td><span   id="spanCC80">-1</span></td>
-    <td><input id="inputCC82" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PITCH_LFO_AMT, value)"></td>
+    <td><input id="inputCC82" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_PITCH   , value)"></td>
     <td><span   id="spanCC82">-1</span></td>
-    <td><input id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CO_LFO_AMT, value)"></td>
+    <td><input id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_CUTOFF  , value)"></td>
     <td><span   id="spanCC83">-1</span></td></tr>
 <tr><td>LFO DEPTH             </td><td></td>
     <td>EG > LFO RATE (-/+)   </td><td></td>
     <td>LFO > P. TGT (1&2/2)  </td><td></td>
     <td>LFO FADE TIME         </td><td></td></tr>
-<tr><td><input id="inputCC81" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH, value)"></td>
+<tr><td><input id="inputCC81" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
     <td><span   id="spanCC81">-1</span></td>
-    <td><input id="inputCC3"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RT_EG_AMT, value)"></td>
+    <td><input id="inputCC3"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_LFO_RATE , value)"></td>
     <td><span   id="spanCC3" >-1</span></td>
-    <td><input id="inputCC9"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PITCH_LFO_TGT, value)"></td>
+    <td><input id="inputCC9"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_P_TGT   , value)"></td>
     <td><span   id="spanCC9" >-1</span></td>
-    <td><input id="inputCC15" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME, value)"></td>
+    <td><input id="inputCC15" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
     <td><span   id="spanCC15">-1</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>P. BEND RANGE         </td><td></td>
-    <td>                      </td><td></td>
+    <td>PITCH > CUTOFF        </td><td></td>
     <td>EXP > CUTOFF (-/+)    </td><td></td>
     <td>EXP > AMP LEVEL       </td><td></td></tr>
-<tr><td><input id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PB_RANGE, value)"></td>
+<tr><td><input id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span   id="spanCC85">-1</span></td>
-    <td><input id="inputCC86" style="visibility:hidden" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CC86, value)"></td>
-    <td><span   id="spanCC86" style="visibility:hidden">-1</span></td>
-    <td><input id="inputCC106" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CO_EXP_AMT, value)"></td>
+    <td><input id="inputCC86" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PITCH_TO_CUTOFF, value)"></td>
+    <td><span   id="spanCC86">-1</span></td>
+    <td><input id="inputCC106" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EXP_TO_CUTOFF  , value)"></td>
     <td><span   id="spanCC106">-1</span></td>
-    <td><input id="inputCC107" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EXP_AMT, value)"></td>
+    <td><input id="inputCC107" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EXP_TO_AMP_LEV , value)"></td>
     <td><span   id="spanCC107">-1</span></td></tr>
 <tr><td>PORTAMENTO            </td><td></td>
     <td>LEGATO (OFF/ON)       </td><td></td>
     <td>K. ASN (L/L/P/H/LST)  </td><td></td>
     <td>EXP BY VEL (OFF/ON)   </td><td></td></tr>
-<tr><td><input id="inputCC22" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO, value)"></td>
+<tr><td><input id="inputCC22" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
     <td><span   id="spanCC22">-1</span></td>
-    <td><input id="inputCC30" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LEGATO, value)"></td>
+    <td><input id="inputCC30" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LEGATO         , value)"></td>
     <td><span   id="spanCC30">-1</span></td>
-    <td><input id="inputCC87" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(KEY_ASSIGN, value)"></td>
+    <td><input id="inputCC87" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(KEY_ASSIGN     , value)"></td>
     <td><span   id="spanCC87">-1</span></td>
-    <td><input id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EXP_BY_VEL, value)"></td>
+    <td><input id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EXP_BY_VEL     , value)"></td>
     <td><span   id="spanCC89">-1</span></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>OSC LEVEL             </td><td></td>
+    <td>RESONANCE LIMIT       </td><td></td>
+    <td>AMP LEVEL             </td><td></td>
+    <td>DAMP AND ATTACK       </td><td></td></tr>
+<tr><td><input id="inputCC108" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_LEVEL      , value)"></td>
+    <td><span   id="spanCC108">-1</span></td>
+    <td><input id="inputCC109" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RESONANCE_LIMIT, value)"></td>
+    <td><span   id="spanCC109">-1</span></td>
+    <td><input id="inputCC110" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_LEVEL      , value)"></td>
+    <td><span   id="spanCC110">-1</span></td>
+    <td><input id="inputCC111" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DAMP_AND_ATTACK, value)"></td>
+    <td><span   id="spanCC111">-1</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 

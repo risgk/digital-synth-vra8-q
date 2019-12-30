@@ -1,6 +1,6 @@
-# Digital Synth VRA8-N v2.2.0
+# Digital Synth VRA8-N v2.4.4
 
-- 2019-04-30 ISGK Instruments
+- 2019-12-29 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-n>
 
 
@@ -9,9 +9,52 @@
 - Monophonic Synthesizer (MIDI Sound Module) for Arduino Uno
 
 
+## Caution about Arduino: Sorry for Mac users
+
+- We *strongly recommend* Arduino IDE 1.8.5 (more precisely **Arduino AVR Boards core 1.6.20**)
+    - If you use other than AVR Boards core 1.6.20 (or modified this sketch), the sketch *may not work well*
+        - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
+- However, with **macOS Catalina 10.15**, only IDE 1.8.10 (AVR Boards core 1.8.1) or later can be used!
+- If you have to use **Arduino AVR Boards core 1.8.1**, it is recommended to *reduce the program size*. Please do the following:
+    - Change `REDUCE_OSC_TABLE_SIZE_1 = false` to `REDUCE_OSC_TABLE_SIZE_1 = true` in `"generate-osc-table.rb"`, and execute this
+        - Requiring a Ruby execution environment
+    - Or delete `"osc-table.h"`, and rename `"osc-table.h.REDUCE_OSC_TABLE_SIZE_1.txt"` to `"osc-table.h"`
+
 ## Change History
 
-- v2.2.0
+- v2.4.4
+    - Prevent increase of CPU load in AVR Boards core 1.8.1
+        - Change comments for macOS Catalina 10.15 and Arduino IDE 1.8.10 (AVR Boards core 1.8.1)
+    - Improve portability of "make-sample-wav-file.cc"
+    - Add "osc-table.h.REDUCE_OSC_TABLE_SIZE_1.txt"
+- v2.4.3
+    - Fix `"make-sample-wav-file.cc"` (for Debugging on PC): Add `#define ENABLE_OSC_2`
+- v2.4.2 (Major Changes)
+    - Improve `ENABLE_SPECIAL_PROGRAM_CHANGE` option: Works when the CC value changes from <= 63 to >= 64
+- v2.4.1 (Major Changes)
+    - Fix explanation about Arduino AVR Boards (Core)
+        - "There is no restriction on a version of Arduino AVR Core" was a mistake!
+    - Add comments for macOS Catalina 10.15 and Arduino IDE 1.8.10 (AVR Boards 1.8.1)
+    - Change "LEGATO" of "PRESET #4 PAN FLUTE" from ON to OFF
+    - Reset "EXPRESSION" when "EXP BY VEL" turns OFF
+    - Add `ENABLE_SPECIAL_PROGRAM_CHANGE` option: Program Change by Control Change #112-119, and #90
+- v2.4.0 (Major Changes)
+    - Add the JSON file IMPORT/EXPORT function to VRA8-N CTRL
+    - Rename the constants for CCs
+    - Introduce NewEnvGen (Level changes are smoother than the original EnvGen)
+    - Improve the ANALOG_INPUT_REVERSED option of mode-VC
+- v2.3.0 (Major Changes)
+    - Do not support Arduino Nano 3.x (because the sketch uses more than 30720 bytes of program storage space)
+    - Rename **VRA8-N mini** to **VRA8-N mode-VC**
+    - Improve **VRA8-N mode-VC**: Add the SCALE MODE "C Major" and the GATE Signal support
+    - Halve the send level of LFO > CUTOFF for smoothness
+    - Change the change range of CUTOFF frequency from 28-124 to 16-112 (64: the center)
+    - Change the Q of RESONANCE 64 from 2.8 to 2.0 (No change in the range of Q from 0.7 to 8.0)
+    - Add "PITCH > CUTOFF", "OSC LEVEL", "RESONANCE LIMIT", "AMP LEVEL", and "DAMP AND ATTACK" controls
+    - Reset EXPRESSION at Random Control
+- v2.2.1
+    - Fix the issue that RANDOM of LFO and the fluctuation of OSCs do not work
+- v2.2.0 (Major Changes)
     - Enable Sub Oscillator in **VRA8-N mini** mode
     - Slow down the change speed of OSC MIX and SUB LEVEL
     - Improve stability: Reduce distortion of audio output when processing MIDI data
@@ -20,7 +63,7 @@
 - v2.1.1
     - Change the assignment of the potentiometers for **VRA8-N mini**
 - v2.1.0 (Major Changes)
-    - Narrow the CUTOFF frequency range from 5 oct (G3-G8) to 4 oct (G4-G8) for sound quality
+    - Narrow the CUTOFF frequency range from 5 oct (G4-G9) to 4 oct (G5-G9) for sound quality
     - Add OSC2 NOISE; Change "OSC1/2 (SAW/SQ)" to "OSC1/2 (SAW/N/SQ)"
     - Add "LFO FADE TIME" control
     - Add LFO LED Out option (Enabled by default, Pin D5)
@@ -65,28 +108,22 @@
     - **CAUTION**: Click sounds may occur when you connect the audio out to an amp or reset the board
 - We recommend [Hairless MIDI<->Serial Bridge](http://projectgus.github.io/hairless-midiserial/) to connect PC
     - **NOTE**: A combination of a **MIDI Shield** (MIDI Breakout) and a **power supply adapter** is *recommended* to avoiding USB noise
-        - To use MIDI Shield, edit `SERIAL_SPEED`, `LFO_LED_OUT_ACTIVE`, and `SUBSTITUTE_PIN_D5_FOR_D6_AS_AUDIO_OUT` in `DigitalSynthVRA8N.ino`
+        - To use MIDI Shield, edit `SERIAL_SPEED`, `LFO_LED_OUT_ACTIVE`, and `SUBSTITUTE_PIN_D5_FOR_D6_AS_AUDIO_OUT` in `"DigitalSynthVRA8N.ino"`
         - Even using only the **power supply adapter** *significantly* reduces USB noise
 - Files
-    - `DigitalSynthVRA8N.ino` is a sketch for Arduino/Genuino Uno Rev3 (ATmega328P)
-        - Arduino/Genuino Nano 3.x (ATmega328P) can also be used
-    - `make-sample-wav-file.cc` is for Debugging on PC
+    - `"DigitalSynthVRA8N.ino"` is a sketch for Arduino/Genuino Uno Rev3 (ATmega328P)
+    - `"make-sample-wav-file.cc"` is for Debugging on PC
         - Requiring GCC (g++) or other
-        - `make-sample-wav-file-cc.bat` makes a sample WAV file (working on Windows)
-    - `generate-*.rb` generates source files
+        - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
+    - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
-- **CAUTION**: We *strongly recommend* **Arduino IDE 1.8.5**
-    - In **VRA8-N mini** mode, `DigitalSynthVRA8N.ino` *does not work well* with Arduino IDE 1.8.6 or later
-        - *Not* in **VRA8-N mini** mode, `DigitalSynthVRA8N.ino` works well with even Arduino IDE 1.8.9
-    - There is no restriction on a version of Arduino AVR Core
-        - You can install the Arduino AVR Core 1.16.21 or later (in the Board Manager) for new Arduino Nano bootloader
 
 
 ## VRA8-N CTRL
 
-- MIDI Controller (Editor) for VRA8-N, Web App
+- MIDI Controller (Editor) for VRA8-N, HTML5 App (Web App)
 - VRA8-N CTRL converts Program Changes (#0-7 for PRESET) into Control Changes
-- VRA8-N CTRL memorizes USER Programs (#8-15)
+- VRA8-N CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend Google Chrome, which implements Web MIDI API
 - We recommend [loopMIDI](http://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-N
 - **CAUTION**: Low CUTOFF with high RESONANCE can damage the speakers
@@ -112,42 +149,51 @@
     - Values 48-79: SAW Down (Key Trigger: On)
     - Values 80-111: RANDOM (Key Trigger: On)
     - Values 112-127: SQUARE Up (Key Trigger: On)
-- "LFO FADE TIME": This affects "LFO DEPTH" but not "MODULATION DEPTH".
+- "LFO FADE TIME": This affects "LFO DEPTH" but not "MODULATION DEPTH"
+- "PITCH > CUTOFF": In other words, Filter CUTOFF Keyboard Tracking (Off/Half/Full)
 - "LEGATO (OFF/ON)": LEGATO Portamento
     - When LEGATO Portamento is ON, Single Trigger is forced
 - "K. ASN (L/L/P/H/LST)": Key ASSIGN / Trigger Mode
     - Values 0-47: Lowest Note / Single Trigger
-    - Values 48-79: Paraphonic (Lowest and Highest Notes) / Single Trigger
+    - Values 48-79: Paraphonic (Lowest and Highest Notes, Duophonic) / Single Trigger
     - Values 80-111: Highest Note / Single Trigger
     - Values 112-127: LAST One Note / Multi Trigger
 - "EXP BY VEL (OFF/ON)": EXPRESSION Control By (Note ON) VELOCITY
+- "DAMP AND ATTACK": DAMP the EG level to zero before ATTACK (0-63: Off, 64: Slowest, 127: Fastest)
 
 
-## A Sample Setting of a Physical Controller (8-Knob)
+## A Sample Setting of a 4-Knob Physical Controller
 
-    +-------------------+---------------+---------------+---------------+
-    | CC #16            | CC #17        | CC #23        | CC #19        |
-    | CUTOFF            | RESONANCE     | ATTACK        | DECAY         |
-    +-------------------+---------------+---------------+---------------+
-    | CC #24            | CC #25        | CC #26        | CC #22        |
-    | OSC (SAW/SQ)      | OSC MIX (1/2) | SUB LEVEL     | PORTAMENTO    |
-    +-------------------+---------------+---------------+---------------+
+    +---------------+---------------+---------------+---------------+
+    | CC #16        | CC #17        | CC #23        | CC #19        |
+    | CUTOFF        | RESONANCE     | ATTACK        | DECAY         |
+    +---------------+---------------+---------------+---------------+
 
 
-## **VRA8-N mini** (Operation Mode)
+## **VRA8-N mode-VC** (Alternative Operation Mode)
 
-- Voltage controlled (0-5V)
-- You need 4 potentiometers and 2 buttons
-- To make the sketch operate as **VRA8-N mini**, edit `ENABLE_VOLTAGE_CONTROL` in `DigitalSynthVRA8N.ino`
+- VRA8-N is **Voltage Controlled** by 0-5V signals
+- By default, you need 4 potentiometers and 2 buttons
+    - A0: CUTOFF
+    - A1: RESONANCE
+    - A2: OSC MIX
+    - A3: Pitch CV In (0V: Note OFF)
+    - D2: Change the PROGRAM (#0, ..., #7, Random Control)
+    - D4: Change the SCALE MODE
+        - SCALE MODE 0: "C Major" (2Oct / 5V)
+        - SCALE MODE 1: "Chromatic" (2Oct / 5V)
+        - SCALE MODE 2: "Linear" (5Oct / 5V)
+- To make the sketch operate as **VRA8-N mode-VC**, edit `ENABLE_VOLTAGE_CONTROL` in `"DigitalSynthVRA8N.ino"`
     - If you use a MIDI keyboard, comment out the line `#define USE_PITCH_CV_IN`
-- See `cv-in.h`
-- **NOTE**: A **power supply adapter** is *recommended* to avoiding the swings of voltage values
+- See `"cv-in.h"`
+    - If you use a GATE Signal (A5), cancel comment out of the line `//#define USE_GATE_IN`
+- **NOTE**: A **power supply adapter** is *strongly recommended* to avoiding the swings of voltage values
 
 
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2019-04-30       
-      Model: Digital Synth VRA8-N     MIDI Implementation Chart       Version: 2.2.0         
+      [Monophonic Synthesizer]                                        Date: 2019-12-29       
+      Model: Digital Synth VRA8-N     MIDI Implementation Chart       Version: 2.4.4         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -203,7 +249,7 @@
     |                            15 | x             | o             | LFO FADE TIME         |
     |                               |               |               |                       |
     |                            85 | x             | o             | P. BEND RANGE         |
-    |                            86 | x             | x             | (RESERVED)            |
+    |                            86 | x             | o             | PITCH > CUTOFF        |
     |                           106 | x             | o             | EXP > CUTOFF (-/+)    |
     |                           107 | x             | o             | EXP > AMP LEVEL       |
     |                               |               |               |                       |
@@ -212,10 +258,15 @@
     |                            87 | x             | o             | K. ASN (L/L/P/H/LST)  |
     |                            89 | x             | o             | EXP BY VEL (OFF/ON)   |
     |                               |               |               |                       |
-    |                   112-119, 90 | x             | x             | (RESERVED)            |
+    |                           108 | x             | o             | OSC LEVEL             |
+    |                           109 | x             | o             | RESONANCE LIMIT       |
+    |                           110 | x             | o             | AMP LEVEL             |
+    |                           111 | x             | o             | DAMP AND ATTACK       |
+    |                               |               |               |                       |
+    |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
     | Program                       | x             | o             |                       |
-    | Change       : True #         | ************* | 0-7           |                       |
+    | Change       : True #         | ************* | 0-7, 127      | 127: Random Control   |
     +-------------------------------+---------------+---------------+-----------------------+
     | System Exclusive              | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+

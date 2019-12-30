@@ -1,5 +1,5 @@
 #include "common.h"
-#include "program_table.h"
+#include "program-table.h"
 
 template <uint8_t T>
 class Voice {
@@ -19,6 +19,8 @@ class Voice {
   static uint8_t m_amp_env_gen;
   static uint8_t m_exp_by_vel;
   static uint16_t m_rnd;
+  static uint8_t m_sp_prog_chg_cc_values[8];
+  static uint8_t m_sp_rand_ctrl_cc_value;
 
 public:
   INLINE static void initialize() {
@@ -46,7 +48,10 @@ public:
     m_rnd = 1;
   }
 
-  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
+#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
+  INLINE
+#endif
+  static void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_legato_portamento) {
       if (m_last_note_number != NOTE_NUMBER_INVALID) {
         IOsc<0>::set_portamento(m_portamento);
@@ -96,7 +101,10 @@ public:
     }
   }
 
-  INLINE static void note_off(uint8_t note_number) {
+#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
+  INLINE
+#endif
+  static void note_off(uint8_t note_number) {
     clear_on_note(note_number);
     if (m_key_assign == KEY_ASSIGN_LAST) {
       if (m_last_note_number == note_number) {
@@ -144,7 +152,10 @@ public:
     }
   }
 
-  INLINE static void all_note_off() {
+#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
+  INLINE
+#endif
+  static void all_note_off() {
     for (uint8_t i = 0; i < 16; ++i) {
       m_on_note[i] = 0x00;
     }
@@ -157,40 +168,40 @@ public:
 
   INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
-    case EXPRESSION:
+    case EXPRESSION     :
       if (!m_exp_by_vel) {
         IFilter<0>::set_expression(controller_value);
         IEnvGen<1>::set_expression(controller_value);
       }
       break;
-    case MODULATION:
+    case MODULATION     :
       IOsc<0>::set_lfo_depth<1>(controller_value);
       break;
 
-    case FILTER_CUTOFF:
+    case CUTOFF         :
       IFilter<0>::set_cutoff(controller_value);
       break;
-    case FILTER_RESO:
+    case RESONANCE      :
       IFilter<0>::set_resonance(controller_value);
       break;
-    case CUTOFF_EG_AMT:
+    case EG_TO_CUTOFF   :
       IFilter<0>::set_cutoff_env_amt(controller_value);
       break;
-    case EG_DECAY:
+    case DECAY          :
       m_decay = controller_value;
       update_decay_release();
       break;
 
-    case OSC2_COARSE:
+    case OSC2_COARSE    :
       IOsc<0>::set_pitch_offset_1(controller_value);
       break;
-    case OSC2_FINE:
+    case OSC2_FINE      :
       IOsc<0>::set_detune(controller_value);
       break;
-    case PORTAMENTO:
+    case PORTAMENTO     :
       m_portamento = controller_value;
       break;
-    case EG_ATTACK:
+    case ATTACK         :
       m_attack = controller_value;
       if (m_amp_env_gen >= 64) {
         IEnvGen<0>::set_attack(m_attack);
@@ -200,15 +211,16 @@ public:
       }
       break;
 
-    case OSC_WAVE :
+    case OSC1_2_WAVE    :
       IOsc<0>::set_osc_waveforms(controller_value);
       break;
-    case OSC_MIX:
+    case OSC_MIX        :
       IOsc<0>::set_osc_mix(controller_value);
       break;
-    case SUB_OSC_LEVEL:
+    case SUB_LEVEL      :
+      IOsc<0>::set_sub_osc_level(controller_value);
       break;
-    case EG_SUSTAIN:
+    case SUSTAIN        :
       {
         m_sustain = controller_value;
 
@@ -221,12 +233,14 @@ public:
       }
       break;
 
-    case LFO_WAVE:
+    case LFO_WAVE       :
       IOsc<0>::set_lfo_waveform(controller_value);
       break;
 
-    case SUB_OSC_WAVE:
+    case SUB_WAVE       :
+      IOsc<0>::set_sub_waveform(controller_value);
       break;
+#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
     case LEGATO:
       if (controller_value < 64) {
         m_legato_portamento = false;
@@ -234,29 +248,34 @@ public:
         m_legato_portamento = true;
       }
       break;
-    case AMP_EG_ON:
+#endif
+    case AMP_EG         :
       m_amp_env_gen = controller_value;
       update_env_gen();
       break;
 
-    case LFO_RATE:
+    case LFO_RATE       :
       IOsc<0>::set_lfo_rate(controller_value);
       break;
-    case LFO_DEPTH:
+    case LFO_DEPTH      :
       IOsc<0>::set_lfo_depth<0>(controller_value);
       break;
-    case PITCH_LFO_AMT:
+    case LFO_TO_PITCH   :
       IOsc<0>::set_pitch_lfo_amt<0>(controller_value);
       break;
-    case CO_LFO_AMT:
+    case LFO_TO_CUTOFF  :
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
-    case PB_RANGE:
+#if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
+    case P_BEND_RANGE   :
       IOsc<0>::set_pitch_bend_minus_range(controller_value);
       IOsc<0>::set_pitch_bend_plus_range(controller_value);
       break;
-    case KEY_ASSIGN:
+    case PITCH_TO_CUTOFF:
+      IFilter<0>::set_cutoff_pitch_amt(controller_value);
+      break;
+    case KEY_ASSIGN     :
       if        (controller_value < 48) {
         m_key_assign = KEY_ASSIGN_LOW;
       } else if (controller_value < 80) {
@@ -267,149 +286,205 @@ public:
         m_key_assign = KEY_ASSIGN_LAST;
       }
       break;
+#endif
 
-    case EG_RELEASE:
+    case RELEASE        :
       m_release = controller_value;
       update_decay_release();
       break;
-    case PITCH_LFO_TGT:
+    case LFO_TO_P_TGT   :
       if (controller_value < 64) {
         IOsc<0>::set_lfo_target_both(true);
       } else {
         IOsc<0>::set_lfo_target_both(false);
       }
       break;
-    case PITCH_EG_AMT:
+    case EG_TO_PITCH    :
       IOsc<0>::set_pitch_eg_amt(controller_value);
       break;
-    case PITCH_EG_TGT:
+    case EG_TO_P_TGT    :
       if (controller_value < 64) {
         IOsc<0>::set_pitch_eg_target_both(true);
       } else {
         IOsc<0>::set_pitch_eg_target_both(false);
       }
       break;
-    case LFO_RT_EG_AMT:
+    case EG_TO_LFO_RATE :
       IOsc<0>::set_lfo_rate_eg_amt(controller_value);
       break;
 
-    case LFO_FADE_TIME:
+    case LFO_FADE_TIME  :
       IOsc<0>::set_lfo_fade_time(controller_value);
       break;
-    case CO_EXP_AMT:
+    case EXP_TO_CUTOFF  :
       IFilter<0>::set_cutoff_exp_amt(controller_value);
       break;
-    case AMP_EXP_AMT:
+    case EXP_TO_AMP_LEV :
       IEnvGen<1>::set_amp_exp_amt(controller_value);
       break;
-    case EXP_BY_VEL:
-      if (controller_value < 64) {
+    case EXP_BY_VEL     :
+      if ((m_exp_by_vel == true) && (controller_value < 64)) {
         m_exp_by_vel = false;
-      } else {
+        IFilter<0>::set_expression(127);
+        IEnvGen<1>::set_expression(127);
+      } else if ((m_exp_by_vel == false) && (controller_value >= 64)) {
         m_exp_by_vel = true;
       }
       break;
 
-    case ALL_NOTES_OFF:
-    case OMNI_MODE_OFF:
-    case OMNI_MODE_ON:
-    case MONO_MODE_ON:
-    case POLY_MODE_ON:
+    case OSC_LEVEL      :
+      IOsc<0>::set_osc_level(controller_value);
+      break;
+    case RESONANCE_LIMIT:
+      IFilter<0>::set_resonance_limit(controller_value);
+      break;
+    case AMP_LEVEL      :
+      IEnvGen<1>::set_gain(controller_value);
+      break;
+    case DAMP_AND_ATTACK:
+      IEnvGen<0>::set_damp_atk(controller_value);
+      IEnvGen<1>::set_damp_atk(controller_value);
+      break;
+
+    case ALL_NOTES_OFF  :
+    case OMNI_MODE_OFF  :
+    case OMNI_MODE_ON   :
+    case MONO_MODE_ON   :
+    case POLY_MODE_ON   :
       all_note_off();
       break;
+
+#if defined(ENABLE_SPECIAL_PROGRAM_CHANGE)
+    // Special Program Change
+    case SP_PROG_CHG_0  :
+    case SP_PROG_CHG_1  :
+    case SP_PROG_CHG_2  :
+    case SP_PROG_CHG_3  :
+    case SP_PROG_CHG_4  :
+    case SP_PROG_CHG_5  :
+    case SP_PROG_CHG_6  :
+    case SP_PROG_CHG_7  :
+      {
+        uint8_t program_number = controller_number - SP_PROG_CHG_0;
+        uint8_t old_value = m_sp_prog_chg_cc_values[program_number];
+        m_sp_prog_chg_cc_values[program_number] = controller_value;
+        if ((old_value <= 63) && (controller_value >= 64)) {
+          program_change(program_number);
+        }
+      }
+      break;
+
+    // Special Random Control
+    case SP_RAND_CTRL   :
+      {
+        uint8_t old_value = m_sp_rand_ctrl_cc_value;
+        m_sp_rand_ctrl_cc_value = controller_value;
+        if ((old_value <= 63) && (controller_value >= 64)) {
+          program_change(PROGRAM_NUMBER_RANDOM_CONTROL);
+        }
+      }
+      break;
+#endif
     }
   }
 
   INLINE static void pitch_bend(uint8_t lsb, uint8_t msb) {
-    uint16_t pitch_bend = (msb << 7) + lsb - 8192;
+    int16_t pitch_bend = ((static_cast<uint16_t>(msb) << 8) >> 1) + lsb - 8192;
     IOsc<0>::set_pitch_bend(pitch_bend);
   }
 
   static void program_change(uint8_t program_number) {
     if (program_number == PROGRAM_NUMBER_RANDOM_CONTROL) {
-      control_change(OSC_WAVE     , get_rnd_7());
-      control_change(OSC_MIX      , get_rnd_7());
-      control_change(OSC2_COARSE  , get_rnd_7());
-      control_change(OSC2_FINE    , get_rnd_7());
+      control_change(OSC1_2_WAVE    , get_rnd_7());
+      control_change(OSC_MIX        , get_rnd_7());
+      control_change(OSC2_COARSE    , get_rnd_7());
+      control_change(OSC2_FINE      , get_rnd_7());
 
-      control_change(SUB_OSC_WAVE , get_rnd_7());
-      control_change(SUB_OSC_LEVEL, get_rnd_7());
-      control_change(PITCH_EG_AMT , get_rnd_7());
-      control_change(PITCH_EG_TGT , get_rnd_7());
+      control_change(SUB_WAVE       , get_rnd_7());
+      control_change(SUB_LEVEL      , get_rnd_7());
+      control_change(EG_TO_PITCH    , get_rnd_7());
+      control_change(EG_TO_P_TGT    , get_rnd_7());
 
-      control_change(FILTER_CUTOFF, get_rnd_7());
-      control_change(FILTER_RESO  , get_rnd_7());
-      control_change(CUTOFF_EG_AMT, get_rnd_7());
-      control_change(AMP_EG_ON    , get_rnd_7());
+      control_change(CUTOFF         , get_rnd_7());
+      control_change(RESONANCE      , get_rnd_7());
+      control_change(EG_TO_CUTOFF   , get_rnd_7());
+      control_change(AMP_EG         , get_rnd_7());
 
-      control_change(EG_ATTACK    , get_rnd_7());
-      control_change(EG_DECAY     , get_rnd_7());
-      control_change(EG_SUSTAIN   , get_rnd_7());
-      control_change(EG_RELEASE   , get_rnd_7());
+      control_change(ATTACK         , get_rnd_7());
+      control_change(DECAY          , get_rnd_7());
+      control_change(SUSTAIN        , get_rnd_7());
+      control_change(RELEASE        , get_rnd_7());
 
-      control_change(LFO_WAVE     , get_rnd_7());
-      control_change(LFO_RATE     , get_rnd_7());
-      control_change(PITCH_LFO_AMT, get_rnd_7());
-      control_change(CO_LFO_AMT   , get_rnd_7());
+      control_change(LFO_WAVE       , get_rnd_7());
+      control_change(LFO_RATE       , get_rnd_7());
+      control_change(LFO_TO_PITCH   , get_rnd_7());
+      control_change(LFO_TO_CUTOFF  , get_rnd_7());
 
-      control_change(LFO_DEPTH    , get_rnd_7());
-      control_change(LFO_RT_EG_AMT, get_rnd_7());
-      control_change(PITCH_LFO_TGT, get_rnd_7());
-      control_change(LFO_FADE_TIME, get_rnd_7());
+      control_change(LFO_DEPTH      , get_rnd_7());
+      control_change(EG_TO_LFO_RATE , get_rnd_7());
+      control_change(LFO_TO_P_TGT   , get_rnd_7());
+      control_change(LFO_FADE_TIME  , get_rnd_7());
 
-      control_change(PB_RANGE     , get_rnd_7());
-      control_change(CC86         , get_rnd_7());
-      control_change(CO_EXP_AMT   , get_rnd_7());
-      control_change(AMP_EXP_AMT  , get_rnd_7());
+      control_change(P_BEND_RANGE   , get_rnd_7());
+      control_change(PITCH_TO_CUTOFF, get_rnd_7());
+      control_change(EXP_TO_CUTOFF  , get_rnd_7());
+      control_change(EXP_TO_AMP_LEV , get_rnd_7());
 
-      control_change(PORTAMENTO   , get_rnd_7());
-      control_change(LEGATO       , get_rnd_7());
-      control_change(KEY_ASSIGN   , get_rnd_7());
-      control_change(EXP_BY_VEL   , get_rnd_7());
+      control_change(PORTAMENTO     , get_rnd_7());
+      control_change(LEGATO         , get_rnd_7());
+      control_change(KEY_ASSIGN     , get_rnd_7());
+      control_change(EXP_BY_VEL     , get_rnd_7());
+
+      control_change(EXPRESSION     , 127);
     } else {
       if (program_number > PROGRAM_NUMBER_MAX) {
         return;
       }
 
-      control_change(OSC_WAVE     , g_preset_table_OSC_WAVE     [program_number]);
-      control_change(OSC_MIX      , g_preset_table_OSC_MIX      [program_number]);
-      control_change(OSC2_COARSE  , g_preset_table_OSC2_COARSE  [program_number]);
-      control_change(OSC2_FINE    , g_preset_table_OSC2_FINE    [program_number]);
+      control_change(OSC1_2_WAVE    , g_preset_table_OSC1_2_WAVE    [program_number]);
+      control_change(OSC_MIX        , g_preset_table_OSC_MIX        [program_number]);
+      control_change(OSC2_COARSE    , g_preset_table_OSC2_COARSE    [program_number]);
+      control_change(OSC2_FINE      , g_preset_table_OSC2_FINE      [program_number]);
 
-      control_change(SUB_OSC_WAVE , g_preset_table_SUB_OSC_WAVE [program_number]);
-      control_change(SUB_OSC_LEVEL, g_preset_table_SUB_OSC_LEVEL[program_number]);
-      control_change(PITCH_EG_AMT , g_preset_table_PITCH_EG_AMT [program_number]);
-      control_change(PITCH_EG_TGT , g_preset_table_PITCH_EG_TGT [program_number]);
+      control_change(SUB_WAVE       , g_preset_table_SUB_WAVE       [program_number]);
+      control_change(SUB_LEVEL      , g_preset_table_SUB_LEVEL      [program_number]);
+      control_change(EG_TO_PITCH    , g_preset_table_EG_TO_PITCH    [program_number]);
+      control_change(EG_TO_P_TGT    , g_preset_table_EG_TO_P_TGT    [program_number]);
 
-      control_change(FILTER_CUTOFF, g_preset_table_FILTER_CUTOFF[program_number]);
-      control_change(FILTER_RESO  , g_preset_table_FILTER_RESO  [program_number]);
-      control_change(CUTOFF_EG_AMT, g_preset_table_CUTOFF_EG_AMT[program_number]);
-      control_change(AMP_EG_ON    , g_preset_table_AMP_EG_ON    [program_number]);
+      control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
+      control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
+      control_change(EG_TO_CUTOFF   , g_preset_table_EG_TO_CUTOFF   [program_number]);
+      control_change(AMP_EG         , g_preset_table_AMP_EG         [program_number]);
 
-      control_change(EG_ATTACK    , g_preset_table_EG_ATTACK    [program_number]);
-      control_change(EG_DECAY     , g_preset_table_EG_DECAY     [program_number]);
-      control_change(EG_SUSTAIN   , g_preset_table_EG_SUSTAIN   [program_number]);
-      control_change(EG_RELEASE   , g_preset_table_EG_RELEASE   [program_number]);
+      control_change(ATTACK         , g_preset_table_ATTACK         [program_number]);
+      control_change(DECAY          , g_preset_table_DECAY          [program_number]);
+      control_change(SUSTAIN        , g_preset_table_SUSTAIN        [program_number]);
+      control_change(RELEASE        , g_preset_table_RELEASE        [program_number]);
 
-      control_change(LFO_WAVE     , g_preset_table_LFO_WAVE     [program_number]);
-      control_change(LFO_RATE     , g_preset_table_LFO_RATE     [program_number]);
-      control_change(PITCH_LFO_AMT, g_preset_table_PITCH_LFO_AMT[program_number]);
-      control_change(CO_LFO_AMT   , g_preset_table_CO_LFO_AMT   [program_number]);
+      control_change(LFO_WAVE       , g_preset_table_LFO_WAVE       [program_number]);
+      control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
+      control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
+      control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
 
-      control_change(LFO_DEPTH    , g_preset_table_LFO_DEPTH    [program_number]);
-      control_change(LFO_RT_EG_AMT, g_preset_table_LFO_RT_EG_AMT[program_number]);
-      control_change(PITCH_LFO_TGT, g_preset_table_PITCH_LFO_TGT[program_number]);
-      control_change(LFO_FADE_TIME, g_preset_table_LFO_FADE_TIME[program_number]);
+      control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
+      control_change(EG_TO_LFO_RATE , g_preset_table_EG_TO_LFO_RATE [program_number]);
+      control_change(LFO_TO_P_TGT   , g_preset_table_LFO_TO_P_TGT   [program_number]);
+      control_change(LFO_FADE_TIME  , g_preset_table_LFO_FADE_TIME  [program_number]);
 
-      control_change(PB_RANGE     , g_preset_table_PB_RANGE     [program_number]);
-      control_change(CC86         , g_preset_table_CC86         [program_number]);
-      control_change(CO_EXP_AMT   , g_preset_table_CO_EXP_AMT   [program_number]);
-      control_change(AMP_EXP_AMT  , g_preset_table_AMP_EXP_AMT  [program_number]);
+      control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
+      control_change(PITCH_TO_CUTOFF, g_preset_table_PITCH_TO_CUTOFF[program_number]);
+      control_change(EXP_TO_CUTOFF  , g_preset_table_EXP_TO_CUTOFF  [program_number]);
+      control_change(EXP_TO_AMP_LEV , g_preset_table_EXP_TO_AMP_LEV [program_number]);
 
-      control_change(PORTAMENTO   , g_preset_table_PORTAMENTO   [program_number]);
-      control_change(LEGATO       , g_preset_table_LEGATO       [program_number]);
-      control_change(KEY_ASSIGN   , g_preset_table_KEY_ASSIGN   [program_number]);
-      control_change(EXP_BY_VEL   , g_preset_table_EXP_BY_VEL   [program_number]);
+      control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
+      control_change(LEGATO         , g_preset_table_LEGATO         [program_number]);
+      control_change(KEY_ASSIGN     , g_preset_table_KEY_ASSIGN     [program_number]);
+      control_change(EXP_BY_VEL     , g_preset_table_EXP_BY_VEL     [program_number]);
+
+      control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
+      control_change(RESONANCE_LIMIT, g_preset_table_RESONANCE_LIMIT[program_number]);
+      control_change(AMP_LEVEL      , g_preset_table_AMP_LEVEL      [program_number]);
+      control_change(DAMP_AND_ATTACK, g_preset_table_DAMP_AND_ATTACK[program_number]);
     }
   }
 
@@ -568,3 +643,5 @@ template <uint8_t T> uint8_t Voice<T>::m_release;
 template <uint8_t T> uint8_t Voice<T>::m_amp_env_gen;
 template <uint8_t T> uint8_t Voice<T>::m_exp_by_vel;
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
+template <uint8_t T> uint8_t Voice<T>::m_sp_prog_chg_cc_values[8];
+template <uint8_t T> uint8_t Voice<T>::m_sp_rand_ctrl_cc_value;

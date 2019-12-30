@@ -1,5 +1,7 @@
 require_relative 'constants'
 
+REDUCE_OSC_TABLE_SIZE_1 = false
+
 $file = File.open("osc-table.h", "w")
 
 $file.printf("#pragma once\n\n")
@@ -7,7 +9,7 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
+  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE / 2).floor.to_i
   freq = freq + 1 if freq.even?
   freq
 end
@@ -79,6 +81,12 @@ def last_harmonic(freq, organ = false, organ_last)
                         ((freq + OSC_DETUNE_FREQ_MAX) * 2 * SAMPLING_RATE)) : 0
   last = organ_last if organ && last > organ_last
   last = [last, 127].min
+  if REDUCE_OSC_TABLE_SIZE_1 == true
+    last = 7 if last == 8
+    last = 5 if last == 6
+    last = 3 if last == 4
+    last = 1 if last == 2
+  end
   last
 end
 
