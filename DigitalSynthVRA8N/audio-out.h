@@ -64,7 +64,7 @@ public:
       #elif 0
         uint8_t tcnt = m_busyCont;
         tcnt &= 0x7F;
-      #elif 1
+      #elif 0
         uint8_t tcnt = TCNT1 >> 2;
         if (tcnt >= 64) {
           tcnt = 99;   // Not Over
