@@ -262,7 +262,6 @@ public:
       IOsc<0>::set_pitch_bend_plus_range(controller_value);
       break;
     case PITCH_TO_CUTOFF:
-      IFilter<0>::set_cutoff_pitch_amt(controller_value);
       break;
     case KEY_ASSIGN     :
       if        (controller_value < 48) {
@@ -324,7 +323,6 @@ public:
       IOsc<0>::set_osc_level(controller_value);
       break;
     case RESONANCE_LIMIT:
-      IFilter<0>::set_resonance_limit(controller_value);
       break;
     case AMP_LEVEL      :
       IEnvGen<1>::set_gain(controller_value);
