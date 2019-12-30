@@ -1,6 +1,6 @@
 require_relative 'constants'
 
-REDUCE_OSC_TABLE_SIZE_1 = false
+REDUCE_OSC_TABLE_SIZE_1 = true
 
 $file = File.open("osc-table.h", "w")
 
