@@ -218,7 +218,6 @@ public:
       IOsc<0>::set_osc_mix(controller_value);
       break;
     case SUB_LEVEL      :
-      IOsc<0>::set_sub_osc_level(controller_value);
       break;
     case SUSTAIN        :
       {
@@ -238,7 +237,6 @@ public:
       break;
 
     case SUB_WAVE       :
-      IOsc<0>::set_sub_waveform(controller_value);
       break;
 #if !defined(ENABLE_VOLTAGE_CONTROL) || !defined(USE_PITCH_CV_IN)
     case LEGATO:
