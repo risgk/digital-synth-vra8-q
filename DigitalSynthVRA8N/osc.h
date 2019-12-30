@@ -342,6 +342,7 @@ public:
   }
 
   INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
+#if 0
     if ((count & 0x01) == 1) {
     }
     else if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
@@ -415,7 +416,9 @@ public:
         break;
       }
     }
+#endif
 
+#if 0
     m_phase[0] += m_freq[0];
 #if defined(ENABLE_OSCILLATOR_2)
     m_phase[1] += m_freq[1];
@@ -435,6 +438,9 @@ public:
     int16_t level_main   = wave_0_main   * m_mix_0;
     int16_t level_detune = wave_0_detune * m_mix_1;
     int16_t result       = level_main + level_detune;
+#else
+    int16_t result       = 0;
+#endif
 
     return result;
   }

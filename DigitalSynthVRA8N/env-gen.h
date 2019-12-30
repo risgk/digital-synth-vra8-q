@@ -105,6 +105,7 @@ public:
   }
 
   INLINE static uint8_t clock(uint8_t count) {
+#if 0
     if ((count & (ENV_GEN_CONTROL_INTERVAL - 1)) == ((T == 0) ? 2 : 10)) {
       switch (m_state) {
       case STATE_ATTACK:
@@ -209,6 +210,7 @@ public:
         m_level_out = high_byte(m_level);
       }
     }
+#endif
 
     return m_level_out;
   }
