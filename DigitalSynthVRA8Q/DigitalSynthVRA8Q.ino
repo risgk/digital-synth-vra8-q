@@ -3,15 +3,13 @@
 //                               (more precisely Arduino AVR Boards core 1.8.1) //
 //////////////////////////////////////////////////////////////////////////////////
 
-#define DEBUG
+//#define DEBUG
 
 #define SERIAL_SPEED (38400)    // For Serial MIDI
 //#define SERIAL_SPEED (31250)    // For MIDI Shield (MIDI Breakout)
 
-//#define SUBSTITUTE_PIN_D5_FOR_D6_AS_AUDIO_OUT    // For MIDI Shield
-
-#define ENABLE_LFO_LED_OUT           // D5 (or D6)
-#define LFO_LED_OUT_ACTIVE (HIGH)    // LOW for MIDI Shield
+#define L_MONO_AUDIO_OUT_PIN (5)    // Pin 5 or 6
+#define R_AUDIO_OUT_PIN (11)        // Pin 11
 
 #define TRANSPOSE (0)    // Min: -24, Max: +24
 
