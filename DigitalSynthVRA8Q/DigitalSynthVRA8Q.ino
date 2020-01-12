@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////
-// Digital Synth VRA8-N -- We strongly recommend Arduino IDE 1.8.5               //
+// Digital Synth VRA8-Q -- We strongly recommend Arduino IDE 1.8.5               //
 //                               (more precisely Arduino AVR Boards core 1.6.20) //
 ///////////////////////////////////////////////////////////////////////////////////
 
