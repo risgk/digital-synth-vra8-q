@@ -17,12 +17,12 @@ public:
     pinMode(CPU_BUSY_LED_OUT_PIN, OUTPUT);
 
     // Timer/Counter0 (8-bit Fast PWM, Inverting, 62500 Hz)
-#if (L_MONO_AUDIO_OUT_PIN == 6)
-    OCR0A  = 0x7F;
-    TCCR0A = 0xC3;
-#else
+#if (L_MONO_AUDIO_OUT_PIN == 5)
     OCR0B  = 0x7F;
     TCCR0A = 0x33;
+#elif (L_MONO_AUDIO_OUT_PIN == 6)
+    OCR0A  = 0x7F;
+    TCCR0A = 0xC3;
 #endif
 
     // Timer/Counter2 (8-bit Fast PWM, Inverting, 62500 Hz)
@@ -71,11 +71,11 @@ public:
     }
     TIFR1 = _BV(TOV1);
 
-#if (L_MONO_AUDIO_OUT_PIN == 6)
-    OCR0A = leftMono;
-    OCR2A = right;
-#else
+#if (L_MONO_AUDIO_OUT_PIN == 5)
     OCR0B = leftMono;
+    OCR2A = right;
+#elif (L_MONO_AUDIO_OUT_PIN == 6)
+    OCR0A = leftMono;
     OCR2A = right;
 #endif
 
