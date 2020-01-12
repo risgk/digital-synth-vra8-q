@@ -7,9 +7,8 @@
 template <uint8_t T>
 class AudioOut {
   static uint8_t m_count;
-  static uint8_t m_maxTcnt;
   static uint8_t m_busy;
-  static uint8_t m_busyCont;
+  static uint8_t m_busyContinuousCont;
 
 public:
   INLINE static void open() {
@@ -39,9 +38,8 @@ public:
     TCCR1B = 0x09;
 
     m_count = 0;
-    m_maxTcnt = 0;
     m_busy = 0;
-    m_busyCont = 0;
+    m_busyContinuousCont = 0;
   }
 
   INLINE static void write(int8_t level) {
@@ -54,23 +52,7 @@ public:
     if (m_count == 0x7F) {
       UDR0 = 0xDF;
     } else if (m_count == 0xFF) {
-      #if 0
-        uint8_t tcnt = TCNT1 >> 2;
-        if ((tcnt < 64) && (tcnt > m_maxTcnt)) {
-          m_maxTcnt = tcnt;
-        }
-        tcnt = m_maxTcnt;
-      #elif 0
-        uint8_t tcnt = m_busyCont;
-        tcnt &= 0x7F;
-      #elif 0
-        uint8_t tcnt = TCNT1 >> 2;
-        if (tcnt >= 64) {
-          tcnt = 99;   // Not Over
-        }
-      #else
-        uint8_t tcnt = TCNT1 >> 2;
-      #endif
+      uint8_t tcnt = TCNT1 >> 2;
       UDR0 = tcnt;
       m_count = 0;
     }
@@ -78,21 +60,15 @@ public:
 
     if (TIFR1 & _BV(TOV1)) {
       // CPU BUSY
-      PORTB = _BV(5);
-#if defined(DEBUG)
       if (m_busy) {
-        ++m_busyCont;
+        ++m_busyContinuousCont;
       }
       m_busy = 1;
-#endif
     } else {
-      PORTB = 0x00;
-#if defined(DEBUG)
       m_busy = 0;
-#endif
+      m_busyContinuousCont = 0;
       while ((TIFR1 & _BV(TOV1)) == 0);
     }
-
     TIFR1 = _BV(TOV1);
 
 #if (L_MONO_AUDIO_OUT_PIN == 6)
@@ -102,10 +78,16 @@ public:
     OCR0B = leftMono;
     OCR2A = right;
 #endif
+
+    if (m_busyContinuousCont >= 4) {
+      PORTB = _BV(5);    // Turn on CPU Busy LED
+    } else {
+      PORTB = 0x00;      // Turn off CPU Busy LED
+    }
+
   }
 };
 
 template <uint8_t T> uint8_t AudioOut<T>::m_count;
-template <uint8_t T> uint8_t AudioOut<T>::m_maxTcnt;
 template <uint8_t T> uint8_t AudioOut<T>::m_busy;
-template <uint8_t T> uint8_t AudioOut<T>::m_busyCont;
+template <uint8_t T> uint8_t AudioOut<T>::m_busyContinuousCont;
