@@ -9,7 +9,8 @@
 //#define SERIAL_SPEED (31250)    // For MIDI Shield (MIDI Breakout)
 
 #define L_MONO_AUDIO_OUT_PIN (5)    // Pin 5 or 6
-#define R_AUDIO_OUT_PIN (11)        // Pin 11
+#define R_AUDIO_OUT_PIN      (11)   // Pin 11
+#define CPU_BUSY_LED_OUT_PIN (13)   // Pin 13
 
 #define TRANSPOSE (0)    // Min: -24, Max: +24
 
