@@ -342,7 +342,7 @@ public:
   }
 
   INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
-#if 0
+#if 1
     if ((count & 0x01) == 1) {
     }
     else if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
@@ -418,7 +418,7 @@ public:
     }
 #endif
 
-#if 0
+#if 1
     m_phase[0] += m_freq[0];
 #if defined(ENABLE_OSCILLATOR_2)
     m_phase[1] += m_freq[1];

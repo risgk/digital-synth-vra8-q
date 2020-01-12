@@ -105,7 +105,7 @@ public:
   }
 
   INLINE static int16_t clock(uint8_t count, int16_t audio_input, uint8_t env_gen_input, int16_t lfo_input) {
-#if 0
+#if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 6) {
       #if defined(__cpp_static_assert)
         static_assert(FILTER_CONTROL_INTERVAL_BITS == 3, "FILTER_CONTROL_INTERVAL_BITS must be 3");
@@ -126,7 +126,7 @@ public:
     }
 #endif
 
-#if 0
+#if 1
     int16_t x_0  = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int16_t tmp  = mul_q15_q15(x_0 + (m_x_1 << 1) + m_x_2, m_b_2_over_a_0);
     tmp         -= mul_q15_q7( m_y_1,                      m_a_1_over_a_0_high);

@@ -9,16 +9,11 @@
 - Quadraphonic Synthesizer (MIDI Sound Module) for Arduino Uno
 
 
-## Caution about Arduino: Sorry for Mac users
+## Caution about Arduino
 
-- We *strongly recommend* Arduino IDE 1.8.5 (more precisely **Arduino AVR Boards core 1.6.20**)
-    - If you use other than AVR Boards core 1.6.20 (or modified this sketch), the sketch *may not work well*
+- We *strongly recommend* Arduino IDE 1.8.10 (more precisely **Arduino AVR Boards core 1.8.1**)
+    - If you use other than AVR Boards core 1.8.1 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
-- However, with **macOS Catalina 10.15**, only IDE 1.8.10 (AVR Boards core 1.8.1) or later can be used!
-- If you have to use **Arduino AVR Boards core 1.8.1**, it is recommended to *reduce the program size*. Please do the following:
-    - Change `REDUCE_OSC_TABLE_SIZE_1 = false` to `REDUCE_OSC_TABLE_SIZE_1 = true` in `"generate-osc-table.rb"`, and execute this
-        - Requiring a Ruby execution environment
-    - Or delete `"osc-table.h"`, and rename `"osc-table.h.REDUCE_OSC_TABLE_SIZE_1.txt"` to `"osc-table.h"`
 
 
 ## Features
