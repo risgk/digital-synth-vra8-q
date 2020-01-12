@@ -27,8 +27,9 @@
         - Do not connect the output to a passive speaker/a headphone directly
     - **CAUTION**: Click sounds may occur when you connect the audio out to an amp or reset the board
 - We recommend [Hairless MIDI<->Serial Bridge](http://projectgus.github.io/hairless-midiserial/) to connect PC
-    - **NOTE**: A combination of a **MIDI Shield** (MIDI Breakout) and a **power supply adapter** is *recommended* to avoiding USB noise
-        - Even using only the **power supply adapter** *significantly* reduces USB noise
+    - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
+        - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthVRA8Q.ino"`
+        - Even using only the power supply adapter *significantly* reduces USB noise
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino/Genuino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
