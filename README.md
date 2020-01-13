@@ -26,7 +26,7 @@
         - Please connect the output to a active speaker/a power amp/a headphone amp
         - Do not connect the output to a passive speaker/a headphone directly
     - **CAUTION**: Click sounds may occur when you connect the audio out to an amp or reset the board
-- We recommend [Hairless MIDI<->Serial Bridge](http://projectgus.github.io/hairless-midiserial/) to connect PC
+- We recommend [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) to connect PC
     - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
         - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthVRA8Q.ino"`
         - Even using only the power supply adapter *significantly* reduces USB noise
@@ -45,7 +45,7 @@
 - VRA8-Q CTRL converts Program Changes (#0-7 for PRESET) into Control Changes
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend Google Chrome, which implements Web MIDI API
-- We recommend [loopMIDI](http://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
+- We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 - **CAUTION**: Low CUTOFF with high RESONANCE can damage the speakers
 - **CAUTION**: Click sounds may occur when you change the control values
 
