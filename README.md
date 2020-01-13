@@ -46,8 +46,6 @@
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend Google Chrome, which implements Web MIDI API
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
-- **CAUTION**: Low CUTOFF with high RESONANCE can damage the speakers
-- **CAUTION**: Click sounds may occur when you change the control values
 
 
 ## Details of Controllers
