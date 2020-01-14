@@ -19,13 +19,10 @@
 ## Features
 
 - Sampling Rate: 31.25 kHz, Bit Depth: 8 bit, LPF Attenuation Slope: -12 dB/oct
-- Serial MIDI In (38.4 kbps), PWM Audio Out **(L/Mono: Pin D5, R: Pin D11)**, PWM Rate: 62.5 kHz
+- Serial MIDI In (38.4 kbps)
+- PWM Audio Out (**L/Mono: Pin D5**, **R: Pin D11**, Unipolar, Line Level), PWM Rate: 62.5 kHz
     - We recommend adding a RC filter circuit to reduce PWM ripples
         - A cutoff frequency 15.9 kHz (R: 100 ohm, C: 100 nF) works well
-    - **CAUTION**: The Arduino PWM audio output is a unipolar Line Out
-        - Please connect the output to a active speaker/a power amp/a headphone amp
-        - Do not connect the output to a passive speaker/a headphone directly
-    - **CAUTION**: Click sounds may occur when you connect the audio out to an amp or reset the board
 - We recommend [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) to connect PC
     - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
         - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthVRA8Q.ino"`
