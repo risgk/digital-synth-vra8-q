@@ -299,17 +299,16 @@ public:
     m_phase[2] += m_freq[2];
     m_phase[3] += m_freq[3];
 
-    int8_t wave_0 = get_wave_level(m_wave_table[0], static_cast<uint16_t>(m_phase[0] >> 8));
-    int8_t wave_1 = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[1] >> 8));
-    int8_t wave_2 = get_wave_level(m_wave_table[2], static_cast<uint16_t>(m_phase[2] >> 8));
-    int8_t wave_3 = get_wave_level(m_wave_table[3], static_cast<uint16_t>(m_phase[3] >> 8));
+    int8_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0]);
+    int8_t wave_1 = get_wave_level(m_wave_table[1], m_phase[1]);
+    int8_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
+    int8_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
 
     // amp and mix
     int16_t level_0 = wave_0 * m_mix[0];
     int16_t level_1 = wave_1 * m_mix[1];
     int16_t level_2 = wave_2 * m_mix[2];
     int16_t level_3 = wave_3 * m_mix[3];
-//  int16_t result  = level_0 * 4;
     int16_t result  = level_0 + level_1 + level_2 + level_3;
 #else
     int16_t result  = 0;
