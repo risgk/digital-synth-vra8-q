@@ -9,16 +9,17 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE / 2).floor.to_i
+  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
   freq = freq + 1 if freq.even?
+# p [note_number, freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS))]
   freq
 end
 
-$file.printf("const __uint24 g_osc_freq_table[] = {\n  ")
+$file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
   freq = freq_from_note_number(note_number)
 
-  $file.printf("0x%06X,", freq * 2)
+  $file.printf("0x%04X,", freq)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
   elsif note_number % 6 == (6 - 1)
@@ -78,7 +79,7 @@ end
 
 def last_harmonic(freq, organ = false, organ_last)
   last = (freq != 0) ? ((FREQUENCY_MAX * (1 << OSC_PHASE_RESOLUTION_BITS)) /
-                        ((freq + OSC_DETUNE_FREQ_MAX) * 2 * SAMPLING_RATE)) : 0
+                        ((freq + OSC_DETUNE_FREQ_MAX) * SAMPLING_RATE)) : 0
   last = organ_last if organ && last > organ_last
   last = [last, 127].min
   if REDUCE_OSC_TABLE_SIZE_1 == true

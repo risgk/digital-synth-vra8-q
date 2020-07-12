@@ -63,10 +63,10 @@ public:
 
     set_on_note(note_number);
     m_last_note_number = note_number;
-    IOsc<0>::note_on<0>(m_last_note_number + 12);
-    IOsc<0>::note_on<1>(m_last_note_number + 19);
-    IOsc<0>::note_on<2>(m_last_note_number + 0 );
-    IOsc<0>::note_on<3>(m_last_note_number + 7 );
+    IOsc<0>::note_on<0>(m_last_note_number - 0);
+    IOsc<0>::note_on<1>(m_last_note_number - 5);
+    IOsc<0>::note_on<2>(m_last_note_number - 12);
+    IOsc<0>::note_on<3>(m_last_note_number - 19);
   }
 
   INLINE

@@ -11,7 +11,7 @@
 
 ## Caution about Arduino
 
-- We *strongly recommend* Arduino IDE 1.8.13 (more precisely **Arduino AVR Boards core 1.8.3**)
+- We *strongly recommend* **Arduino AVR Boards core 1.8.3**
     - If you use other than AVR Boards core 1.8.1 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
 

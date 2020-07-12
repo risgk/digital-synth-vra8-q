@@ -40,9 +40,9 @@ class Osc {
   static uint16_t       m_pitch_real[4];
   static const uint8_t* m_wave_table[4];
   static const uint8_t* m_wave_table_temp[4];
-  static __uint24       m_freq[4];
-  static __uint24       m_freq_temp[4];
-  static __uint24       m_phase[4];
+  static uint16_t       m_freq[4];
+  static uint16_t       m_freq_temp[4];
+  static uint16_t       m_phase[4];
   static boolean        m_note_on[4];
   static boolean        m_pitch_eg_target_both;
   static int16_t        m_pitch_eg_amt;
@@ -309,6 +309,7 @@ public:
     int16_t level_1 = wave_1 * m_mix[1];
     int16_t level_2 = wave_2 * m_mix[2];
     int16_t level_3 = wave_3 * m_mix[3];
+//  int16_t result  = level_0 * 4;
     int16_t result  = level_0 + level_1 + level_2 + level_3;
 #else
     int16_t result  = 0;
@@ -541,9 +542,9 @@ template <uint8_t T> uint16_t        Osc<T>::m_pitch_current[4];
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_real[4];
 template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table[4];
 template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table_temp[4];
-template <uint8_t T> __uint24        Osc<T>::m_freq[4];
-template <uint8_t T> __uint24        Osc<T>::m_freq_temp[4];
-template <uint8_t T> __uint24        Osc<T>::m_phase[4];
+template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
+template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
+template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
 template <uint8_t T> boolean         Osc<T>::m_note_on[4];
 template <uint8_t T> boolean         Osc<T>::m_pitch_eg_target_both;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_eg_amt;
