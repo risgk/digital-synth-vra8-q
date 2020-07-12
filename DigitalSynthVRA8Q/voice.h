@@ -72,10 +72,8 @@ public:
   INLINE
   static void note_off(uint8_t note_number) {
     clear_on_note(note_number);
-    if (m_key_assign == KEY_ASSIGN_LAST) {
-      if (m_last_note_number == note_number) {
-        all_note_off();
-      }
+    if (m_last_note_number == note_number) {
+      all_note_off();
     }
   }
 
