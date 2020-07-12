@@ -18,7 +18,7 @@ $file.printf("const __uint24 g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
   freq = freq_from_note_number(note_number)
 
-  $file.printf("0x%06X,", freq)
+  $file.printf("0x%06X,", freq * 2)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
   elsif note_number % 6 == (6 - 1)

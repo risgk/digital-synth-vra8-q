@@ -15,7 +15,6 @@
 #define TRANSPOSE (0)    // Min: -24, Max: +24
 
 //#define ENABLE_SPECIAL_PROGRAM_CHANGE    // Program Change by Control Change (112-119, 90)
-#define ENABLE_OSCILLATOR_2
 
 
 
