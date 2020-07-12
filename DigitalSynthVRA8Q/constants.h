@@ -119,9 +119,11 @@ const uint8_t   SP_PROG_CHG_7   = 119;
 const uint8_t   SP_RAND_CTRL    = 90;
 
 const uint8_t   OSC_WAVEFORM_SAW   = 0;
+const uint8_t   OSC_WAVEFORM_NOISE = 64;
 const uint8_t   OSC_WAVEFORM_SQ    = 127;
 
 const uint8_t   SUB_WAVEFORM_SIN   = 0;
+const uint8_t   SUB_WAVEFORM_NOISE = 64;
 const uint8_t   SUB_WAVEFORM_SQ    = 127;
 
 const uint8_t   LFO_WAVEFORM_TRI_ASYNC = 0;

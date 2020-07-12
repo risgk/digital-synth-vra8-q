@@ -13,6 +13,8 @@ class Osc {
   static const uint8_t LFO_FADE_COEF_ON_MIN = 2;
   static const uint8_t LFO_FADE_LEVEL_MAX   = 128;
 
+  static const uint8_t FLUCTUATION_INIT = 32;
+
   static int8_t         m_mix_target;
   static int8_t         m_mix_current;
   static uint8_t        m_mix_0;
@@ -20,6 +22,7 @@ class Osc {
   static uint8_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   static int8_t         m_pitch_offset_1;
   static int8_t         m_detune;
+  static uint8_t        m_fluctuation;
   static uint8_t        m_portamento_coef;
   static int16_t        m_lfo_mod_level[2];
   static uint16_t       m_lfo_phase;
@@ -51,6 +54,10 @@ class Osc {
   static __uint24       m_freq_temp[2];
   static __uint24       m_phase[2];
   static uint8_t        m_rnd_cnt;
+  static uint16_t       m_rnd_temp;
+  static uint8_t        m_rnd;
+  static uint8_t        m_rnd_prev;
+  static uint8_t        m_red_noise;
   static boolean        m_note_on[2];
   static boolean        m_pitch_eg_target_both;
   static int16_t        m_pitch_eg_amt;
@@ -69,6 +76,7 @@ public:
     set_osc_mix(0);
     m_pitch_offset_1 = 0;
     m_detune = 0;
+    m_fluctuation = FLUCTUATION_INIT;
     m_portamento_coef = 0;
     m_lfo_mod_level[0] = 0;
     m_lfo_mod_level[1] = 0;
@@ -108,6 +116,10 @@ public:
     m_phase[0] = 0;
     m_phase[1] = 0;
     m_rnd_cnt = 0;
+    m_rnd_temp = 1;
+    m_rnd = 0;
+    m_rnd_prev = 0;
+    m_red_noise = 0;
     m_note_on[0] = false;
     m_note_on[1] = false;
     m_pitch_eg_target_both = true;
@@ -149,8 +161,20 @@ public:
   }
 
   INLINE static void set_osc_waveforms(uint8_t controller_value) {
-    if (controller_value < 64) {
+    if (controller_value < 16) {
       set_osc_waveform<0>(OSC_WAVEFORM_SAW);
+      set_osc_waveform<1>(OSC_WAVEFORM_SAW);
+    } else if (controller_value < 40) {
+      set_osc_waveform<0>(OSC_WAVEFORM_SAW);
+      set_osc_waveform<1>(OSC_WAVEFORM_SQ);
+    } else if (controller_value < 64) {
+      set_osc_waveform<0>(OSC_WAVEFORM_SAW);
+      set_osc_waveform<1>(OSC_WAVEFORM_NOISE);
+    } else if (controller_value < 88) {
+      set_osc_waveform<0>(OSC_WAVEFORM_SQ);
+      set_osc_waveform<1>(OSC_WAVEFORM_NOISE);
+    } else if (controller_value < 112) {
+      set_osc_waveform<0>(OSC_WAVEFORM_SQ);
       set_osc_waveform<1>(OSC_WAVEFORM_SAW);
     } else {
       set_osc_waveform<0>(OSC_WAVEFORM_SQ);
@@ -160,8 +184,10 @@ public:
 
   template <uint8_t N>
   INLINE static void set_osc_waveform(uint8_t controller_value) {
-    if (controller_value < 64) {
+    if (controller_value < 32) {
       m_waveform[N] = OSC_WAVEFORM_SAW;
+    } else if (controller_value < 96) {
+      m_waveform[N] = OSC_WAVEFORM_NOISE;
     } else {
       m_waveform[N] = OSC_WAVEFORM_SQ;
     }
@@ -299,6 +325,14 @@ public:
     update_pitch_bend();
   }
 
+  INLINE static uint8_t get_white_noise_7() {
+    return m_rnd;
+  }
+
+  INLINE static uint8_t get_red_noise_8() {
+    return m_red_noise;
+  }
+
   INLINE static int16_t get_lfo_level() {
     return m_lfo_level;
   }
@@ -334,6 +368,8 @@ public:
       case (0x5 << OSC_CONTROL_INTERVAL_BITS):
         ++m_rnd_cnt;
         if ((m_rnd_cnt & 0x07) == 0x00) {
+          update_rnd_1st();
+          update_rnd_2nd();
         } else if ((m_rnd_cnt & 0x07) == 0x04) {
         } else if ((m_rnd_cnt & 0x03) == 0x01) {
           update_mix_1st();
@@ -366,6 +402,8 @@ public:
 #endif
       case (0xD << OSC_CONTROL_INTERVAL_BITS):
         if ((m_rnd_cnt & 0x07) == 0x00) {
+          update_rnd_1st();
+          update_rnd_2nd();
         } else if ((m_rnd_cnt & 0x07) == 0x04) {
         } else if ((m_rnd_cnt & 0x01) == 0x01) {
         }
@@ -389,7 +427,11 @@ public:
     int8_t wave_0_main   = get_wave_level(m_wave_table[0], static_cast<uint16_t>(m_phase[0] >> 8) << 1);
     int8_t wave_0_detune = 0;
 #if defined(ENABLE_OSCILLATOR_2)
-    wave_0_detune = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[1] >> 8) << 1);
+    if (m_waveform[1] == OSC_WAVEFORM_NOISE) {
+      wave_0_detune = lfsr_noise<0>();
+    } else {
+      wave_0_detune = get_wave_level(m_wave_table[1], static_cast<uint16_t>(m_phase[1] >> 8) << 1);
+    }
 #endif
 
     // amp and mix
@@ -408,7 +450,7 @@ private:
     const uint8_t* result;
     if (waveform == OSC_WAVEFORM_SAW) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
-    } else {     // OSC_WAVEFORM_SQ
+    } else {     // OSC_WAVEFORM_SQ (OSC_WAVEFORM_NOISE)
       result = g_osc_sq_wave_tables[note_number - NOTE_NUMBER_MIN];
     }
     return result;
@@ -424,6 +466,18 @@ private:
     // lerp
     int8_t result = curr_data + high_sbyte(static_cast<int8_t>(next_data - curr_data) * next_weight);
 
+    return result;
+  }
+
+  template <uint8_t N>
+  INLINE static int8_t lfsr_noise() {
+    int8_t result = -(OSC_WAVE_TABLE_AMPLITUDE >> 1);
+    uint8_t lsb = m_lfsr[N] & 0x000001u;
+    m_lfsr[N] >>= 1;
+    m_lfsr[N] ^= (-lsb) & 0xE10000u;
+    if (lsb) {
+      result = +(OSC_WAVE_TABLE_AMPLITUDE >> 1);
+    }
     return result;
   }
 
@@ -451,6 +505,9 @@ private:
       }
       break;
     case LFO_WAVEFORM_RANDOM:
+      if (phase < m_lfo_rate_actual) {
+        m_lfo_sampled = get_white_noise_7();
+      }
       level = m_lfo_sampled - 64;
       break;
     case LFO_WAVEFORM_SQ:
@@ -487,6 +544,8 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_1st(uint8_t eg_level) {
+    m_pitch_real[N] += (64 << 8) + high_sbyte((m_fluctuation >> 2) * static_cast<int8_t>(get_red_noise_8() - 127));
+
     int16_t pitch_eg_mod_level = 0;
     if ((N == 1) || m_pitch_eg_target_both) {
       pitch_eg_mod_level = mul_q15_q8(m_pitch_eg_amt, eg_level);
@@ -535,6 +594,18 @@ private:
     int16_t freq_offset = (freq_div_512 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + (N << 1);
     m_freq[N] = m_freq_temp[N] + freq_offset;
     m_wave_table[N] = m_wave_table_temp[N];
+  }
+
+  INLINE static void update_rnd_1st() {
+    m_rnd_temp = m_rnd_temp ^ (m_rnd_temp << 5);
+    m_rnd_temp = m_rnd_temp ^ (m_rnd_temp >> 9);
+  }
+
+  INLINE static void update_rnd_2nd() {
+    m_rnd_temp = m_rnd_temp ^ (m_rnd_temp << 8);
+    m_rnd_prev = m_rnd;
+    m_rnd = low_byte(m_rnd_temp) >> 1;
+    m_red_noise = m_rnd_prev + m_rnd;
   }
 
   INLINE static void update_lfo_1st(uint8_t eg_level) {
@@ -620,6 +691,7 @@ template <uint8_t T> uint8_t         Osc<T>::m_mix_1;
 template <uint8_t T> uint8_t         Osc<T>::m_mix_table[OSC_MIX_TABLE_LENGTH];
 template <uint8_t T> int8_t          Osc<T>::m_pitch_offset_1;
 template <uint8_t T> int8_t          Osc<T>::m_detune;
+template <uint8_t T> uint8_t         Osc<T>::m_fluctuation;
 template <uint8_t T> uint8_t         Osc<T>::m_portamento_coef;
 template <uint8_t T> int16_t         Osc<T>::m_lfo_mod_level[2];
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_phase;
@@ -651,6 +723,10 @@ template <uint8_t T> __uint24        Osc<T>::m_freq[2];
 template <uint8_t T> __uint24        Osc<T>::m_freq_temp[2];
 template <uint8_t T> __uint24        Osc<T>::m_phase[2];
 template <uint8_t T> uint8_t         Osc<T>::m_rnd_cnt;
+template <uint8_t T> uint16_t        Osc<T>::m_rnd_temp;
+template <uint8_t T> uint8_t         Osc<T>::m_rnd;
+template <uint8_t T> uint8_t         Osc<T>::m_rnd_prev;
+template <uint8_t T> uint8_t         Osc<T>::m_red_noise;
 template <uint8_t T> boolean         Osc<T>::m_note_on[2];
 template <uint8_t T> boolean         Osc<T>::m_pitch_eg_target_both;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_eg_amt;
