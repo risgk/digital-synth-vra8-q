@@ -187,10 +187,8 @@ public:
       break;
 
     case OSC2_COARSE    :
-      IOsc<0>::set_pitch_offset_1(controller_value);
       break;
     case OSC2_FINE      :
-      IOsc<0>::set_detune(controller_value);
       break;
     case PORTAMENTO     :
       m_portamento = controller_value;
