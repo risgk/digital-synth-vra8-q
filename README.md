@@ -20,7 +20,7 @@
 
 - Sampling Rate: 31.25 kHz, Bit Depth: 8 bit, LPF Attenuation Slope: -12 dB/oct
 - Serial MIDI In (38.4 kbps)
-- PWM Audio Out: **L/Mono: Pin D5** or D6, **R: Pin D11** (Unipolar, Line Level), PWM Rate: 62.5 kHz
+- PWM Audio Out (Unipolar, Line Level) **L/Mono**: **Pin D5** (or D6), **R**: **Pin D11**, PWM Rate: 62.5 kHz
     - We recommend adding a RC filter circuit to reduce PWM ripples
         - A cutoff frequency 15.9 kHz (R: 100 ohm, C: 100 nF) works well
     - TODO
