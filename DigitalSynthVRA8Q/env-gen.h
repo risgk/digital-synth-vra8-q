@@ -106,7 +106,7 @@ public:
 
   INLINE static uint8_t clock(uint8_t count) {
 #if 1
-    if ((count & (ENV_GEN_CONTROL_INTERVAL - 1)) == ((T == 0) ? 2 : 10)) {
+    if ((count & (ENV_GEN_CONTROL_INTERVAL - 1)) == ((T == 0) ? 1 : 9)) {
       switch (m_state) {
       case STATE_ATTACK:
         --m_rest;

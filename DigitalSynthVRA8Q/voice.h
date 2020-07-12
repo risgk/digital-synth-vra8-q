@@ -50,53 +50,23 @@ public:
 
   INLINE
   static void note_on(uint8_t note_number, uint8_t velocity) {
-    if (m_legato_portamento) {
-      if (m_last_note_number != NOTE_NUMBER_INVALID) {
-        IOsc<0>::set_portamento(m_portamento);
-      } else {
-        IOsc<0>::set_portamento(0);
-        IOsc<0>::trigger_lfo();
-        IEnvGen<0>::note_on();
-        IEnvGen<1>::note_on();
-        if (m_exp_by_vel) {
-          IFilter<0>::set_expression(velocity);
-          IEnvGen<1>::set_expression(velocity);
-        }
-      }
-    } else {
-      IOsc<0>::set_portamento(m_portamento);
-      if ((m_key_assign == KEY_ASSIGN_LAST) || (m_last_note_number == NOTE_NUMBER_INVALID)) {
-        IOsc<0>::trigger_lfo();
-        IEnvGen<0>::note_on();
-        IEnvGen<1>::note_on();
-        if (m_exp_by_vel) {
-          IFilter<0>::set_expression(velocity);
-          IEnvGen<1>::set_expression(velocity);
-        }
+    IOsc<0>::set_portamento(0);
+    {
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+      if (m_exp_by_vel) {
+        IFilter<0>::set_expression(velocity);
+        IEnvGen<1>::set_expression(velocity);
       }
     }
 
     set_on_note(note_number);
-    if (m_key_assign == KEY_ASSIGN_LAST) {
-      m_last_note_number = note_number;
-      IOsc<0>::note_on<0>(m_last_note_number);
-      IOsc<0>::note_on<1>(m_last_note_number);
-    } else {
-      if (m_key_assign == KEY_ASSIGN_DUO) {
-        m_last_note_number = get_lowest_on_note();
-        IOsc<0>::note_on<0>(m_last_note_number);
-        IOsc<0>::note_on<1>(get_highest_on_note());
-      } else {
-        if (m_key_assign == KEY_ASSIGN_HIGH) {
-          m_last_note_number = get_highest_on_note();
-        } else {
-          m_last_note_number = get_lowest_on_note();
-        }
-
-        IOsc<0>::note_on<0>(m_last_note_number);
-        IOsc<0>::note_on<1>(m_last_note_number);
-      }
-    }
+    m_last_note_number = note_number;
+    IOsc<0>::note_on<0>(m_last_note_number + 12);
+    IOsc<0>::note_on<1>(m_last_note_number + 19);
+    IOsc<0>::note_on<2>(m_last_note_number + 0 );
+    IOsc<0>::note_on<3>(m_last_note_number + 7 );
   }
 
   INLINE
@@ -105,45 +75,6 @@ public:
     if (m_key_assign == KEY_ASSIGN_LAST) {
       if (m_last_note_number == note_number) {
         all_note_off();
-      }
-    } else {
-      uint8_t active_on_note = 0;
-      if (m_key_assign == KEY_ASSIGN_HIGH) {
-        active_on_note = get_highest_on_note();
-      } else {
-        active_on_note = get_lowest_on_note();
-      }
-
-      if (active_on_note == NOTE_NUMBER_INVALID) {
-        all_note_off();
-      } else {
-        if (m_legato_portamento) {
-          if (m_last_note_number != NOTE_NUMBER_INVALID) {
-            IOsc<0>::set_portamento(m_portamento);
-          } else {
-            IOsc<0>::set_portamento(0);
-            IOsc<0>::trigger_lfo();
-            IEnvGen<0>::note_on();
-            IEnvGen<1>::note_on();
-          }
-        } else {
-          IOsc<0>::set_portamento(m_portamento);
-          if (m_last_note_number == NOTE_NUMBER_INVALID) {
-            IOsc<0>::trigger_lfo();
-            IEnvGen<0>::note_on();
-            IEnvGen<1>::note_on();
-          }
-        }
-
-        if (m_key_assign == KEY_ASSIGN_DUO) {
-          m_last_note_number = active_on_note;
-          IOsc<0>::note_on<0>(m_last_note_number);
-          IOsc<0>::note_on<1>(get_highest_on_note());
-        } else {
-          m_last_note_number = active_on_note;
-          IOsc<0>::note_on<0>(m_last_note_number);
-          IOsc<0>::note_on<1>(m_last_note_number);
-        }
       }
     }
   }

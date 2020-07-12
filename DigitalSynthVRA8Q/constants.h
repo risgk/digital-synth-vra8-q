@@ -13,7 +13,7 @@ const uint8_t   NOTE_NUMBER_INVALID = 255;
 const uint8_t   PROGRAM_NUMBER_MAX            = 7;
 const uint8_t   PROGRAM_NUMBER_RANDOM_CONTROL = 127;
 
-const uint8_t   OSC_CONTROL_INTERVAL_BITS    = 2;
+const uint8_t   OSC_CONTROL_INTERVAL_BITS    = 1;
 const uint8_t   OSC_CONTROL_INTERVAL         = 0x01 << OSC_CONTROL_INTERVAL_BITS;
 const uint8_t   OSC_PHASE_RESOLUTION_BITS    = 24;
 const uint8_t   OSC_TUNE_TABLE_STEPS_BITS    = 8;
