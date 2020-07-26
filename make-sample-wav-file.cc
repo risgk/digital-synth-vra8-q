@@ -29,7 +29,7 @@ inline uint32_t pgm_read_dword(const void* addr) {
 
 #include "./DigitalSynthVRA8Q/common.h"
 #include "./DigitalSynthVRA8Q/synth.h"
-#include "./DigitalSynthVRA8Q/wav-file-out.h"
+#include "./wav-file-out.h"
 
 const uint16_t RECORDING_SEC = 60;
 const uint16_t SERIAL_SPEED_38400 = 38400;
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     uint16_t r = SAMPLING_RATE / (SERIAL_SPEED_38400 / 10);
     for (uint16_t i = 0; i < r; i++) {
       uint8_t level = Synth<0>::clock();
-      WAVFileOut<0>::write(level);
+      WAVFileOut<0>::write(level, level);
     }
   }
 

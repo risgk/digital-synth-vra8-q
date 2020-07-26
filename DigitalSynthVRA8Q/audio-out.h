@@ -42,9 +42,9 @@ public:
     m_busyContinuousCont = 0;
   }
 
-  INLINE static void write(int8_t level) {
-    uint8_t leftMono = 0x7F - level;
-    uint8_t right    = 0x7F - level;
+  INLINE static void write(int8_t left, int8_t right) {
+    uint8_t l = 0x7F - left;
+    uint8_t r = 0x7F - right;
 
 #if defined(DEBUG)
     // Output Elapsed Time as Channel Pressure (of Channel 16)
@@ -72,11 +72,11 @@ public:
     TIFR1 = _BV(TOV1);
 
 #if (L_MONO_AUDIO_OUT_PIN == 5)
-    OCR0B = leftMono;
-    OCR2A = right;
+    OCR0B = l;
+    OCR2A = r;
 #elif (L_MONO_AUDIO_OUT_PIN == 6)
-    OCR0A = leftMono;
-    OCR2A = right;
+    OCR0A = l;
+    OCR2A = r;
 #endif
 
     if (m_busyContinuousCont >= 4) {

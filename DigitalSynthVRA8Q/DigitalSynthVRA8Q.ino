@@ -36,6 +36,6 @@ void loop() {
       Synth<0>::receive_midi_byte(b);
     }
     int8_t level = Synth<0>::clock();
-    AudioOut<0>::write(level);
+    AudioOut<0>::write(level, level);
   }
 }
