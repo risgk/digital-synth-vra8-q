@@ -121,7 +121,7 @@ generate_osc_wave_table("sin", 1, ((8.0 * 127.0) / (6.0 * 128.0))) do |n, k|
 end
 
 def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
-  $file.printf("const uint8_t* g_osc_#{name}_wave_tables[] = {\n  ")
+  $file.printf("const uint8_t* const g_osc_#{name}_wave_tables[] PROGMEM = {\n  ")
   $osc_harmonics_restriction_table.each_with_index do |freq, idx|
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX

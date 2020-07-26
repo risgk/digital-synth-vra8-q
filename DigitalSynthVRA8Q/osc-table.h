@@ -878,7 +878,7 @@ const uint8_t g_osc_sin_wave_table_h1[] PROGMEM = {
   0xFF,
 };
 
-const uint8_t* g_osc_saw_wave_tables[] = {
+const uint8_t* const g_osc_saw_wave_tables[] PROGMEM = {
   g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127,
   g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127,
   g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127, g_osc_saw_wave_table_h127,
@@ -921,7 +921,7 @@ const uint8_t* g_osc_saw_wave_tables[] = {
   g_osc_saw_wave_table_h1  , g_osc_saw_wave_table_h1  , g_osc_saw_wave_table_h1  ,
   g_osc_saw_wave_table_h1  , };
 
-const uint8_t* g_osc_sq_wave_tables[] = {
+const uint8_t* const g_osc_sq_wave_tables[] PROGMEM = {
   g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127,
   g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127,
   g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127, g_osc_sq_wave_table_h127,
