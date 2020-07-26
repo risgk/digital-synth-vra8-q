@@ -7,7 +7,7 @@
 #define SERIAL_SPEED (38400)    // For Serial MIDI
 //#define SERIAL_SPEED (31250)    // For MIDI Shield (MIDI Breakout)
 
-#define L_MONO_AUDIO_OUT_PIN (5)    // Pin D5 or D6
+#define L_MONO_AUDIO_OUT_PIN (5)    // Pin D5 (or D6)
 #define R_AUDIO_OUT_PIN      (11)   // Pin D11 (Fixed)
 #define CPU_BUSY_LED_OUT_PIN (13)   // Pin D13 (Fixed)
 
@@ -26,7 +26,7 @@ void setup() {
   noInterrupts();
   Synth<0>::initialize();
   SerialIn<0>::open(SERIAL_SPEED);
-  AudioOut<0>::open();    // D6 (or D5)
+  AudioOut<0>::open();
 }
 
 void loop() {

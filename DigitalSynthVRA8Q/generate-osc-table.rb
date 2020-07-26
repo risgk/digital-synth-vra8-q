@@ -1,7 +1,5 @@
 require_relative 'constants'
 
-REDUCE_OSC_TABLE_SIZE_1 = true
-
 $file = File.open("osc-table.h", "w")
 
 $file.printf("#pragma once\n\n")
@@ -73,7 +71,7 @@ end
 $osc_harmonics_restriction_table = []
 
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(((note_number + 2) / 3) * 3 + 1)
+  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)
   $osc_harmonics_restriction_table << freq
 end
 
@@ -82,12 +80,6 @@ def last_harmonic(freq, organ = false, organ_last)
                         ((freq + OSC_DETUNE_FREQ_MAX) * SAMPLING_RATE)) : 0
   last = organ_last if organ && last > organ_last
   last = [last, 127].min
-  if REDUCE_OSC_TABLE_SIZE_1 == true
-    last = 7 if last == 8
-    last = 5 if last == 6
-    last = 3 if last == 4
-    last = 1 if last == 2
-  end
   last
 end
 
@@ -126,7 +118,7 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
       $file.printf("\n")
-    elsif (idx + 3) % 3 == (3 - 1)
+    elsif (idx + 4) % 4 == (4 - 1)
       $file.printf("\n  ")
     else
       $file.printf(" ")

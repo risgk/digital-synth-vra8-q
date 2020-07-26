@@ -4,7 +4,7 @@ A4_PITCH = 440.0
 
 MIDI_CH             = 0
 SAMPLING_RATE       = 31250
-FREQUENCY_MAX       = 15624
+FREQUENCY_MAX       = 15000
 BIT_DEPTH           = 8
 NOTE_NUMBER_MIN     = 24
 NOTE_NUMBER_MAX     = 96
