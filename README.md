@@ -21,9 +21,9 @@
 - Sampling Rate: 31.25 kHz, Bit Depth: 8 bit, LPF Attenuation Slope: -12 dB/oct
 - Serial MIDI In (38.4 kbps)
 - PWM Audio Out (Unipolar, Line Level) **L/Mono**: **Pin D5** (or D6), **R**: **Pin D11**, PWM Rate: 62.5 kHz
-    - We recommend adding a RC filter circuit to reduce PWM ripples
-        - A cutoff frequency 15.9 kHz (R: 100 ohm, C: 100 nF) works well
-    - TODO
+    - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
+        - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
+        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
 - We recommend [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) to connect PC
     - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
         - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthVRA8Q.ino"`
