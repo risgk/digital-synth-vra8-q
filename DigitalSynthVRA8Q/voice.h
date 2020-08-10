@@ -156,7 +156,6 @@ public:
       break;
 
     case LFO_WAVE       :
-      IOsc<0>::set_lfo_waveform(controller_value);
       break;
 
     case SUB_WAVE       :
@@ -220,7 +219,6 @@ public:
       break;
 
     case LFO_FADE_TIME  :
-      IOsc<0>::set_lfo_fade_time(controller_value);
       break;
     case EXP_TO_CUTOFF  :
       IFilter<0>::set_cutoff_exp_amt(controller_value);

@@ -4,6 +4,7 @@
 #include "osc-table.h"
 #include "mul-q.h"
 #include <math.h>
+#include <stdio.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH = 31;
 
@@ -30,6 +31,8 @@ class Osc {
   static uint8_t        m_lfo_waveform;
   static uint8_t        m_lfo_sampled;
 
+  static uint16_t       m_lfo1_phase;
+  static uint16_t       m_lfo1_rate_actual;
   static int16_t        m_lfo1_level;
 
   static uint8_t        m_waveform;
@@ -55,6 +58,7 @@ public:
     m_mix[2] = 0;
     m_mix[3] = 0;
     m_portamento_coef = 0;
+
     m_lfo_mod_level = 0;
     m_lfo_phase = 0;
     m_lfo_wave_level = 0;
@@ -67,9 +71,14 @@ public:
     m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
     m_lfo_depth[0] = 0;
     m_lfo_depth[1] = 0;
-    m_waveform = OSC_WAVEFORM_SAW;
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
+
+    m_lfo1_phase = 0;
+    m_lfo1_rate_actual = 32;
+    m_lfo1_level = 0;
+
+    m_waveform = OSC_WAVEFORM_SAW;
     m_pitch_bend_normalized = 0;
     m_pitch_target[0] = NOTE_NUMBER_MIN << 8;
     m_pitch_target[1] = NOTE_NUMBER_MIN << 8;
@@ -256,16 +265,16 @@ public:
       case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
       case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<2>();               break;
       case (0x15 << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_1st();                  break;
-      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_2nd();                  break;
+      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_lfo1();                      break;
+      case (0x17 << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();               break;
       case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>(eg_level);       break;
       case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
       case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();               break;
       case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<3>();               break;
       case (0x1D << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_lfo1_3rd();                  break;
-      case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_lfo1_4th();                  break;
+      case (0x1E << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x1F << OSC_CONTROL_INTERVAL_BITS):                                     break;
       }
     }
 #endif
@@ -429,6 +438,8 @@ private:
     m_wave_table[N] = m_wave_table_temp[N];
   }
 
+
+
   INLINE static void update_lfo_1st(uint8_t eg_level) {
     int8_t lfo_rate_mod = high_sbyte(m_lfo_rate_eg_amt * eg_level);
     int16_t lfo_rate = m_lfo_rate + lfo_rate_mod + lfo_rate_mod;
@@ -476,17 +487,26 @@ private:
     m_lfo_mod_level = -mul_q15_q7(m_lfo_level, m_pitch_lfo_amt);
   }
 
-  INLINE static void update_lfo1_1st() {
+
+
+  INLINE static void update_lfo1() {
+    m_lfo1_phase += m_lfo1_rate_actual;
+    m_lfo_level = get_lfo1_wave_level(m_lfo1_phase >> 5);
+    printf("%d %d\n",m_lfo1_phase >> 5, m_lfo_level);
   }
 
-  INLINE static void update_lfo1_2nd() {
+  INLINE static int16_t get_lfo1_wave_level(uint16_t phase) {
+    int16_t level = 0;
+
+    if (phase < 0x0400) {
+      level = phase - 512;
+    } else {
+      level = 1024 + 511 - phase;
+    }
+
+    return level;
   }
 
-  INLINE static void update_lfo1_3rd() {
-  }
-
-  INLINE static void update_lfo1_4th() {
-  }
 
   INLINE static void update_pitch_bend() {
     int16_t b = m_pitch_bend + 1;
@@ -523,6 +543,8 @@ template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_cnt;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_level;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
 
+template <uint8_t T> uint16_t        Osc<T>::m_lfo1_phase;
+template <uint8_t T> uint16_t        Osc<T>::m_lfo1_rate_actual;
 template <uint8_t T> int16_t         Osc<T>::m_lfo1_level;
 
 template <uint8_t T> int8_t          Osc<T>::m_pitch_lfo_amt;
