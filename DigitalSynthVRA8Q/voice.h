@@ -209,21 +209,11 @@ public:
       update_decay_release();
       break;
     case LFO_TO_P_TGT   :
-      if (controller_value < 64) {
-        IOsc<0>::set_lfo_target_both(true);
-      } else {
-        IOsc<0>::set_lfo_target_both(false);
-      }
       break;
     case EG_TO_PITCH    :
       IOsc<0>::set_pitch_eg_amt(controller_value);
       break;
     case EG_TO_P_TGT    :
-      if (controller_value < 64) {
-        IOsc<0>::set_pitch_eg_target_both(true);
-      } else {
-        IOsc<0>::set_pitch_eg_target_both(false);
-      }
       break;
     case EG_TO_LFO_RATE :
       IOsc<0>::set_lfo_rate_eg_amt(controller_value);
