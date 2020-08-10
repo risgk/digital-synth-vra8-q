@@ -9,6 +9,7 @@
 #define IFilter     Filter
 #define IAmp        Amp
 #define IEnvGen     NewEnvGen
+#define IDelayFx    DelayFx
 #define IVoice      Voice
 #define ISynthCore  SynthCore
 
@@ -16,6 +17,7 @@
 #include "filter.h"
 #include "amp.h"
 #include "env-gen.h"
+#include "delay-fx.h"
 #include "voice.h"
 #include "synth-core.h"
 

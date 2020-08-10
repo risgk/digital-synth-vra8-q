@@ -1,3 +1,5 @@
+#pragma once
+
 #include "common.h"
 #include "program-table.h"
 
@@ -38,6 +40,7 @@ public:
     IAmp<0>::initialize();
     IEnvGen<0>::initialize();
     IEnvGen<1>::initialize();
+    IDelayFx<0>::initialize();
     m_attack = 0;
     m_decay = 0;
     m_sustain = 127;
@@ -413,9 +416,11 @@ public:
     int16_t output = amp_output + m_output_error;
     m_output_error = low_byte(output);
 
-    int8_t left_level = high_sbyte(output);
-    right_level = high_sbyte(output);
-    return left_level;
+    int8_t direct = high_sbyte(output);
+    int8_t delay = IDelayFx<0>::clock(direct);
+
+    right_level = direct;
+    return delay;
   }
 
 private:
