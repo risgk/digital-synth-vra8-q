@@ -404,11 +404,12 @@ public:
     int16_t output = amp_output + m_output_error;
     m_output_error = low_byte(output);
 
-    int8_t direct = high_sbyte(output);
-    int8_t delay = IDelayFx<0>::clock(direct);
+    int8_t dir_sample = high_sbyte(output);
+    IDelayFx<0>::push(dir_sample);
+    int8_t eff_sample = IDelayFx<0>::get(IOsc<0>::get_lfo1_level() + 512);
 
-    right_level = direct;
-    return delay;
+    right_level = dir_sample;
+    return eff_sample;
   }
 
 private:
