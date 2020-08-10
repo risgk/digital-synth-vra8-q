@@ -35,7 +35,8 @@ void loop() {
       uint8_t b = SerialIn<0>::read();
       Synth<0>::receive_midi_byte(b);
     }
-    int8_t level = Synth<0>::clock();
-    AudioOut<0>::write(level, level);
+    int8_t right_level;
+    int8_t left_level = Synth<0>::clock(right_level);
+    AudioOut<0>::write(left_level, right_level);
   }
 }

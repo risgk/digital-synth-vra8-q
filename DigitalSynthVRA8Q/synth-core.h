@@ -106,8 +106,8 @@ public:
     IVoice<0>::program_change(program_number);
   }
 
-  INLINE static int8_t clock() {
-    return IVoice<0>::clock();
+  INLINE static int8_t clock(int8_t& right_level) {
+    return IVoice<0>::clock(right_level);
   }
 
 private:

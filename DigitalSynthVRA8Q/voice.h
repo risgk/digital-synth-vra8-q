@@ -63,10 +63,10 @@ public:
 
     set_on_note(note_number);
     m_last_note_number = note_number;
-    IOsc<0>::note_on<0>(m_last_note_number - 0);
-    IOsc<0>::note_on<1>(m_last_note_number - 5);
-    IOsc<0>::note_on<2>(m_last_note_number - 12);
-    IOsc<0>::note_on<3>(m_last_note_number - 19);
+    IOsc<0>::note_on<0>(m_last_note_number + 0);
+    IOsc<0>::note_on<1>(m_last_note_number + 5);
+    IOsc<0>::note_on<2>(m_last_note_number + 7);
+    IOsc<0>::note_on<3>(m_last_note_number + 12);
   }
 
   INLINE
@@ -401,7 +401,7 @@ public:
     }
   }
 
-  INLINE static int8_t clock() {
+  INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
@@ -414,7 +414,10 @@ public:
     // error diffusion
     int16_t output = amp_output + m_output_error;
     m_output_error = low_byte(output);
-    return high_sbyte(output);
+
+    int8_t left_level = high_sbyte(output);
+    right_level = high_sbyte(output);
+    return left_level;
   }
 
 private:

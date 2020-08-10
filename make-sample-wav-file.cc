@@ -48,8 +48,9 @@ int main(int argc, char *argv[]) {
     Synth<0>::receive_midi_byte(c);
     uint16_t r = SAMPLING_RATE / (SERIAL_SPEED_38400 / 10);
     for (uint16_t i = 0; i < r; i++) {
-      uint8_t level = Synth<0>::clock();
-      WAVFileOut<0>::write(level, level);
+      int8_t right_level;
+      int8_t left_level = Synth<0>::clock(right_level);
+      WAVFileOut<0>::write(left_level, right_level);
     }
   }
 

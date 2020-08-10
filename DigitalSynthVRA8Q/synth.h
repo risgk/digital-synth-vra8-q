@@ -31,7 +31,7 @@ public:
     ISynthCore<0>::receive_midi_byte(b);
   }
 
-  INLINE static int8_t clock() {
-    return ISynthCore<0>::clock();
+  INLINE static int8_t clock(int8_t& right_level) {
+    return ISynthCore<0>::clock(right_level);
   }
 };
