@@ -4,6 +4,7 @@
 #include "osc-table.h"
 #include "mul-q.h"
 #include <math.h>
+//#include <stdio.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH = 31;
 
@@ -495,6 +496,8 @@ private:
   INLINE static void update_lfo1_1st() {
     m_lfo1_phase += m_lfo1_rate_actual;
     m_lfo1_wave_level = get_lfo1_wave_level(m_lfo1_phase >> 5);
+
+    //printf("%d %d\n", m_lfo1_phase >> 5, m_lfo1_wave_level);
   }
 
   INLINE static void update_lfo1_2nd() {
@@ -504,10 +507,14 @@ private:
   INLINE static int16_t get_lfo1_wave_level(uint16_t phase) {
     int16_t level = 0;
 
-    if (phase < 0x0400) {
+    if (phase < 0x0200) {
+      level = phase - 511;
+    } else if (phase < 0x0400) {
       level = phase - 512;
-    } else {
+    } else if (phase < 0x0600) {
       level = 1024 + 511 - phase;
+    } else {
+      level = 1024 + 512 - phase;
     }
 
     return level;
