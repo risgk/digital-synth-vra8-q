@@ -46,7 +46,6 @@ class Osc {
   static boolean        m_note_on[4];
   static boolean        m_pitch_eg_target_both;
   static int16_t        m_pitch_eg_amt;
-  static uint8_t        m_osc_level;
 
 public:
   INLINE static void initialize() {
@@ -54,8 +53,6 @@ public:
     m_mix[1] = 0;
     m_mix[2] = 0;
     m_mix[3] = 0;
-    set_osc_level(80);
-    set_osc_mix(0);
     m_portamento_coef = 0;
     m_lfo_mod_level = 0;
     m_lfo_phase = 0;
@@ -106,21 +103,6 @@ public:
     m_pitch_eg_amt = 0;
     set_pitch_bend_minus_range(30);
     set_pitch_bend_plus_range(30);
-  }
-
-  INLINE static void set_osc_level(uint8_t controller_value) {
-    uint8_t osc_level = controller_value;
-
-    if (osc_level > 120) {
-      osc_level = 120;
-    } else if (osc_level < 40) {
-      osc_level = 40;
-    }
-
-    m_osc_level = osc_level;
-  }
-
-  INLINE static void set_osc_mix(uint8_t controller_value) {
   }
 
   INLINE static void set_osc_waveforms(uint8_t controller_value) {
@@ -555,4 +537,3 @@ template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
 template <uint8_t T> boolean         Osc<T>::m_note_on[4];
 template <uint8_t T> boolean         Osc<T>::m_pitch_eg_target_both;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_eg_amt;
-template <uint8_t T> uint8_t         Osc<T>::m_osc_level;

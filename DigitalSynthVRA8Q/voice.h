@@ -136,7 +136,6 @@ public:
       IOsc<0>::set_osc_waveforms(controller_value);
       break;
     case OSC_MIX        :
-      IOsc<0>::set_osc_mix(controller_value);
       break;
     case SUB_LEVEL      :
       break;
@@ -247,7 +246,6 @@ public:
       break;
 
     case OSC_LEVEL      :
-      IOsc<0>::set_osc_level(controller_value);
       break;
     case RESONANCE_LIMIT:
       break;
