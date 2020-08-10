@@ -4,7 +4,6 @@
 #include "osc-table.h"
 #include "mul-q.h"
 #include <math.h>
-#include <stdio.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH = 31;
 
@@ -33,7 +32,9 @@ class Osc {
 
   static uint16_t       m_lfo1_phase;
   static uint16_t       m_lfo1_rate_actual;
+  static int16_t        m_lfo1_wave_level;
   static int16_t        m_lfo1_level;
+  static uint8_t        m_lfo1_depth;
 
   static uint8_t        m_waveform;
   static int16_t        m_pitch_bend;
@@ -76,7 +77,9 @@ public:
 
     m_lfo1_phase = 0;
     m_lfo1_rate_actual = 32;
+    m_lfo1_wave_level = 0;
     m_lfo1_level = 0;
+    m_lfo1_depth = 64;
 
     m_waveform = OSC_WAVEFORM_SAW;
     m_pitch_bend_normalized = 0;
@@ -265,8 +268,8 @@ public:
       case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
       case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<2>();               break;
       case (0x15 << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_lfo1();                      break;
-      case (0x17 << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_1st();                  break;
+      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_2nd();                  break;
       case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();               break;
       case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>(eg_level);       break;
       case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
@@ -489,10 +492,13 @@ private:
 
 
 
-  INLINE static void update_lfo1() {
+  INLINE static void update_lfo1_1st() {
     m_lfo1_phase += m_lfo1_rate_actual;
-    m_lfo_level = get_lfo1_wave_level(m_lfo1_phase >> 5);
-    printf("%d %d\n",m_lfo1_phase >> 5, m_lfo_level);
+    m_lfo1_wave_level = get_lfo1_wave_level(m_lfo1_phase >> 5);
+  }
+
+  INLINE static void update_lfo1_2nd() {
+    m_lfo1_level = (m_lfo1_wave_level * static_cast<__int24>(m_lfo1_depth)) >> 8;
   }
 
   INLINE static int16_t get_lfo1_wave_level(uint16_t phase) {
@@ -545,7 +551,9 @@ template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
 
 template <uint8_t T> uint16_t        Osc<T>::m_lfo1_phase;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo1_rate_actual;
+template <uint8_t T> int16_t         Osc<T>::m_lfo1_wave_level;
 template <uint8_t T> int16_t         Osc<T>::m_lfo1_level;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo1_depth;
 
 template <uint8_t T> int8_t          Osc<T>::m_pitch_lfo_amt;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_waveform;
