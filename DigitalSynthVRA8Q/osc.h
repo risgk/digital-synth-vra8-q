@@ -54,10 +54,10 @@ class Osc {
 
 public:
   INLINE static void initialize() {
-    m_mix[0] = 0;
-    m_mix[1] = 0;
-    m_mix[2] = 0;
-    m_mix[3] = 0;
+    m_mix[0] = 48;
+    m_mix[1] = 48;
+    m_mix[2] = 48;
+    m_mix[3] = 48;
     m_portamento_coef = 0;
 
     m_lfo_mod_level = 0;
@@ -525,10 +525,6 @@ private:
   }
 
   INLINE static void update_mix_1st() {
-    m_mix[0] = 64;
-    m_mix[1] = 64;
-    m_mix[2] = 64;
-    m_mix[3] = 64;
   }
 
   INLINE static void update_mix_2nd() {
