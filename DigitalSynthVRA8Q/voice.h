@@ -406,29 +406,11 @@ public:
 
     int8_t dir_sample = high_sbyte(output);
     IDelayFx<0>::push(dir_sample);
-#if 1
-    int8_t eff_sample = IDelayFx<0>::get(512 + IOsc<0>::get_lfo1_level());
+
+    int8_t eff_sample = IDelayFx<0>::get(IOsc<0>::get_chorus_delay());
 
     right_level = dir_sample;
     return eff_sample;
-#elif 0
-    int8_t eff_sample = IDelayFx<0>::get(512 + IOsc<0>::get_lfo1_level());
-
-    right_level = (dir_sample - eff_sample) >> 1;
-    return        (dir_sample + eff_sample) >> 1;
-#elif 0
-    int8_t eff_sample_l = IDelayFx<0>::get(512 + IOsc<0>::get_lfo1_level());
-    int8_t eff_sample_r = IDelayFx<0>::get(512 - IOsc<0>::get_lfo1_level());
-
-    right_level = (dir_sample - eff_sample_l) >> 1;
-    return        (dir_sample + eff_sample_r) >> 1;
-#else
-    int8_t eff_sample_l = IDelayFx<0>::get(512 + IOsc<0>::get_lfo1_level());
-    int8_t eff_sample_r = IDelayFx<0>::get(512 - IOsc<0>::get_lfo1_level());
-
-    right_level = (dir_sample + eff_sample_l) >> 1;
-    return        (dir_sample + eff_sample_r) >> 1;
-#endif
   }
 
 private:

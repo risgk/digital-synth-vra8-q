@@ -4,7 +4,7 @@
 #include "osc-table.h"
 #include "mul-q.h"
 #include <math.h>
-//#include <stdio.h>
+#include <stdio.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH = 31;
 
@@ -31,11 +31,14 @@ class Osc {
   static uint8_t        m_lfo_waveform;
   static uint8_t        m_lfo_sampled;
 
-  static uint16_t       m_lfo1_phase;
-  static uint16_t       m_lfo1_rate_actual;
-  static int16_t        m_lfo1_wave_level;
-  static int16_t        m_lfo1_level;
-  static uint8_t        m_lfo1_depth;
+  static uint8_t        m_chorus_delay_control;
+  static uint8_t        m_chorus_depth_control;
+  static uint8_t        m_chorus_depth_control_actual;
+  static uint16_t       m_chorus_lfo_phase;
+  static uint16_t       m_chorus_lfo_rate_actual;
+  static int16_t        m_chorus_lfo_wave_level;
+  static int16_t        m_chorus_lfo_level;
+  static uint16_t       m_chorus_delay;
 
   static uint8_t        m_waveform;
   static int16_t        m_pitch_bend;
@@ -76,11 +79,14 @@ public:
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
 
-    m_lfo1_phase = 0;
-    m_lfo1_rate_actual = 32;
-    m_lfo1_wave_level = 0;
-    m_lfo1_level = 0;
-    m_lfo1_depth = 64;
+    m_chorus_delay_control = 64;
+    m_chorus_depth_control = 64;
+    m_chorus_depth_control_actual = 64;
+    m_chorus_lfo_phase = 0;
+    m_chorus_lfo_rate_actual = 32;
+    m_chorus_lfo_wave_level = 0;
+    m_chorus_lfo_level = 0;
+    m_chorus_delay = 0;
 
     m_waveform = OSC_WAVEFORM_SAW;
     m_pitch_bend_normalized = 0;
@@ -239,8 +245,8 @@ public:
     return m_lfo_level;
   }
 
-  INLINE static int16_t get_lfo1_level() {
-    return m_lfo1_level;
+  INLINE static int16_t get_chorus_delay() {
+    return m_chorus_delay;
   }
 
   INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
@@ -269,16 +275,16 @@ public:
       case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
       case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<2>();               break;
       case (0x15 << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_1st();                  break;
-      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_lfo1_2nd();                  break;
+      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_0th();            break;
+      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_1st();            break;
       case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();               break;
       case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>(eg_level);       break;
       case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
       case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();               break;
       case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<3>();               break;
       case (0x1D << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x1E << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x1F << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_2nd();            break;
+      case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_3rd();            break;
       }
     }
 #endif
@@ -493,31 +499,46 @@ private:
 
 
 
-  INLINE static void update_lfo1_1st() {
-    m_lfo1_phase += m_lfo1_rate_actual;
-    m_lfo1_wave_level = get_lfo1_wave_level(m_lfo1_phase >> 5);
-
-    //printf("%d %d\n", m_lfo1_phase >> 5, m_lfo1_wave_level);
-  }
-
-  INLINE static void update_lfo1_2nd() {
-    m_lfo1_level = (m_lfo1_wave_level * static_cast<__int24>(m_lfo1_depth)) >> 8;
-  }
-
-  INLINE static int16_t get_lfo1_wave_level(uint16_t phase) {
-    int16_t level = 0;
-
-    if (phase < 0x0200) {
-      level = phase - 511;
-    } else if (phase < 0x0400) {
-      level = phase - 512;
-    } else if (phase < 0x0600) {
-      level = 1024 + 511 - phase;
+  INLINE static void update_chorus_lfo_0th() {
+    if (m_chorus_delay < 64) {
+      if (m_chorus_depth_control > m_chorus_delay) {
+        m_chorus_depth_control_actual = m_chorus_delay;
+      } else {
+        m_chorus_depth_control_actual = m_chorus_depth_control;
+      }
     } else {
-      level = 1024 + 512 - phase;
+      if (m_chorus_depth_control > (127 - m_chorus_delay)) {
+        m_chorus_depth_control_actual = 127 - m_chorus_delay;
+      } else {
+        m_chorus_depth_control_actual = m_chorus_depth_control;
+      }
+    }
+  }
+
+  INLINE static void update_chorus_lfo_1st() {
+    m_chorus_lfo_phase += m_chorus_lfo_rate_actual;
+    m_chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
+  }
+
+  INLINE static void update_chorus_lfo_2nd() {
+    m_chorus_lfo_level = (m_chorus_lfo_wave_level * static_cast<__int24>(m_chorus_depth_control_actual)) >> 8;
+  }
+
+  INLINE static void update_chorus_lfo_3rd() {
+    m_chorus_delay = (m_chorus_delay_control * 8) + m_chorus_lfo_level;
+  }
+
+  INLINE static int16_t get_chorus_lfo_wave_level(uint16_t phase) {
+    int16_t triangle_wave_level = 0;
+    phase = phase >> 5;
+
+    if (phase < 0x0400) {
+      triangle_wave_level = phase - 512;
+    } else {
+      triangle_wave_level = 1535 - phase;
     }
 
-    return level;
+    return triangle_wave_level;
   }
 
 
@@ -552,11 +573,14 @@ template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_cnt;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_level;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
 
-template <uint8_t T> uint16_t        Osc<T>::m_lfo1_phase;
-template <uint8_t T> uint16_t        Osc<T>::m_lfo1_rate_actual;
-template <uint8_t T> int16_t         Osc<T>::m_lfo1_wave_level;
-template <uint8_t T> int16_t         Osc<T>::m_lfo1_level;
-template <uint8_t T> uint8_t         Osc<T>::m_lfo1_depth;
+template <uint8_t T> uint8_t         Osc<T>::m_chorus_delay_control;
+template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control;
+template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control_actual;
+template <uint8_t T> uint16_t        Osc<T>::m_chorus_lfo_phase;
+template <uint8_t T> uint16_t        Osc<T>::m_chorus_lfo_rate_actual;
+template <uint8_t T> int16_t         Osc<T>::m_chorus_lfo_wave_level;
+template <uint8_t T> int16_t         Osc<T>::m_chorus_lfo_level;
+template <uint8_t T> uint16_t        Osc<T>::m_chorus_delay;
 
 template <uint8_t T> int8_t          Osc<T>::m_pitch_lfo_amt;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_waveform;
