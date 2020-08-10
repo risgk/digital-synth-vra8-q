@@ -500,15 +500,15 @@ private:
 
 
   INLINE static void update_chorus_lfo_0th() {
-    if (m_chorus_delay < 64) {
-      if (m_chorus_depth_control > m_chorus_delay) {
-        m_chorus_depth_control_actual = m_chorus_delay;
+    if (m_chorus_delay_control < 64) {
+      if (m_chorus_depth_control > m_chorus_delay_control) {
+        m_chorus_depth_control_actual = m_chorus_delay_control;
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     } else {
-      if (m_chorus_depth_control > (127 - m_chorus_delay)) {
-        m_chorus_depth_control_actual = 127 - m_chorus_delay;
+      if (m_chorus_depth_control > (127 - m_chorus_delay_control)) {
+        m_chorus_depth_control_actual = 127 - m_chorus_delay_control;
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
