@@ -31,7 +31,7 @@ class Osc {
   static uint8_t        m_lfo_sampled;
 
   static uint8_t        m_chorus_depth_control;
-  static uint8_t        m_chorus_rate_actual;
+  static uint8_t        m_chorus_rate_control;
   static uint8_t        m_chorus_delay_control;
   static uint8_t        m_chorus_mode_control;
   static uint8_t        m_chorus_depth_control_actual;
@@ -79,8 +79,8 @@ public:
     m_lfo_sampled = 64;
 
     m_chorus_depth_control = 64;
-    m_chorus_rate_actual   = 32;
-    m_chorus_delay_control = 80;
+    m_chorus_rate_control   = 64;
+    m_chorus_delay_control = 64;
     m_chorus_mode_control  = 127;
 
     m_chorus_depth_control_actual = 64;
@@ -188,10 +188,10 @@ public:
   }
 
   INLINE static void set_chorus_rate(uint8_t controller_value) {
-    m_chorus_rate_actual = high_byte((controller_value << 1) * (controller_value << 1)) >> 1;
-
-    if (m_chorus_rate_actual < 8) {
-      m_chorus_rate_actual = 8;
+    if (controller_value < 8) {
+      m_chorus_rate_control = 8;
+    } else {
+      m_chorus_rate_control = controller_value;
     }
   }
 
@@ -533,7 +533,7 @@ private:
   }
 
   INLINE static void update_chorus_lfo_1st() {
-    m_chorus_lfo_phase += m_chorus_rate_actual;
+    m_chorus_lfo_phase += m_chorus_rate_control;
     m_chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
   }
 
@@ -594,7 +594,7 @@ template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_level;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
 
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control;
-template <uint8_t T> uint8_t         Osc<T>::m_chorus_rate_actual;
+template <uint8_t T> uint8_t         Osc<T>::m_chorus_rate_control;
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_delay_control;
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_mode_control;
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control_actual;
