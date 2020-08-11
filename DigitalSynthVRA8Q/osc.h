@@ -80,7 +80,7 @@ public:
 
     set_chorus_depth(32);
     set_chorus_rate (16);
-    set_chorus_delay(96);
+    set_chorus_delay(80);
     set_chorus_mode (127);
 
     m_chorus_depth_control_actual = 64;
