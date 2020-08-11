@@ -517,19 +517,17 @@ private:
 
 
   INLINE static void update_chorus_lfo_0th() {
-    uint8_t chorus_depth_control_half = (m_chorus_depth_control >> 1);
-
     if (m_chorus_delay_control < 64) {
-      if (chorus_depth_control_half > m_chorus_delay_control) {
-        m_chorus_depth_control_actual = m_chorus_delay_control;
+      if (m_chorus_depth_control > (m_chorus_delay_control << 1)) {
+        m_chorus_depth_control_actual = (m_chorus_delay_control << 1);
       } else {
-        m_chorus_depth_control_actual = chorus_depth_control_half;
+        m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     } else {
-      if (chorus_depth_control_half > (127 - m_chorus_delay_control)) {
-        m_chorus_depth_control_actual = 127 - m_chorus_delay_control;
+      if (m_chorus_depth_control > ((127 - m_chorus_delay_control) << 1)) {
+        m_chorus_depth_control_actual = ((127 - m_chorus_delay_control) << 1);
       } else {
-        m_chorus_depth_control_actual = chorus_depth_control_half;
+        m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     }
   }

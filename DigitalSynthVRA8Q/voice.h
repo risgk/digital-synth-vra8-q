@@ -213,10 +213,9 @@ public:
       control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
       control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
 
-      control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
-      control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
-      control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
-      control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
+      control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
+      control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
+      control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
 
       control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
     }
