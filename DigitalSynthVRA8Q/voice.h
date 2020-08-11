@@ -141,9 +141,6 @@ public:
     case CHORUS_RATE    :
       IOsc<0>::set_chorus_rate(controller_value);
       break;
-    case CHORUS_DELAY   :
-      IOsc<0>::set_chorus_delay(controller_value);
-      break;
     case CHORUS_MODE    :
       IOsc<0>::set_chorus_mode(controller_value);
       break;
