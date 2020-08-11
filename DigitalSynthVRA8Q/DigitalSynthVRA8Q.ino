@@ -4,16 +4,14 @@
 
 #define DEBUG
 
-#define SERIAL_SPEED (38400)    // For Serial MIDI
-//#define SERIAL_SPEED (31250)    // For MIDI Shield (MIDI Breakout)
+#define SERIAL_SPEED (38400)            // For Serial MIDI
+//#define SERIAL_SPEED (31250)            // For MIDI Shield (MIDI Breakout)
 
-#define L_MONO_AUDIO_OUT_PIN (5)    // Pin D5 (or D6)
-#define R_AUDIO_OUT_PIN      (11)   // Pin D11 (Fixed)
-#define CPU_BUSY_LED_OUT_PIN (13)   // Pin D13 (Fixed)
+#define L_MONO_AUDIO_OUT_PIN (5)        // Pin D5 (or D6)
+#define R_AUDIO_OUT_PIN      (11)       // Pin D11 (Fixed)
+#define CPU_BUSY_LED_OUT_PIN (13)       // Pin D13 (Fixed)
 
-#define TRANSPOSE (0)    // Min: -24, Max: +24
-
-//#define ENABLE_SPECIAL_PROGRAM_CHANGE    // Program Change by Control Change (112-119, 90)
+#define ENABLE_SPECIAL_PROGRAM_CHANGE   // Program Change by Control Change (112-119)
 
 
 

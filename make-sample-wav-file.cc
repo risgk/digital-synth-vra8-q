@@ -26,7 +26,6 @@ inline uint32_t pgm_read_dword(const void* addr) {
   return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24);
 }
 
-#define TRANSPOSE (0)    // Min: -24, Max: +24
 #define ENABLE_OSCILLATOR_2
 
 #include "./DigitalSynthVRA8Q/common.h"
