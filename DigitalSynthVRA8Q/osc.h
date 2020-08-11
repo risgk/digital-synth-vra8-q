@@ -79,7 +79,7 @@ public:
     m_lfo_sampled = 64;
 
     m_chorus_depth_control = 32;
-    m_chorus_rate_control  = 32;
+    m_chorus_rate_control  = 16;
     m_chorus_delay_control = 64;
     m_chorus_mode_control  = 0;
 
@@ -188,10 +188,10 @@ public:
   }
 
   INLINE static void set_chorus_rate(uint8_t controller_value) {
-    if (controller_value < 8) {
-      m_chorus_rate_control = 8;
+    if (controller_value < 4) {
+      m_chorus_rate_control = (4 << 1);
     } else {
-      m_chorus_rate_control = controller_value;
+      m_chorus_rate_control = (controller_value << 1);
     }
   }
 

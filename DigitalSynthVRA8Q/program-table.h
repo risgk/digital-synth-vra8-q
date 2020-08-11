@@ -21,7 +21,7 @@ const uint8_t g_preset_table_LFO_TO_PITCH   [] = {66 , 66 , 66 , 66 , 66 , 66 , 
 const uint8_t g_preset_table_LFO_TO_CUTOFF  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 
 const uint8_t g_preset_table_CHORUS_DEPTH   [] = {32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 };
-const uint8_t g_preset_table_CHORUS_RATE    [] = {32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 };
+const uint8_t g_preset_table_CHORUS_RATE    [] = {16 , 16 , 16 , 16 , 16 , 16 , 16 , 16 };
 const uint8_t g_preset_table_CHORUS_DELAY   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 const uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 127, 127, 127};
 
