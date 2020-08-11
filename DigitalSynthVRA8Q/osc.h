@@ -78,10 +78,10 @@ public:
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
 
-    m_chorus_depth_control = 32;
-    m_chorus_rate_control  = 16;
-    m_chorus_delay_control = 64;
-    m_chorus_mode_control  = 0;
+    set_chorus_depth(32);
+    set_chorus_rate (16);
+    set_chorus_delay(96);
+    set_chorus_mode (127);
 
     m_chorus_depth_control_actual = 64;
     m_chorus_lfo_phase = 0;
@@ -195,18 +195,18 @@ public:
     }
   }
 
-  INLINE static void set_chorus_mode(uint8_t controller_value) {
-    m_chorus_mode_control = controller_value;
-  }
-
   INLINE static void set_chorus_delay(uint8_t controller_value) {
-    if (controller_value < 4) {
-      m_chorus_delay_control = 4;
-    } else if (controller_value < 123) {
+    if (controller_value < 8) {
+      m_chorus_delay_control = 8;
+    } else if (controller_value < 119) {
       m_chorus_delay_control = controller_value;
     } else {
-      m_chorus_delay_control = 123;
+      m_chorus_delay_control = 119;
     }
+  }
+
+  INLINE static void set_chorus_mode(uint8_t controller_value) {
+    m_chorus_mode_control = controller_value;
   }
 
 
@@ -520,14 +520,14 @@ private:
 
   INLINE static void update_chorus_lfo_0th() {
     if (m_chorus_delay_control < 64) {
-      if (m_chorus_depth_control > (m_chorus_delay_control << 1)) {
-        m_chorus_depth_control_actual = (m_chorus_delay_control << 1);
+      if (m_chorus_depth_control > m_chorus_delay_control) {
+        m_chorus_depth_control_actual = m_chorus_delay_control;
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     } else {
-      if (m_chorus_depth_control > ((127 - m_chorus_delay_control) << 1)) {
-        m_chorus_depth_control_actual = ((127 - m_chorus_delay_control) << 1);
+      if (m_chorus_depth_control > (127 - m_chorus_delay_control)) {
+        m_chorus_depth_control_actual = (127 - m_chorus_delay_control);
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
@@ -547,7 +547,7 @@ private:
     if (m_chorus_mode_control < 64) {
       m_chorus_delay = 0;
     } else {
-      m_chorus_delay = (m_chorus_delay_control * 8) + m_chorus_lfo_level;
+      m_chorus_delay = (m_chorus_delay_control * 4) + m_chorus_lfo_level;
     }
   }
 

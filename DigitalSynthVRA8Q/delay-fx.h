@@ -4,7 +4,7 @@
 
 template <uint8_t T>
 class DelayFx {
-  static const uint16_t DELAY_BUFF_SIZE = 1024;
+  static const uint16_t DELAY_BUFF_SIZE = 512;
 
   static uint8_t  m_buff[DELAY_BUFF_SIZE];
   static uint16_t m_wp;
