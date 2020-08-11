@@ -135,6 +135,19 @@ public:
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
+    case CHORUS_DEPTH   :
+      IOsc<0>::set_chorus_depth(controller_value);
+      break;
+    case CHORUS_RATE    :
+      IOsc<0>::set_chorus_rate(controller_value);
+      break;
+    case CHORUS_DELAY   :
+      IOsc<0>::set_chorus_delay(controller_value);
+      break;
+    case CHORUS_MODE    :
+      IOsc<0>::set_chorus_mode(controller_value);
+      break;
+
     case P_BEND_RANGE   :
       IOsc<0>::set_pitch_bend_minus_range(controller_value);
       IOsc<0>::set_pitch_bend_plus_range(controller_value);
