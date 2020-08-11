@@ -36,7 +36,7 @@ public:
     m_attack = 0;
     m_decay = 0;
     m_sustain = 127;
-    m_release = 0;
+    m_release = 127;
     m_amp_env_gen = 127;
     update_env_gen();
     m_rnd = 1;
@@ -117,6 +117,19 @@ public:
       IOsc<0>::set_osc_waveforms(controller_value);
       break;
 
+    case SUSTAIN        :
+      {
+        m_sustain = controller_value;
+
+        if (m_amp_env_gen >= 64) {
+          IEnvGen<0>::set_sustain(m_sustain);
+          IEnvGen<1>::set_sustain(m_sustain);
+        } else {
+          IEnvGen<0>::set_sustain(m_sustain);
+        }
+      }
+      break;
+
     case AMP_EG         :
       m_amp_env_gen = controller_value;
       update_env_gen();
@@ -140,6 +153,9 @@ public:
       break;
     case CHORUS_RATE    :
       IOsc<0>::set_chorus_rate(controller_value);
+      break;
+    case CHORUS_DELAY   :
+      IOsc<0>::set_chorus_delay(controller_value);
       break;
     case CHORUS_MODE    :
       IOsc<0>::set_chorus_mode(controller_value);
@@ -215,6 +231,7 @@ public:
 
       control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
       control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
+      control_change(CHORUS_DELAY   , g_preset_table_CHORUS_DELAY   [program_number]);
       control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
 
       control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);

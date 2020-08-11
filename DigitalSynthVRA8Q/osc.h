@@ -78,10 +78,10 @@ public:
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
 
-    m_chorus_depth_control = 64;
-    m_chorus_rate_control   = 64;
+    m_chorus_depth_control = 32;
+    m_chorus_rate_control  = 32;
     m_chorus_delay_control = 64;
-    m_chorus_mode_control  = 127;
+    m_chorus_mode_control  = 0;
 
     m_chorus_depth_control_actual = 64;
     m_chorus_lfo_phase = 0;
@@ -200,10 +200,12 @@ public:
   }
 
   INLINE static void set_chorus_delay(uint8_t controller_value) {
-    if (controller_value < 8) {
-      m_chorus_delay_control = 8;
-    } else {
+    if (controller_value < 4) {
+      m_chorus_delay_control = 4;
+    } else if (controller_value < 123) {
       m_chorus_delay_control = controller_value;
+    } else {
+      m_chorus_delay_control = 123;
     }
   }
 
