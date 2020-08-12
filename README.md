@@ -6,9 +6,7 @@
 
 ## Concept
 
-- Quadraphonic Synthesizer for Arduino Uno
-    - Quadraphonic: 4-voice Polyphonic (Paraphonic)
-    - Built-in Stereo Chorus Effector
+- Quadraphonic (4-voice Paraphonic) Synthesizer (MIDI Sound Module) with Stereo Chorus Effector for Arduino Uno
 
 
 ## Caution about Arduino
