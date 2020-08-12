@@ -74,7 +74,7 @@ const uint8_t   LFO_TO_CUTOFF   = 83;
 
 const uint8_t   CHORUS_DEPTH    = 60;
 const uint8_t   CHORUS_RATE     = 61;
-const uint8_t   CHORUS_DELAY    = 62;
+const uint8_t   CHORUS_DELAY_T  = 62;
 const uint8_t   CHORUS_MODE     = 63;
 
 const uint8_t   P_BEND_RANGE    = 85;

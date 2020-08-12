@@ -76,7 +76,7 @@
     | Control                     1 | x             | o             | MODULATION DEPTH      |
     | Change                     11 | x             | o             | EXPRESSION            |
     |                               |               |               |                       |
-    |                            24 | x             | o             | WAVE (SAW/PUL)        |
+    |                            24 | x             | o             | OSC (SAW/PUL)         |
     |                           104 | x             | o             | EG > PITCH (-/+)      |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
@@ -100,7 +100,7 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | P. BEND RANGE         |
     |                               |               |               |                       |
-    |                   90, 112-119 | x             | x             | (RESERVED)            |
+    |                       112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
     | Program                       | x             | o             |                       |
     | Change       : True #         | ************* | 0-7, 127      | 127: Random Control   |

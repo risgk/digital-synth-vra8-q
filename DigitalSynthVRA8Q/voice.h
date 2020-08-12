@@ -154,8 +154,8 @@ public:
     case CHORUS_RATE    :
       IOsc<0>::set_chorus_rate(controller_value);
       break;
-    case CHORUS_DELAY   :
-      IOsc<0>::set_chorus_delay(controller_value);
+    case CHORUS_DELAY_T :
+      IOsc<0>::set_chorus_delay_time(controller_value);
       break;
     case CHORUS_MODE    :
       IOsc<0>::set_chorus_mode(controller_value);
@@ -231,7 +231,7 @@ public:
 
       control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
       control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
-      control_change(CHORUS_DELAY   , g_preset_table_CHORUS_DELAY   [program_number]);
+      control_change(CHORUS_DELAY_T , g_preset_table_CHORUS_DELAY_T [program_number]);
       control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
 
       control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
@@ -255,7 +255,7 @@ public:
     int8_t dir_sample = high_sbyte(output);
     IDelayFx<0>::push(dir_sample);
 
-    int8_t eff_sample = IDelayFx<0>::get(IOsc<0>::get_chorus_delay());
+    int8_t eff_sample = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time());
 
     right_level = dir_sample;
     return eff_sample;
