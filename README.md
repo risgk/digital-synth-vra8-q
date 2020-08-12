@@ -48,6 +48,28 @@
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 
 
+## Details of Controllers
+
+- "OSC (SAW/PUL)":
+    - Values 0-63: Saw Wave
+    - Values 64-127: Pulse Wave (Square Wave)
+- "CHORUS DEPTH":
+    - Value 8: +/- 0.5 ms (min)
+    - Value 32: +/- 2.0 ms (init)
+    - Value 64: +/- 4.1 ms
+    - Value 127: +/- 8.1 ms (max)
+- "CHORUS RATE":
+    - Value 4: 0.06 Hz (min)
+    - Value 16: 0.24 (init)
+    - Value 64: 0.95 Hz
+    - Value 127: 1.9 Hz (max)
+- "CHORUS DELAY TIME":
+    - Value 8: 1.0 ms (min)
+    - Value 64: 8.2 ms
+    - Value 80: 10.2 ms (init)
+    - Value 127: 16.3 ms (max)
+
+
 ## MIDI Implementation Chart
 
       [Monophonic Synthesizer]                                        Date: 2020-01-12       
