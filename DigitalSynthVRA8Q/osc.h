@@ -120,8 +120,8 @@ public:
     m_note_on[0] = false;
     m_note_on[1] = false;
     m_pitch_eg_amt = 0;
-    set_pitch_bend_minus_range(30);
-    set_pitch_bend_plus_range(30);
+    set_pitch_bend_minus_range(2);
+    set_pitch_bend_plus_range(2);
   }
 
   INLINE static void set_osc_waveforms(uint8_t controller_value) {
@@ -169,12 +169,12 @@ public:
 
   template <uint8_t N>
   INLINE static void set_pitch_lfo_amt(uint8_t controller_value) {
-    if (controller_value < 4) {
-      m_pitch_lfo_amt = -60;
-    } else if (controller_value < 124) {
+    if (controller_value < 16) {
+      m_pitch_lfo_amt = -48;
+    } else if (controller_value < 112) {
       m_pitch_lfo_amt = controller_value - 64;
     } else {
-      m_pitch_lfo_amt = 60;
+      m_pitch_lfo_amt = 48;
     }
   }
 
@@ -211,18 +211,18 @@ public:
 
 
   INLINE static void set_pitch_eg_amt(uint8_t controller_value) {
-    if (controller_value < 2) {
-      m_pitch_eg_amt = -((30 << 8) << 1);
+    if (controller_value < 8) {
+      m_pitch_eg_amt = -((24 << 8) << 1);
     } else if (controller_value < 32) {
       m_pitch_eg_amt = -(((32 - controller_value) << 8) << 1);
     } else if (controller_value < 64) {
       m_pitch_eg_amt = -(((64 - controller_value) << 3) << 1);
     } else if (controller_value < 97) {
       m_pitch_eg_amt = ((controller_value - 64) << 3) << 1;
-    } else if (controller_value < 127) {
+    } else if (controller_value < 121) {
       m_pitch_eg_amt = ((controller_value - 96) << 8) << 1;
     } else {
-      m_pitch_eg_amt = (30 << 8) << 1;
+      m_pitch_eg_amt = (24 << 8) << 1;
     }
   }
 
@@ -249,8 +249,8 @@ public:
 
   INLINE static void set_pitch_bend_minus_range(uint8_t controller_value) {
     uint8_t range = controller_value;
-    if (range > 30) {
-      range = 30;
+    if (range > 24) {
+      range = 24;
     }
     m_pitch_bend_minus_range = range;
     update_pitch_bend();
@@ -258,8 +258,8 @@ public:
 
   INLINE static void set_pitch_bend_plus_range(uint8_t controller_value) {
     uint8_t range = controller_value;
-    if (range > 30) {
-      range = 30;
+    if (range > 24) {
+      range = 24;
     }
     m_pitch_bend_plus_range = range;
     update_pitch_bend();

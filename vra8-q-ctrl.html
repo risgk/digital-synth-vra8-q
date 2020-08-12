@@ -273,10 +273,7 @@ function onMIDIMessage(event) {
     } else if (number == MODULATION     ) {
       document.getElementById("spanCC1").innerHTML = value;
     } else if (number == EXPRESSION     ) {
-      if (document.getElementById("spanCC89").innerHTML < 64) {
-        // Expression by Velocity: Off
-        document.getElementById("spanCC11").innerHTML = value;
-      }
+      document.getElementById("spanCC11").innerHTML = value;
     } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
       // Special Program Change (only for VRA8-Q CTRL)
       var programIndex = number - SP_PROG_CHG_0;
@@ -294,12 +291,6 @@ function onMIDIMessage(event) {
       document.getElementById("spanPB").innerHTML = "+" + String(value);
     } else {
       document.getElementById("spanPB").innerHTML = value;
-    }
-  } else if (event.data[0] == (NOTE_ON | MIDI_CH)) {
-    if (document.getElementById("spanCC89").innerHTML >= 64) {
-      // Expression by Velocity: On
-      var value = event.data[2];
-      document.getElementById("spanCC11").innerHTML = value;
     }
   }
 
