@@ -119,6 +119,8 @@ public:
     m_phase[3] = 0;
     m_note_on[0] = false;
     m_note_on[1] = false;
+    m_note_on[2] = false;
+    m_note_on[3] = false;
     m_pitch_eg_amt = 0;
     set_pitch_bend_minus_range(2);
     set_pitch_bend_plus_range(2);
