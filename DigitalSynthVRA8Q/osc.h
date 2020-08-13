@@ -527,15 +527,16 @@ private:
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     }
+
+    m_chorus_lfo_phase += m_chorus_rate_control;
   }
 
   INLINE static void update_chorus_lfo_1st() {
-    m_chorus_lfo_phase += m_chorus_rate_control;
     m_chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
   }
 
   INLINE static void update_chorus_lfo_2nd() {
-    m_chorus_lfo_level = (m_chorus_lfo_wave_level * static_cast<__int24>(m_chorus_depth_control_actual)) >> 8;
+    m_chorus_lfo_level = mul_q15_q8(m_chorus_lfo_wave_level, m_chorus_depth_control_actual);
   }
 
   INLINE static void update_chorus_lfo_3rd() {
