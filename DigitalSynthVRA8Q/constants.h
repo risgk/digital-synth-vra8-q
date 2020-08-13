@@ -29,7 +29,8 @@ const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
 const uint8_t   ENV_GEN_CONTROL_INTERVAL     = 0x10;
 const uint16_t  ENV_GEN_LEVEL_MAX            = 0x8000;
 const uint16_t  ENV_GEN_LEVEL_MAX_X_1_5      = ENV_GEN_LEVEL_MAX + (ENV_GEN_LEVEL_MAX >> 1);
-const uint16_t  ENV_GEN_LEVEL_RELEASE_STEP   = 0x1600;
+const uint8_t   GATE_CONTROL_INTERVAL        = 0x10;
+const uint8_t   GATE_LEVEL_MAX               = 0x30;
 const uint8_t   AMP_ENV_AMT_MAX              = 240;
 const uint8_t   AMP_ENV_AMT_STEP             = 16;
 

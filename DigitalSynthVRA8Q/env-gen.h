@@ -106,26 +106,7 @@ public:
 
   INLINE static uint8_t clock(uint8_t count) {
 #if 1
-    uint8_t match_count = 1;
-    switch (T) {
-    case 1:
-      match_count = 9;
-      break;
-    case 2:
-      match_count = 3;
-      break;
-    case 3:
-      match_count = 11;
-      break;
-    case 4:
-      match_count = 5;
-      break;
-    case 5:
-      match_count = 13;
-      break;
-    }
-
-    if ((count & (ENV_GEN_CONTROL_INTERVAL - 1)) == match_count) {
+    if ((count & (ENV_GEN_CONTROL_INTERVAL - 1)) == ((T == 0) ? 5 : 13)) {
       switch (m_state) {
       case STATE_ATTACK:
         --m_rest;
@@ -220,7 +201,7 @@ public:
         break;
       }
 
-      if (T != 4) {
+      if (T == 1) {
         m_level_out = high_byte(high_byte(m_level) * m_gain_coef) << 1;
         if (m_level_out < 4) {
           m_level_out = 0;
