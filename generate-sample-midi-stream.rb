@@ -12,27 +12,62 @@ def program_change(program_number)
   wait(800)
 end
 
-def play(note_number, length)
-  $file.write([(NOTE_ON  | MIDI_CH), note_number, 127].pack("C*"))
-  (length * 15 / 16).times { $file.write([ACTIVE_SENSING].pack("C")) }
+def note_on(note_number, velocity)
+  $file.write([(NOTE_ON  | MIDI_CH), note_number, velocity].pack("C*"))
+end
+
+def note_off(note_number)
   $file.write([(NOTE_OFF | MIDI_CH), note_number, 64].pack("C*"))
-  (length * 1 / 16).times { $file.write([ACTIVE_SENSING].pack("C")) }
 end
 
 def wait(length)
   length.times { $file.write([ACTIVE_SENSING].pack("C")) }
 end
 
-def play_cegbdfac(c)
-  play(12 + (c * 12), 1200)
-  play(19 + (c * 12), 1200)
-  play(16 + (c * 12), 1200)
-  play(23 + (c * 12), 1200)
-  play(14 + (c * 12), 1200)
-  play(21 + (c * 12), 1200)
-  play(17 + (c * 12), 1200)
-  play(24 + (c * 12), 8400)
-  wait(8400)
+def play_a(oct)
+  play_chord_a(12, 16, 19, 23, oct, 127)
+  play_chord_a(16, 19, 23, 26, oct, 127)
+  play_chord_a(14, 17, 21, 24, oct, 127)
+  play_chord_a(17, 21, 24, 28, oct, 127)
+end
+
+def play_b(oct)
+  play_chord_b(12, 16, 19, 23, oct, 127)
+  play_chord_b(16, 19, 23, 26, oct, 127)
+  play_chord_b(14, 17, 21, 24, oct, 127)
+  play_chord_b(17, 21, 24, 28, oct, 127)
+end
+
+def play_chord_a(x, y, z, w, oct, velocity)
+  note_on(x + (oct * 12), velocity)
+  note_on(y + (oct * 12), velocity)
+  note_on(z + (oct * 12), velocity)
+  note_on(w + (oct * 12), velocity)
+  wait(3200)
+  note_off(x + (oct * 12))
+  note_off(y + (oct * 12))
+  note_off(z + (oct * 12))
+  note_off(w + (oct * 12))
+  wait(800)
+end
+
+def play_chord_b(x, y, z, w, oct, velocity)
+  note_on(x + (oct * 12), velocity)
+  wait(800)
+  note_on(y + (oct * 12), velocity)
+  wait(800)
+  note_on(z + (oct * 12), velocity)
+  wait(800)
+  note_on(w + (oct * 12), velocity)
+  wait(3200)
+  note_off(w + (oct * 12))
+  wait(800)
+  note_off(z + (oct * 12))
+  wait(800)
+  note_off(y + (oct * 12))
+  wait(800)
+  note_off(x + (oct * 12))
+  wait(800)
 end
 
 def sound_off
@@ -43,35 +78,20 @@ end
 sound_off
 
 program_change(0)
-play_cegbdfac(3)
+control_change(CHORUS_MODE, 0)
+play_a(3)
 sound_off
 
-program_change(1)
-play_cegbdfac(3)
+control_change(CHORUS_MODE, 127)
+play_a(3)
 sound_off
 
-program_change(2)
-play_cegbdfac(2)
+control_change(CHORUS_MODE, 0)
+play_b(3)
 sound_off
 
-program_change(3)
-play_cegbdfac(4)
-sound_off
-
-program_change(4)
-play_cegbdfac(4)
-sound_off
-
-program_change(5)
-play_cegbdfac(3)
-sound_off
-
-program_change(6)
-play_cegbdfac(4)
-sound_off
-
-program_change(7)
-play_cegbdfac(3)
+control_change(CHORUS_MODE, 127)
+play_b(3)
 sound_off
 
 $file.close
