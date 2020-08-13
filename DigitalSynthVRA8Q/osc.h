@@ -272,7 +272,7 @@ public:
     return m_chorus_delay_time;
   }
 
-  INLINE static int16_t clock(uint8_t count, uint8_t eg_level, uint8_t gain_0, uint8_t gain_1, uint8_t gain_2, uint8_t gain_3) {
+  INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);

@@ -41,11 +41,6 @@ public:
     IFilter<0>::initialize();
     IAmp<0>::initialize();
 
-    IGate<0>::initialize();
-    IGate<1>::initialize();
-    IGate<2>::initialize();
-    IGate<3>::initialize();
-
     IEnvGen<0>::initialize();
     IEnvGen<1>::initialize();
 
@@ -76,15 +71,6 @@ public:
 
     m_on_note_number[osc_index] = note_number;
     IOsc<0>::note_on(osc_index, note_number);
-    if        (osc_index == 0) {
-      IGate<0>::note_on();
-    } else if (osc_index == 1) {
-      IGate<1>::note_on();
-    } else if (osc_index == 2) {
-      IGate<2>::note_on();
-    } else {
-      IGate<3>::note_on();
-    }
 
     if ((old_on_note_count == 0) && (m_on_note_count > 0)) {
       IOsc<0>::set_portamento(0);
@@ -101,25 +87,21 @@ public:
       --m_on_note_count;
       note_queue_off(0);
       IOsc<0>::note_off(0);
-      IGate<0>::note_off();
     } else if (m_on_note_number[1] == note_number) {
       m_on_note_number[1] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(1);
       IOsc<0>::note_off(1);
-      IGate<1>::note_off();
     } else if (m_on_note_number[2] == note_number) {
       m_on_note_number[2] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(2);
       IOsc<0>::note_off(2);
-      IGate<2>::note_off();
     } else if (m_on_note_number[3] == note_number) {
       m_on_note_number[3] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(3);
       IOsc<0>::note_off(3);
-      IGate<3>::note_off();
     }
 
     if (m_on_note_count == 0) {
@@ -309,14 +291,8 @@ public:
   INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
-    uint8_t gate_output_0 = IGate<0>::clock(m_count);
-    uint8_t gate_output_1 = IGate<1>::clock(m_count);
-    uint8_t gate_output_2 = IGate<2>::clock(m_count);
-    uint8_t gate_output_3 = IGate<3>::clock(m_count);
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
-
-    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0,
-                                        0, 0, 0, 0);
+    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0);
 
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
