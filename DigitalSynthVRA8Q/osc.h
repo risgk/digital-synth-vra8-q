@@ -228,15 +228,13 @@ public:
     }
   }
 
-  template <uint8_t N>
-  INLINE static void note_on(uint8_t note_number) {
-    m_pitch_target[N] = note_number << 8;
-    m_note_on[N] = true;
+  INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
+    m_pitch_target[osc_index] = note_number << 8;
+    m_note_on[osc_index] = true;
   }
 
-  template <uint8_t N>
-  INLINE static void note_off() {
-    m_note_on[N] = false;
+  INLINE static void note_off(uint8_t osc_index) {
+    m_note_on[osc_index] = false;
   }
 
   INLINE static void trigger_lfo() {

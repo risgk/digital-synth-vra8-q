@@ -5,25 +5,30 @@
 
 template <uint8_t T>
 class Voice {
-  static uint8_t m_count;
+  static uint8_t  m_count;
 
-  static uint8_t m_on_note_number[4];
-  static uint8_t m_on_note_count;
+  static uint8_t  m_note_queue[4];
+  static uint8_t  m_on_note_number[4];
+  static uint8_t  m_on_note_count;
 
-  static uint8_t m_output_error;
-  static uint8_t m_portamento;
-  static uint8_t m_attack;
-  static uint8_t m_decay;
-  static uint8_t m_sustain;
-  static uint8_t m_release;
-  static uint8_t m_amp_env_gen;
+  static uint8_t  m_output_error;
+  static uint8_t  m_portamento;
+  static uint8_t  m_attack;
+  static uint8_t  m_decay;
+  static uint8_t  m_sustain;
+  static uint8_t  m_release;
+  static uint8_t  m_amp_env_gen;
   static uint16_t m_rnd;
-  static uint8_t m_sp_prog_chg_cc_values[8];
+  static uint8_t  m_sp_prog_chg_cc_values[8];
 
 public:
   INLINE static void initialize() {
     m_count = 0;
 
+    m_note_queue[0] = 0;
+    m_note_queue[1] = 1;
+    m_note_queue[2] = 2;
+    m_note_queue[3] = 3;
     m_on_note_number[0] = NOTE_NUMBER_INVALID;
     m_on_note_number[1] = NOTE_NUMBER_INVALID;
     m_on_note_number[2] = NOTE_NUMBER_INVALID;
@@ -50,27 +55,19 @@ public:
   INLINE
   static void note_on(uint8_t note_number, uint8_t /* velocity */) {
     uint8_t old_on_note_count = m_on_note_count;
-    
-    if (m_on_note_number[0] == NOTE_NUMBER_INVALID) {
-      m_on_note_number[0] = note_number;
+
+    uint8_t osc_index = m_note_queue[0];
+    m_note_queue[0] = m_note_queue[1];
+    m_note_queue[1] = m_note_queue[2];
+    m_note_queue[2] = m_note_queue[3];
+    m_note_queue[3] = osc_index;
+
+    if (m_on_note_number[osc_index] == NOTE_NUMBER_INVALID) {
       ++m_on_note_count;
-      IOsc<0>::note_on<0>(note_number);
-    } else if (m_on_note_number[1] == NOTE_NUMBER_INVALID) {
-      m_on_note_number[1] = note_number;
-      ++m_on_note_count;
-      IOsc<0>::note_on<1>(note_number);
-    } else if (m_on_note_number[2] == NOTE_NUMBER_INVALID) {
-      m_on_note_number[2] = note_number;
-      ++m_on_note_count;
-      IOsc<0>::note_on<2>(note_number);
-    } else if (m_on_note_number[3] == NOTE_NUMBER_INVALID) {
-      m_on_note_number[3] = note_number;
-      ++m_on_note_count;
-      IOsc<0>::note_on<3>(note_number);
-    } else {
-      m_on_note_number[3] = note_number;
-      IOsc<0>::note_on<3>(note_number);
     }
+
+    m_on_note_number[osc_index] = note_number;
+    IOsc<0>::note_on(osc_index, note_number);
 
     if ((old_on_note_count == 0) && (m_on_note_count > 0)) {
       IOsc<0>::set_portamento(0);
@@ -85,19 +82,23 @@ public:
     if (m_on_note_number[0] == note_number) {
       m_on_note_number[0] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
-      IOsc<0>::note_off<0>();
+      note_queue_off(0);
+      IOsc<0>::note_off(0);
     } else if (m_on_note_number[1] == note_number) {
       m_on_note_number[1] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
-      IOsc<0>::note_off<1>();
+      note_queue_off(1);
+      IOsc<0>::note_off(1);
     } else if (m_on_note_number[2] == note_number) {
       m_on_note_number[2] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
-      IOsc<0>::note_off<2>();
+      note_queue_off(2);
+      IOsc<0>::note_off(2);
     } else if (m_on_note_number[3] == note_number) {
       m_on_note_number[3] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
-      IOsc<0>::note_off<3>();
+      note_queue_off(3);
+      IOsc<0>::note_off(3);
     }
 
     if (m_on_note_count == 0) {
@@ -113,10 +114,14 @@ public:
     m_on_note_number[2] = NOTE_NUMBER_INVALID;
     m_on_note_number[3] = NOTE_NUMBER_INVALID;
     m_on_note_count = 0;
-    IOsc<0>::note_off<0>();
-    IOsc<0>::note_off<1>();
-    IOsc<0>::note_off<2>();
-    IOsc<0>::note_off<3>();
+    m_note_queue[0] = 0;
+    m_note_queue[1] = 1;
+    m_note_queue[2] = 2;
+    m_note_queue[3] = 3;
+    IOsc<0>::note_off(0);
+    IOsc<0>::note_off(1);
+    IOsc<0>::note_off(2);
+    IOsc<0>::note_off(3);
     IEnvGen<0>::note_off();
     IEnvGen<1>::note_off();
   }
@@ -304,6 +309,23 @@ public:
   }
 
 private:
+
+  INLINE static void note_queue_off(uint8_t note_off_index) {
+    if        (m_note_queue[1] == note_off_index) {
+      m_note_queue[1] = m_note_queue[0];
+      m_note_queue[0] = note_off_index;
+    } else if (m_note_queue[2] == note_off_index) {
+      m_note_queue[2] = m_note_queue[1];
+      m_note_queue[1] = m_note_queue[0];
+      m_note_queue[0] = note_off_index;
+    } else if (m_note_queue[3] == note_off_index) {
+      m_note_queue[3] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[1];
+      m_note_queue[1] = m_note_queue[0];
+      m_note_queue[0] = note_off_index;
+    }
+  }
+
   INLINE static void update_decay_release() {
     if (m_amp_env_gen >= 64) {
       IEnvGen<0>::set_decay(m_decay);
@@ -366,6 +388,7 @@ private:
 
 template <uint8_t T> uint8_t  Voice<T>::m_count;
 
+template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
 template <uint8_t T> uint8_t  Voice<T>::m_on_note_number[4];
 template <uint8_t T> uint8_t  Voice<T>::m_on_note_count;
 
