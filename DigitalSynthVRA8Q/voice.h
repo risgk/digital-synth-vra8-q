@@ -65,7 +65,7 @@ public:
   static void note_on(uint8_t note_number, uint8_t /* velocity */) {
     uint8_t old_on_note_total_count = m_on_note_total_count;
 
-    if (m_on_note_number[0] == note_number) {
+    if        (m_on_note_number[0] == note_number) {
       if (m_on_note_total_count < 255) {
         ++m_on_note_total_count;
         ++m_on_note_count[0];
