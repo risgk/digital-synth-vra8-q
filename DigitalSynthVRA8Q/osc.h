@@ -275,6 +275,7 @@ public:
   INLINE static int16_t clock(uint8_t count, uint8_t eg_level, uint8_t gain_0, uint8_t gain_1, uint8_t gain_2, uint8_t gain_3) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
+      //printf("%d Osc\n", count);
       switch (count & (0x1F << OSC_CONTROL_INTERVAL_BITS)) {
       case (0x00 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<0>();               break;
       case (0x01 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<0>(eg_level);       break;

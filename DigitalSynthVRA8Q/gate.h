@@ -33,17 +33,18 @@ public:
       match_count = 1;
       break;
     case 1:
-      match_count = 9;
+      match_count = 5;
       break;
     case 2:
-      match_count = 3;
+      match_count = 9;
       break;
     case 3:
-      match_count = 11;
+      match_count = 13;
       break;
     }
 
     if ((count & (GATE_CONTROL_INTERVAL - 1)) == match_count) {
+      //printf("%d Gate\n", count);
       if (m_state == STATE_ON) {
         if (m_level < GATE_LEVEL_MAX) {
           m_level += (GATE_LEVEL_MAX >> 2);
