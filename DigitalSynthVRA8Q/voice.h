@@ -49,7 +49,6 @@ public:
 
   INLINE
   static void note_on(uint8_t note_number, uint8_t /* velocity */) {
-    
     uint8_t old_on_note_count = m_on_note_count;
     
     if (m_on_note_number[0] == NOTE_NUMBER_INVALID) {
@@ -84,19 +83,19 @@ public:
   INLINE
   static void note_off(uint8_t note_number) {
     if (m_on_note_number[0] == note_number) {
-      m_on_note_number[0] = note_number;
+      m_on_note_number[0] = NOTE_NUMBER_INVALID;
       ++m_on_note_count;
       IOsc<0>::note_off<0>();
     } else if (m_on_note_number[1] == note_number) {
-      m_on_note_number[1] = note_number;
+      m_on_note_number[1] = NOTE_NUMBER_INVALID;
       ++m_on_note_count;
       IOsc<0>::note_off<1>();
     } else if (m_on_note_number[2] == note_number) {
-      m_on_note_number[2] = note_number;
+      m_on_note_number[2] = NOTE_NUMBER_INVALID;
       ++m_on_note_count;
       IOsc<0>::note_off<2>();
     } else if (m_on_note_number[3] == note_number) {
-      m_on_note_number[3] = note_number;
+      m_on_note_number[3] = NOTE_NUMBER_INVALID;
       ++m_on_note_count;
       IOsc<0>::note_off<3>();
     }
