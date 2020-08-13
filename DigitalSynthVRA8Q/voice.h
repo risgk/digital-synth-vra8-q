@@ -309,18 +309,20 @@ public:
   INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
-    uint8_t env_gen_output_0 = IGate<0>::clock(m_count);
-    uint8_t env_gen_output_1 = IGate<1>::clock(m_count);
-    uint8_t env_gen_output_2 = IGate<2>::clock(m_count);
-    uint8_t env_gen_output_3 = IGate<3>::clock(m_count);
-    uint8_t env_gen_output_4 = IEnvGen<0>::clock(m_count);
-    uint8_t env_gen_output_5 = IEnvGen<1>::clock(m_count);
+    uint8_t gate_output_0 = IGate<0>::clock(m_count);
+    uint8_t gate_output_1 = IGate<1>::clock(m_count);
+    uint8_t gate_output_2 = IGate<2>::clock(m_count);
+    uint8_t gate_output_3 = IGate<3>::clock(m_count);
+    uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
 
-    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_4,
-                                        env_gen_output_0, env_gen_output_1, env_gen_output_2, env_gen_output_3);
+    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0,
+                                        gate_output_0, gate_output_1, gate_output_2, gate_output_3);
+
     int16_t lfo_output = IOsc<0>::get_lfo_level();
-    int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_4, lfo_output);
-    int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_5);
+    int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
+
+    uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);
+    int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_1);
 
     // error diffusion
     int16_t output = amp_output + m_output_error;

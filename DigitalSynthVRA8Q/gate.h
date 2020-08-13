@@ -27,23 +27,7 @@ public:
 
   INLINE static uint8_t clock(uint8_t count) {
 #if 1
-    uint8_t match_count = 1;
-    switch (T) {
-    case 0:
-      match_count = 1;
-      break;
-    case 1:
-      match_count = 5;
-      break;
-    case 2:
-      match_count = 9;
-      break;
-    case 3:
-      match_count = 13;
-      break;
-    }
-
-    if ((count & (GATE_CONTROL_INTERVAL - 1)) == match_count) {
+    if ((count & (GATE_CONTROL_INTERVAL - 1)) == ((T * 4) + 1)) {
       //printf("%d Gate\n", count);
       if (m_state == STATE_ON) {
         if (m_level < GATE_LEVEL_MAX) {
