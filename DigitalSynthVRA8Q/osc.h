@@ -95,6 +95,8 @@ public:
     m_pitch_current[3] = m_pitch_target[3];
     m_pitch_real[0] = m_pitch_current[0];
     m_pitch_real[1] = m_pitch_current[1];
+    m_pitch_real[2] = m_pitch_current[2];
+    m_pitch_real[3] = m_pitch_current[3];
     m_wave_table[0] = g_osc_saw_wave_tables[0];
     m_wave_table[1] = g_osc_saw_wave_tables[0];
     m_wave_table[2] = g_osc_saw_wave_tables[0];
@@ -105,8 +107,12 @@ public:
     m_wave_table_temp[3] = g_osc_saw_wave_tables[0];
     m_freq[0] = g_osc_freq_table[0];
     m_freq[1] = g_osc_freq_table[0];
+    m_freq[2] = g_osc_freq_table[0];
+    m_freq[3] = g_osc_freq_table[0];
     m_freq_temp[0] = g_osc_freq_table[0];
     m_freq_temp[1] = g_osc_freq_table[0];
+    m_freq_temp[2] = g_osc_freq_table[0];
+    m_freq_temp[3] = g_osc_freq_table[0];
     m_phase[0] = 0;
     m_phase[1] = 0;
     m_phase[2] = 0;
@@ -116,6 +122,7 @@ public:
     m_osc_gain[2] = 0;
     m_osc_gain[3] = 0;
     m_pitch_eg_amt = 0;
+
     set_pitch_bend_minus_range(2);
     set_pitch_bend_plus_range(2);
   }
