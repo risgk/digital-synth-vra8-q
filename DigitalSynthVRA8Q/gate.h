@@ -6,7 +6,7 @@
 template <uint8_t T>
 class Gate {
   static const uint8_t STATE_OFF = 0;
-  static const uint8_t STATE_ON  = 1;
+  static const uint8_t STATE_ON  = 48;
 
   static uint8_t m_state;
   static uint8_t m_level;
@@ -26,6 +26,7 @@ public:
   }
 
   INLINE static uint8_t clock(uint8_t count) {
+    return m_state; // TENTATIVE CODE
 #if 1
     if ((count & (GATE_CONTROL_INTERVAL - 1)) == ((T * 4) + 1)) {
       //printf("%d Gate\n", count);
