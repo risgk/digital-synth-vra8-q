@@ -36,7 +36,7 @@ public:
     m_attack = 0;
     m_decay = 0;
     m_sustain = 127;
-    m_release = 127;
+    m_release = 0;
     m_amp_env_gen = 127;
     update_env_gen();
     m_rnd = 1;
