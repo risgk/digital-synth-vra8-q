@@ -144,27 +144,27 @@ var controllersInLocalStorage = [
 var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
-presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 127, 0  , 0  , 0  ];
+presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 127, 0  ];
 presetControllers[EG_TO_PITCH    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CUTOFF         ] = [127, 16 , 16 , 112, 0  , 100, 64 , 127];
-presetControllers[RESONANCE      ] = [0  , 80 , 127, 0  , 0  , 64 , 96 , 0  ];
-presetControllers[EG_TO_CUTOFF   ] = [64 , 112, 94 , 64 , 64 , 64 , 82 , 64 ];
-presetControllers[AMP_EG         ] = [0  , 0  , 127, 0  , 127, 127, 0  , 127];
+presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
+presetControllers[RESONANCE      ] = [96 , 80 , 32 , 64 , 0  , 0  , 0  , 0  ];
+presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
+presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
-presetControllers[ATTACK         ] = [0  , 0  , 0  , 0  , 32 , 16 , 0  , 0  ];
-presetControllers[DECAY          ] = [64 , 96 , 96 , 96 , 32 , 32 , 96 , 0  ];
-presetControllers[SUSTAIN        ] = [0  , 0  , 0  , 0  , 127, 96 , 0  , 127];
+presetControllers[ATTACK         ] = [0  , 0  , 96 , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[DECAY          ] = [0  , 64 , 96 , 96 , 0  , 0  , 0  , 0  ];
+presetControllers[SUSTAIN        ] = [127, 0  , 0  , 0  , 127, 127, 127, 127];
 
-presetControllers[LFO_DEPTH      ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 0  , 0  , 0  , 0  ];
 presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[LFO_TO_PITCH   ] = [66 , 66 , 66 , 66 , 66 , 66 , 66 , 66 ];
+presetControllers[LFO_TO_PITCH   ] = [66 , 66 , 66 , 66 , 66 , 66 , 66 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
-presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 16 , 16 , 16 ];
-presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 ];
-presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 127];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 40 , 24 , 32 ];
+presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 16 , 32 , 16 ];
+presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 60 , 60 , 80 ];
+presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 
@@ -418,10 +418,7 @@ function preset(number) {
 
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
-    if((i != OSC_LEVEL      ) &&
-       (i != RESONANCE_LIMIT) &&
-       (i != AMP_LEVEL      ) &&
-       (i != DAMP_AND_ATTACK)) {
+    if((i != CHORUS_MODE    )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -666,31 +663,31 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td>
     <td>&nbsp;</td>
-    <td>EXP (VEL)</td>
+    <td>EXP</td>
     <td>&nbsp;</td>
     <td><span id="spanCC11">-</span></td></tr>
 </table>
 
 <table>
 <tr><td>PRESET</td>
-    <td><input type="button" value="#4 ----"        onclick="preset(4)"></td>
+    <td><input type="button" value="#4 SAW"         onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 ----"        onclick="preset(5)"></td>
+    <td><input type="button" value="#5 SAW2"        onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 ----"        onclick="preset(6)"></td>
+    <td><input type="button" value="#6 PULSE"       onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>MISC</td>
     <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td></tr>
 <tr><td></td>
-    <td><input type="button" value="#0 QUAD"        onclick="preset(0)"></td>
+    <td><input type="button" value="#0 POLY"        onclick="preset(0)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#1 ----"        onclick="preset(1)"></td>
+    <td><input type="button" value="#1 BRASS"       onclick="preset(1)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#2 SAW"         onclick="preset(2)"></td>
+    <td><input type="button" value="#2 SOFT"        onclick="preset(2)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#3 PULSE"       onclick="preset(3)"></td>
+    <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
     <td><input type="button" value="ALL NOTES OFF"  onclick="allNotesOff()"></td></tr>
