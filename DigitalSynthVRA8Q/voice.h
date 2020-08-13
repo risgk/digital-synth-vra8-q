@@ -48,10 +48,10 @@ public:
     IEnvGen<4>::initialize();
     IEnvGen<5>::initialize();
 
-    IEnvGen<0>::set_gain(48);
-    IEnvGen<1>::set_gain(48);
-    IEnvGen<2>::set_gain(48);
-    IEnvGen<3>::set_gain(48);
+    IEnvGen<0>::set_gain(24);
+    IEnvGen<1>::set_gain(24);
+    IEnvGen<2>::set_gain(24);
+    IEnvGen<3>::set_gain(24);
 
     IDelayFx<0>::initialize();
 

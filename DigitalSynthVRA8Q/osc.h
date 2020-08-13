@@ -4,7 +4,6 @@
 #include "osc-table.h"
 #include "mul-q.h"
 #include <math.h>
-#include <stdio.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH = 31;
 
