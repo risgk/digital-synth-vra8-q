@@ -40,9 +40,21 @@ public:
     IOsc<0>::initialize();
     IFilter<0>::initialize();
     IAmp<0>::initialize();
+
     IEnvGen<0>::initialize();
     IEnvGen<1>::initialize();
+    IEnvGen<2>::initialize();
+    IEnvGen<3>::initialize();
+    IEnvGen<4>::initialize();
+    IEnvGen<5>::initialize();
+
+    IEnvGen<0>::set_gain(48);
+    IEnvGen<1>::set_gain(48);
+    IEnvGen<2>::set_gain(48);
+    IEnvGen<3>::set_gain(48);
+
     IDelayFx<0>::initialize();
+
     m_attack = 0;
     m_decay = 0;
     m_sustain = 127;
@@ -68,12 +80,21 @@ public:
 
     m_on_note_number[osc_index] = note_number;
     IOsc<0>::note_on(osc_index, note_number);
+    if        (osc_index == 0) {
+      IEnvGen<0>::note_on();
+    } else if (osc_index == 1) {
+      IEnvGen<1>::note_on();
+    } else if (osc_index == 2) {
+      IEnvGen<2>::note_on();
+    } else {
+      IEnvGen<3>::note_on();
+    }
 
     if ((old_on_note_count == 0) && (m_on_note_count > 0)) {
       IOsc<0>::set_portamento(0);
       IOsc<0>::trigger_lfo();
-      IEnvGen<0>::note_on();
-      IEnvGen<1>::note_on();
+      IEnvGen<4>::note_on();
+      IEnvGen<5>::note_on();
     }
   }
 
@@ -84,26 +105,30 @@ public:
       --m_on_note_count;
       note_queue_off(0);
       IOsc<0>::note_off(0);
+      IEnvGen<0>::note_off();
     } else if (m_on_note_number[1] == note_number) {
       m_on_note_number[1] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(1);
       IOsc<0>::note_off(1);
+      IEnvGen<1>::note_off();
     } else if (m_on_note_number[2] == note_number) {
       m_on_note_number[2] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(2);
       IOsc<0>::note_off(2);
+      IEnvGen<2>::note_off();
     } else if (m_on_note_number[3] == note_number) {
       m_on_note_number[3] = NOTE_NUMBER_INVALID;
       --m_on_note_count;
       note_queue_off(3);
       IOsc<0>::note_off(3);
+      IEnvGen<3>::note_off();
     }
 
     if (m_on_note_count == 0) {
-      IEnvGen<0>::note_off();
-      IEnvGen<1>::note_off();
+      IEnvGen<4>::note_off();
+      IEnvGen<5>::note_off();
     }
   }
 
@@ -122,15 +147,15 @@ public:
     IOsc<0>::note_off(1);
     IOsc<0>::note_off(2);
     IOsc<0>::note_off(3);
-    IEnvGen<0>::note_off();
-    IEnvGen<1>::note_off();
+    IEnvGen<4>::note_off();
+    IEnvGen<5>::note_off();
   }
 
   INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
     case EXPRESSION     :
       IFilter<0>::set_expression(controller_value);
-      IEnvGen<1>::set_expression(controller_value);
+      IEnvGen<5>::set_expression(controller_value);
       break;
     case MODULATION     :
       IOsc<0>::set_lfo_depth<1>(controller_value);
@@ -153,10 +178,10 @@ public:
     case ATTACK         :
       m_attack = controller_value;
       if (m_amp_env_gen >= 64) {
-        IEnvGen<0>::set_attack(m_attack);
-        IEnvGen<1>::set_attack(m_attack);
+        IEnvGen<4>::set_attack(m_attack);
+        IEnvGen<5>::set_attack(m_attack);
       } else {
-        IEnvGen<0>::set_attack(m_attack);
+        IEnvGen<4>::set_attack(m_attack);
       }
       break;
 
@@ -169,10 +194,10 @@ public:
         m_sustain = controller_value;
 
         if (m_amp_env_gen >= 64) {
-          IEnvGen<0>::set_sustain(m_sustain);
-          IEnvGen<1>::set_sustain(m_sustain);
+          IEnvGen<4>::set_sustain(m_sustain);
+          IEnvGen<5>::set_sustain(m_sustain);
         } else {
-          IEnvGen<0>::set_sustain(m_sustain);
+          IEnvGen<4>::set_sustain(m_sustain);
         }
       }
       break;
@@ -289,11 +314,17 @@ public:
     ++m_count;
 
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
-    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0);
-    int16_t lfo_output = IOsc<0>::get_lfo_level();
-    int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
     uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);
-    int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_1);
+    uint8_t env_gen_output_2 = IEnvGen<2>::clock(m_count);
+    uint8_t env_gen_output_3 = IEnvGen<3>::clock(m_count);
+    uint8_t env_gen_output_4 = IEnvGen<4>::clock(m_count);
+    uint8_t env_gen_output_5 = IEnvGen<5>::clock(m_count);
+
+    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_4,
+                                        env_gen_output_0, env_gen_output_1, env_gen_output_2, env_gen_output_3);
+    int16_t lfo_output = IOsc<0>::get_lfo_level();
+    int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_4, lfo_output);
+    int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_5);
 
     // error diffusion
     int16_t output = amp_output + m_output_error;
@@ -328,53 +359,53 @@ private:
 
   INLINE static void update_decay_release() {
     if (m_amp_env_gen >= 64) {
-      IEnvGen<0>::set_decay(m_decay);
-      IEnvGen<1>::set_decay(m_decay);
+      IEnvGen<4>::set_decay(m_decay);
+      IEnvGen<5>::set_decay(m_decay);
       if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-        IEnvGen<1>::set_release(m_decay);
+        IEnvGen<4>::set_release(m_decay);
+        IEnvGen<5>::set_release(m_decay);
       } else {
-        IEnvGen<0>::set_release(0);
-        IEnvGen<1>::set_release(0);
+        IEnvGen<4>::set_release(0);
+        IEnvGen<5>::set_release(0);
       }
     } else {
-      IEnvGen<0>::set_decay(m_decay);
+      IEnvGen<4>::set_decay(m_decay);
       if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
+        IEnvGen<4>::set_release(m_decay);
       } else {
-        IEnvGen<0>::set_release(0);
+        IEnvGen<4>::set_release(0);
       }
     }
   }
 
   INLINE static void update_env_gen() {
     if (m_amp_env_gen >= 64) {
-      IEnvGen<0>::set_attack(m_attack);
-      IEnvGen<1>::set_attack(m_attack);
-      IEnvGen<0>::set_decay(m_decay);
-      IEnvGen<1>::set_decay(m_decay);
-      IEnvGen<0>::set_sustain(m_sustain);
-      IEnvGen<1>::set_sustain(m_sustain);
+      IEnvGen<4>::set_attack(m_attack);
+      IEnvGen<5>::set_attack(m_attack);
+      IEnvGen<4>::set_decay(m_decay);
+      IEnvGen<5>::set_decay(m_decay);
+      IEnvGen<4>::set_sustain(m_sustain);
+      IEnvGen<5>::set_sustain(m_sustain);
       if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-        IEnvGen<1>::set_release(m_decay);
+        IEnvGen<4>::set_release(m_decay);
+        IEnvGen<5>::set_release(m_decay);
       } else {
-        IEnvGen<0>::set_release(0);
-        IEnvGen<1>::set_release(0);
+        IEnvGen<4>::set_release(0);
+        IEnvGen<5>::set_release(0);
       }
     } else {
-      IEnvGen<0>::set_attack(m_attack);
-      IEnvGen<1>::set_attack(0);
-      IEnvGen<0>::set_decay(m_decay);
-      IEnvGen<1>::set_decay(0);
-      IEnvGen<0>::set_sustain(m_sustain);
-      IEnvGen<1>::set_sustain(127);
+      IEnvGen<4>::set_attack(m_attack);
+      IEnvGen<5>::set_attack(0);
+      IEnvGen<4>::set_decay(m_decay);
+      IEnvGen<5>::set_decay(0);
+      IEnvGen<4>::set_sustain(m_sustain);
+      IEnvGen<5>::set_sustain(127);
       if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
+        IEnvGen<4>::set_release(m_decay);
       } else {
-        IEnvGen<0>::set_release(0);
+        IEnvGen<4>::set_release(0);
       }
-      IEnvGen<1>::set_release(0);
+      IEnvGen<5>::set_release(0);
     }
   }
 

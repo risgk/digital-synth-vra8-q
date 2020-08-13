@@ -14,7 +14,6 @@ class Osc {
   static const uint8_t LFO_FADE_COEF_ON_MIN = 2;
   static const uint8_t LFO_FADE_LEVEL_MAX   = 128;
 
-  static uint8_t        m_mix[4];
   static uint8_t        m_portamento_coef;
   static int16_t        m_lfo_mod_level;
   static uint16_t       m_lfo_phase;
@@ -58,10 +57,6 @@ class Osc {
 
 public:
   INLINE static void initialize() {
-    m_mix[0] = 48;
-    m_mix[1] = 48;
-    m_mix[2] = 48;
-    m_mix[3] = 48;
     m_portamento_coef = 0;
 
     m_lfo_mod_level = 0;
@@ -278,7 +273,7 @@ public:
     return m_chorus_delay_time;
   }
 
-  INLINE static int16_t clock(uint8_t count, uint8_t eg_level) {
+  INLINE static int16_t clock(uint8_t count, uint8_t eg_level, uint8_t gain_0, uint8_t gain_1, uint8_t gain_2, uint8_t gain_3) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       switch (count & (0x1F << OSC_CONTROL_INTERVAL_BITS)) {
@@ -330,10 +325,10 @@ public:
     int8_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
 
     // amp and mix
-    int16_t level_0 = wave_0 * m_mix[0];
-    int16_t level_1 = wave_1 * m_mix[1];
-    int16_t level_2 = wave_2 * m_mix[2];
-    int16_t level_3 = wave_3 * m_mix[3];
+    int16_t level_0 = wave_0 * gain_0;
+    int16_t level_1 = wave_1 * gain_1;
+    int16_t level_2 = wave_2 * gain_2;
+    int16_t level_3 = wave_3 * gain_3;
     int16_t result  = level_0 + level_1 + level_2 + level_3;
 #else
     int16_t result  = 0;
@@ -582,7 +577,6 @@ private:
   }
 };
 
-template <uint8_t T> uint8_t         Osc<T>::m_mix[4];
 template <uint8_t T> uint8_t         Osc<T>::m_portamento_coef;
 template <uint8_t T> int16_t         Osc<T>::m_lfo_mod_level;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_phase;
