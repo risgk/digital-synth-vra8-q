@@ -9,7 +9,8 @@ class Voice {
 
   static uint8_t  m_note_queue[4];
   static uint8_t  m_on_note_number[4];
-  static uint8_t  m_on_note_count;
+  static uint8_t  m_on_note_count[4];
+  static uint8_t  m_on_note_total_count;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -33,7 +34,11 @@ public:
     m_on_note_number[1] = NOTE_NUMBER_INVALID;
     m_on_note_number[2] = NOTE_NUMBER_INVALID;
     m_on_note_number[3] = NOTE_NUMBER_INVALID;
-    m_on_note_count = 0;
+    m_on_note_count[0] = 0;
+    m_on_note_count[1] = 0;
+    m_on_note_count[2] = 0;
+    m_on_note_count[3] = 0;
+    m_on_note_total_count = 0;
 
     m_output_error = 0;
     m_portamento = 0;
@@ -57,22 +62,46 @@ public:
 
   INLINE
   static void note_on(uint8_t note_number, uint8_t /* velocity */) {
-    uint8_t old_on_note_count = m_on_note_count;
+    uint8_t old_on_note_total_count = m_on_note_total_count;
 
-    uint8_t osc_index = m_note_queue[0];
-    m_note_queue[0] = m_note_queue[1];
-    m_note_queue[1] = m_note_queue[2];
-    m_note_queue[2] = m_note_queue[3];
-    m_note_queue[3] = osc_index;
+    if (m_on_note_number[0] == note_number) {
+      if (m_on_note_total_count < 255) {
+        ++m_on_note_total_count;
+        ++m_on_note_count[0];
+      }
+    } else if (m_on_note_number[1] == note_number) {
+      if (m_on_note_total_count < 255) {
+        ++m_on_note_total_count;
+        ++m_on_note_count[1];
+      }
+    } else if (m_on_note_number[2] == note_number) {
+      if (m_on_note_total_count < 255) {
+        ++m_on_note_total_count;
+        ++m_on_note_count[2];
+      }
+    } else if (m_on_note_number[3] == note_number) {
+      if (m_on_note_total_count < 255) {
+        ++m_on_note_total_count;
+        ++m_on_note_count[3];
+      }
+    } else {
+      if (m_on_note_total_count < 255) {
+        uint8_t osc_index = m_note_queue[0];
+        m_note_queue[0] = m_note_queue[1];
+        m_note_queue[1] = m_note_queue[2];
+        m_note_queue[2] = m_note_queue[3];
+        m_note_queue[3] = osc_index;
 
-    if (m_on_note_number[osc_index] == NOTE_NUMBER_INVALID) {
-      ++m_on_note_count;
+        m_on_note_total_count -= m_on_note_count[osc_index];
+        ++m_on_note_total_count;
+        m_on_note_count[osc_index] = 1;
+
+        m_on_note_number[osc_index] = note_number;
+        IOsc<0>::note_on(osc_index, note_number);
+      }
     }
 
-    m_on_note_number[osc_index] = note_number;
-    IOsc<0>::note_on(osc_index, note_number);
-
-    if ((old_on_note_count == 0) && (m_on_note_count > 0)) {
+    if ((old_on_note_total_count == 0) && (m_on_note_total_count > 0)) {
       IOsc<0>::set_portamento(0);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
@@ -83,28 +112,44 @@ public:
   INLINE
   static void note_off(uint8_t note_number) {
     if (m_on_note_number[0] == note_number) {
-      m_on_note_number[0] = NOTE_NUMBER_INVALID;
-      --m_on_note_count;
-      note_queue_off(0);
-      IOsc<0>::note_off(0);
+      --m_on_note_total_count;
+      --m_on_note_count[0];
+
+      if (m_on_note_count[0] == 0) {
+        m_on_note_number[0] = NOTE_NUMBER_INVALID;
+        note_queue_off(0);
+        IOsc<0>::note_off(0);
+      }
     } else if (m_on_note_number[1] == note_number) {
-      m_on_note_number[1] = NOTE_NUMBER_INVALID;
-      --m_on_note_count;
-      note_queue_off(1);
-      IOsc<0>::note_off(1);
+      --m_on_note_total_count;
+      --m_on_note_count[1];
+
+      if (m_on_note_count[1] == 0) {
+        m_on_note_number[1] = NOTE_NUMBER_INVALID;
+        note_queue_off(1);
+        IOsc<0>::note_off(1);
+      }
     } else if (m_on_note_number[2] == note_number) {
-      m_on_note_number[2] = NOTE_NUMBER_INVALID;
-      --m_on_note_count;
-      note_queue_off(2);
-      IOsc<0>::note_off(2);
+      --m_on_note_total_count;
+      --m_on_note_count[2];
+
+      if (m_on_note_count[2] == 0) {
+        m_on_note_number[2] = NOTE_NUMBER_INVALID;
+        note_queue_off(2);
+        IOsc<0>::note_off(2);
+      }
     } else if (m_on_note_number[3] == note_number) {
-      m_on_note_number[3] = NOTE_NUMBER_INVALID;
-      --m_on_note_count;
-      note_queue_off(3);
-      IOsc<0>::note_off(3);
+      --m_on_note_total_count;
+      --m_on_note_count[3];
+
+      if (m_on_note_count[3] == 0) {
+        m_on_note_number[3] = NOTE_NUMBER_INVALID;
+        note_queue_off(3);
+        IOsc<0>::note_off(3);
+      }
     }
 
-    if (m_on_note_count == 0) {
+    if (m_on_note_total_count == 0) {
       IEnvGen<0>::note_off();
       IEnvGen<1>::note_off();
     }
@@ -116,7 +161,11 @@ public:
     m_on_note_number[1] = NOTE_NUMBER_INVALID;
     m_on_note_number[2] = NOTE_NUMBER_INVALID;
     m_on_note_number[3] = NOTE_NUMBER_INVALID;
-    m_on_note_count = 0;
+    m_on_note_count[0] = 0;
+    m_on_note_count[1] = 0;
+    m_on_note_count[2] = 0;
+    m_on_note_count[3] = 0;
+    m_on_note_total_count = 0;
     m_note_queue[0] = 0;
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
@@ -395,7 +444,8 @@ template <uint8_t T> uint8_t  Voice<T>::m_count;
 
 template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
 template <uint8_t T> uint8_t  Voice<T>::m_on_note_number[4];
-template <uint8_t T> uint8_t  Voice<T>::m_on_note_count;
+template <uint8_t T> uint8_t  Voice<T>::m_on_note_count[4];
+template <uint8_t T> uint8_t  Voice<T>::m_on_note_total_count;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
