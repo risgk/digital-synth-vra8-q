@@ -316,7 +316,7 @@ public:
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
 
     int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0,
-                                        gate_output_0, gate_output_1, gate_output_2, gate_output_3);
+                                        0, 0, 0, 0);
 
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);

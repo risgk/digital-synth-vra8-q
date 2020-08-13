@@ -51,7 +51,7 @@ class Osc {
   static uint16_t       m_freq[4];
   static uint16_t       m_freq_temp[4];
   static uint16_t       m_phase[4];
-  static boolean        m_note_on[4];
+  static uint8_t        m_osc_gain[4];
   static int16_t        m_pitch_eg_amt;
 
 public:
@@ -111,10 +111,10 @@ public:
     m_phase[1] = 0;
     m_phase[2] = 0;
     m_phase[3] = 0;
-    m_note_on[0] = false;
-    m_note_on[1] = false;
-    m_note_on[2] = false;
-    m_note_on[3] = false;
+    m_osc_gain[0] = 0;
+    m_osc_gain[1] = 0;
+    m_osc_gain[2] = 0;
+    m_osc_gain[3] = 0;
     m_pitch_eg_amt = 0;
     set_pitch_bend_minus_range(2);
     set_pitch_bend_plus_range(2);
@@ -224,11 +224,11 @@ public:
 
   INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
     m_pitch_target[osc_index] = note_number << 8;
-    m_note_on[osc_index] = true;
+    m_osc_gain[osc_index] = 48;
   }
 
   INLINE static void note_off(uint8_t osc_index) {
-    m_note_on[osc_index] = false;
+    m_osc_gain[osc_index] = 0;
   }
 
   INLINE static void trigger_lfo() {
@@ -325,10 +325,10 @@ public:
     int8_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
 
     // amp and mix
-    int16_t level_0 = wave_0 * gain_0;
-    int16_t level_1 = wave_1 * gain_1;
-    int16_t level_2 = wave_2 * gain_2;
-    int16_t level_3 = wave_3 * gain_3;
+    int16_t level_0 = wave_0 * m_osc_gain[0];
+    int16_t level_1 = wave_1 * m_osc_gain[1];
+    int16_t level_2 = wave_2 * m_osc_gain[2];
+    int16_t level_3 = wave_3 * m_osc_gain[3];
     int16_t result  = level_0 + level_1 + level_2 + level_3;
 #else
     int16_t result  = 0;
@@ -412,7 +412,7 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_0th() {
-    if (m_note_on[N]) {
+    if (m_osc_gain[N] != 0) {
       m_pitch_current[N] = m_pitch_target[N] - mul_q15_q8(m_pitch_target[N] - m_pitch_current[N], m_portamento_coef);
     }
 
@@ -615,5 +615,5 @@ template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
-template <uint8_t T> boolean         Osc<T>::m_note_on[4];
+template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
 template <uint8_t T> int16_t         Osc<T>::m_pitch_eg_amt;
