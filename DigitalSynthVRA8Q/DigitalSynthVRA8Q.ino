@@ -2,7 +2,7 @@
 // Digital Synth VRA8-Q -- We strongly recommend Arduino AVR Boards core 1.8.3 //
 /////////////////////////////////////////////////////////////////////////////////
 
-#define DEBUG
+//#define DEBUG
 
 #define SERIAL_SPEED (38400)            // For Serial MIDI
 //#define SERIAL_SPEED (31250)            // For MIDI Shield (MIDI Breakout)
