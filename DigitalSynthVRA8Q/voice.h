@@ -61,8 +61,7 @@ public:
     m_rnd = 1;
   }
 
-  INLINE
-  static void note_on(uint8_t note_number, uint8_t /* velocity */) {
+  INLINE static void note_on(uint8_t note_number, uint8_t /* velocity */) {
     uint8_t old_on_note_total_count = m_on_note_total_count;
 
     if        (m_on_note_number[0] == note_number) {
@@ -110,8 +109,7 @@ public:
     }
   }
 
-  INLINE
-  static void note_off(uint8_t note_number) {
+  INLINE static void note_off(uint8_t note_number) {
     if (m_on_note_number[0] == note_number) {
       --m_on_note_total_count;
       --m_on_note_count[0];
@@ -156,8 +154,7 @@ public:
     }
   }
 
-  INLINE
-  static void all_note_off() {
+  INLINE static void all_note_off() {
     m_on_note_number[0] = NOTE_NUMBER_INVALID;
     m_on_note_number[1] = NOTE_NUMBER_INVALID;
     m_on_note_number[2] = NOTE_NUMBER_INVALID;
@@ -182,7 +179,6 @@ public:
   INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
     case EXPRESSION     :
-      IFilter<0>::set_expression(controller_value);
       IEnvGen<1>::set_expression(controller_value);
       break;
     case MODULATION     :
@@ -262,12 +258,7 @@ public:
       break;
 
     case P_BEND_RANGE   :
-      IOsc<0>::set_pitch_bend_minus_range(controller_value);
-      IOsc<0>::set_pitch_bend_plus_range(controller_value);
-      break;
-
-    case EG_TO_PITCH    :
-      IOsc<0>::set_pitch_eg_amt(controller_value);
+      IOsc<0>::set_pitch_bend_range(controller_value);
       break;
 
     case ALL_NOTES_OFF  :
@@ -306,47 +297,42 @@ public:
     IOsc<0>::set_pitch_bend(pitch_bend);
   }
 
-  static void program_change(uint8_t program_number) {
-    {
-      if (program_number > PROGRAM_NUMBER_MAX) {
-        return;
-      }
-
-      control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
-      control_change(EG_TO_PITCH    , g_preset_table_EG_TO_PITCH    [program_number]);
-
-      control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
-      control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
-      control_change(EG_TO_CUTOFF   , g_preset_table_EG_TO_CUTOFF   [program_number]);
-      control_change(AMP_EG         , g_preset_table_AMP_EG         [program_number]);
-
-      control_change(ATTACK         , g_preset_table_ATTACK         [program_number]);
-      control_change(DECAY          , g_preset_table_DECAY          [program_number]);
-      control_change(SUSTAIN        , g_preset_table_SUSTAIN        [program_number]);
-
-      control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
-      control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
-      control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
-      control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
-
-      control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
-      control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
-      control_change(CHORUS_DELAY_T , g_preset_table_CHORUS_DELAY_T [program_number]);
-      control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
-
-      control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
+  /* INLINE */ static void program_change(uint8_t program_number) {
+    if (program_number > PROGRAM_NUMBER_MAX) {
+      return;
     }
+
+    control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
+
+    control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
+    control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
+    control_change(EG_TO_CUTOFF   , g_preset_table_EG_TO_CUTOFF   [program_number]);
+    control_change(AMP_EG         , g_preset_table_AMP_EG         [program_number]);
+
+    control_change(ATTACK         , g_preset_table_ATTACK         [program_number]);
+    control_change(DECAY          , g_preset_table_DECAY          [program_number]);
+    control_change(SUSTAIN        , g_preset_table_SUSTAIN        [program_number]);
+
+    control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
+    control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
+    control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
+    control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
+
+    control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
+    control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
+    control_change(CHORUS_DELAY_T , g_preset_table_CHORUS_DELAY_T [program_number]);
+    control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
+
+    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
+    int16_t osc_output = IOsc<0>::clock(m_count);
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
-    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0);
-
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
-
     uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);
     int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_1);
 

@@ -21,8 +21,6 @@ class Filter {
   static uint8_t         m_cutoff;
   static int8_t          m_cutoff_env_gen_amt;
   static int8_t          m_cutoff_lfo_amt;
-  static uint8_t         m_cutoff_expression_decrease;
-  static int8_t          m_cutoff_exp_amt;
 
   static const uint8_t AUDIO_FRACTION_BITS = 14;
   static const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
@@ -42,8 +40,6 @@ public:
     set_resonance(0);
     set_cutoff_env_amt(64);
     set_cutoff_lfo_amt(64);
-    set_cutoff_exp_amt(0);
-    set_expression(127);
 
     update_coefs_0th(0);
     update_coefs_1st(0);
@@ -87,21 +83,6 @@ public:
     }
 
     m_cutoff_lfo_amt = (value - 64) << 1;
-  }
-
-  INLINE static void set_cutoff_exp_amt(uint8_t controller_value) {
-    uint8_t value = controller_value;
-    if (value < 16) {
-      value = 16;
-    } else if (112 < value) {
-      value = 112;
-    }
-
-    m_cutoff_exp_amt = (value - 64) << 1;
-  }
-
-  INLINE static void set_expression(uint8_t controller_value) {
-    m_cutoff_expression_decrease = 254 - (controller_value << 1);
   }
 
   INLINE static int16_t clock(uint8_t count, int16_t audio_input, uint8_t env_gen_input, int16_t lfo_input) {
@@ -152,31 +133,20 @@ public:
 private:
   INLINE static void update_coefs_0th(uint8_t env_gen_input) {
     m_cutoff_candidate = m_cutoff;
-    m_cutoff_candidate -= high_sbyte(m_cutoff_exp_amt * m_cutoff_expression_decrease);
     m_cutoff_candidate += high_sbyte((m_cutoff_env_gen_amt * env_gen_input) << 1);
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {
-    int8_t lfo_mod = high_sbyte(mul_q15_q7(lfo_input, m_cutoff_lfo_amt) << 1);
-    m_cutoff_candidate -= lfo_mod;
+    m_cutoff_candidate -= high_sbyte(mul_q15_q7(lfo_input, m_cutoff_lfo_amt) << 1);
   }
 
   INLINE static void update_coefs_2nd() {
-    uint8_t cutoff_target;
     if (m_cutoff_candidate > 127) {
-      cutoff_target = 127;
+      m_cutoff_current = 127;
     } else if (m_cutoff_candidate < 0) {
-      cutoff_target = 0;
+      m_cutoff_current = 0;
     } else {
-      cutoff_target = m_cutoff_candidate;
-    }
-
-    if (m_cutoff_current + FILTER_CUTOFF_THROUGH_RATE < cutoff_target) {
-      m_cutoff_current += FILTER_CUTOFF_THROUGH_RATE;
-    } else if (m_cutoff_current > cutoff_target + FILTER_CUTOFF_THROUGH_RATE) {
-      m_cutoff_current -= FILTER_CUTOFF_THROUGH_RATE;
-    } else {
-      m_cutoff_current = cutoff_target;
+      m_cutoff_current = m_cutoff_candidate;
     }
   }
 
@@ -203,5 +173,3 @@ template <uint8_t T> int16_t         Filter<T>::m_cutoff_candidate;
 template <uint8_t T> uint8_t         Filter<T>::m_cutoff;
 template <uint8_t T> int8_t          Filter<T>::m_cutoff_env_gen_amt;
 template <uint8_t T> int8_t          Filter<T>::m_cutoff_lfo_amt;
-template <uint8_t T> uint8_t         Filter<T>::m_cutoff_expression_decrease;
-template <uint8_t T> int8_t          Filter<T>::m_cutoff_exp_amt;

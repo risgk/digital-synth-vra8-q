@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v0.1.1";
+const APP_NAME_VERSION = "VRA8-Q CTRL v0.2.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -53,7 +53,6 @@ const MODULATION      = 1;
 const EXPRESSION      = 11;
 
 const OSC_WAVE        = 24;
-const EG_TO_PITCH     = 104;
 
 const CUTOFF          = 16;
 const RESONANCE       = 17;
@@ -91,7 +90,6 @@ const SP_PROG_CHG_7   = 119;
 
 var controlNumberToStringMap = new Map([
   [ OSC_WAVE       , "OSC_WAVE       " ],
-  [ EG_TO_PITCH    , "EG_TO_PITCH    " ],
 
   [ CUTOFF         , "CUTOFF         " ],
   [ RESONANCE      , "RESONANCE      " ],
@@ -117,7 +115,6 @@ var controlNumberToStringMap = new Map([
 
 var controllersInLocalStorage = [
   OSC_WAVE       ,
-  EG_TO_PITCH    ,
 
   CUTOFF         ,
   RESONANCE      ,
@@ -145,7 +142,6 @@ var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
-presetControllers[EG_TO_PITCH    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
 presetControllers[RESONANCE      ] = [96 , 80 , 32 , 64 , 0  , 0  , 0  , 0  ];
@@ -384,7 +380,6 @@ function updateDisplayOfControl(number, value) {
   document.getElementById("inputCC" + String(number)).value = parseInt(value);
 
   switch (number) {
-  case EG_TO_PITCH    :
   case EG_TO_CUTOFF   :
   case LFO_TO_PITCH   :
   case LFO_TO_CUTOFF  :
@@ -564,7 +559,6 @@ function fileExport() {
   str += "  \"_version     \" : \"" + APP_NAME_VERSION + "\",\n";
   str += "  \"_comment     \" : \"  CURRENT  #8   #9   #10  #11  #12  #13  #14  #15  \",\n";
   str += fileExportOneLine(OSC_WAVE       );
-  str += fileExportOneLine(EG_TO_PITCH    );
   str += "\n";
   str += fileExportOneLine(CUTOFF         );
   str += fileExportOneLine(RESONANCE      );
@@ -744,13 +738,13 @@ function getStoredCCValueString(index, number) {
 
 <table>
 <tr><td>OSC (SAW/PUL)         </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>EG > PITCH (-/+)      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
 <tr><td><input  id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_WAVE       , value)"></td>
     <td><span    id="spanCC24">-1</span></td>
-    <td><input id="inputCC104" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_PITCH    , value)"></td>
-    <td><span   id="spanCC104">-1</span></td>
+    <td></td>
+    <td></td>
     <td></td>
     <td></td>
     <td></td>

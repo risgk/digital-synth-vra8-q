@@ -8,7 +8,6 @@ class EnvGen {
   static const uint8_t STATE_ATTACK             = 0;
   static const uint8_t STATE_SUSTAIN            = 1;
   static const uint8_t STATE_IDLE               = 2;
-  static const uint8_t STATE_DAMP_BEFORE_ATTACK = 3;
 
   static uint8_t  m_state;
   static uint16_t m_level;
@@ -22,7 +21,6 @@ class EnvGen {
   static uint8_t  m_expression;
   static uint8_t  m_amp_exp_amt;
   static uint8_t  m_gain_coef;
-  static uint8_t  m_damp_atk;
 
 public:
   INLINE static void initialize() {
@@ -36,19 +34,18 @@ public:
     set_gain(127);
     set_expression(127);
     set_amp_exp_amt(127);
-    m_damp_atk = 0;
   }
 
   INLINE static void set_attack(uint8_t controller_value) {
-    m_attack_update_coef = (controller_value + 2) >> 2;
+    m_attack_update_coef = (controller_value + 6) >> 2;
   }
 
   INLINE static void set_decay(uint8_t controller_value) {
-    m_decay_update_coef = (controller_value + 2) >> 2;
+    m_decay_update_coef = (controller_value + 6) >> 2;
   }
 
   INLINE static void set_release(uint8_t controller_value) {
-    m_release_update_coef = (controller_value + 2) >> 2;
+    m_release_update_coef = (controller_value + 6) >> 2;
   }
 
   INLINE static void set_sustain(uint8_t controller_value) {
@@ -77,31 +74,14 @@ public:
     update_gain_coef();
   }
 
-  INLINE static void set_damp_atk(uint8_t controller_value) {
-    m_damp_atk = controller_value;
-  }
-
   INLINE static void note_on() {
-    if ((m_damp_atk >= 64) && (m_level > 0)) {
-      m_state = STATE_DAMP_BEFORE_ATTACK;
-      m_rest = 1;
-    } else {
-      m_state = STATE_ATTACK;
-      if (m_attack_update_coef == 0) {
-        m_rest = 1;
-      } else {
-        m_rest = m_attack_update_coef;
-      }
-    }
+    m_state = STATE_ATTACK;
+    m_rest = m_attack_update_coef;
   }
 
   INLINE static void note_off() {
     m_state = STATE_IDLE;
-    if (m_release_update_coef == 0) {
-      m_rest = 1;
-    } else {
-      m_rest = m_release_update_coef;
-    }
+    m_rest = m_release_update_coef;
   }
 
   INLINE static uint8_t clock(uint8_t count) {
@@ -112,26 +92,16 @@ public:
       case STATE_ATTACK:
         --m_rest;
         if (m_rest == 0) {
-          if (m_attack_update_coef == 0) {
-            m_rest = 1;
-          } else {
-            m_rest = m_attack_update_coef;
-          }
+          m_rest = m_attack_update_coef;
+
           uint8_t coef;
-          if (m_attack_update_coef == 0) {
-            coef = 189;
-          } else {
-            coef = 223 + m_attack_update_coef;
-          }
+          coef = 223 + m_attack_update_coef;
+
           m_level = ENV_GEN_LEVEL_MAX_X_1_5 - mul_q16_q8(ENV_GEN_LEVEL_MAX_X_1_5 - m_level, coef);
           if (m_level >= ENV_GEN_LEVEL_MAX) {
             m_level = ENV_GEN_LEVEL_MAX;
             m_state = STATE_SUSTAIN;
-            if (m_decay_update_coef == 0) {
-              m_rest = 1;
-            } else {
-              m_rest = m_decay_update_coef;
-            }
+            m_rest = m_decay_update_coef;
           }
         }
         break;
@@ -139,18 +109,12 @@ public:
       case STATE_SUSTAIN:
         --m_rest;
         if (m_rest == 0) {
-          if (m_decay_update_coef == 0) {
-            m_rest = 1;
-          } else {
-            m_rest = m_decay_update_coef;
-          }
+          m_rest = m_decay_update_coef;
+
           if (m_level > m_sustain) {
             uint8_t coef;
-            if (m_decay_update_coef == 0) {
-              coef = 189;
-            } else {
-              coef = 223 + m_decay_update_coef;
-            }
+            coef = 223 + m_decay_update_coef;
+
             m_level = m_sustain + mul_q16_q8(m_level - m_sustain, coef);
             if (m_level < m_sustain) {
               m_level = m_sustain;
@@ -162,40 +126,15 @@ public:
       case STATE_IDLE:
         --m_rest;
         if (m_rest == 0) {
-          if (m_release_update_coef == 0) {
-            m_rest = 1;
-          } else {
-            m_rest = m_release_update_coef;
-          }
+          m_rest = m_release_update_coef;
+
           if (m_level > 0) {
             uint8_t coef;
-            if (m_release_update_coef == 0) {
-              coef = 189;
-            } else {
-              coef = 223 + m_release_update_coef;
-            }
+            coef = 223 + m_release_update_coef;
+
             m_level = mul_q16_q8(m_level, coef);
             if (m_level < 0x0100) {
               m_level = 0;
-            }
-          }
-        }
-        break;
-
-      case STATE_DAMP_BEFORE_ATTACK:
-        --m_rest;
-        if (m_rest == 0) {
-          m_rest = 1;
-          if (m_level > 0) {
-            m_level = mul_q16_q8(m_level, 253 - m_damp_atk);
-            if (m_level < 0x0100) {
-              m_level = 0;
-              m_state = STATE_ATTACK;
-              if (m_attack_update_coef == 0) {
-                m_rest = 1;
-              } else {
-                m_rest = m_attack_update_coef;
-              }
             }
           }
         }
@@ -235,4 +174,3 @@ template <uint8_t T> uint8_t  EnvGen<T>::m_gain;
 template <uint8_t T> uint8_t  EnvGen<T>::m_expression;
 template <uint8_t T> uint8_t  EnvGen<T>::m_amp_exp_amt;
 template <uint8_t T> uint8_t  EnvGen<T>::m_gain_coef;
-template <uint8_t T> uint8_t  EnvGen<T>::m_damp_atk;
