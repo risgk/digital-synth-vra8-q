@@ -24,7 +24,6 @@ const uint16_t  OSC_DETUNE_FREQ_MIN          = 64;
 const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
 const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
-const uint8_t   FILTER_CUTOFF_THROUGH_RATE   = 24;
 const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
 const uint8_t   ENV_GEN_CONTROL_INTERVAL     = 0x10;
 const uint16_t  ENV_GEN_LEVEL_MAX            = 0x8000;
