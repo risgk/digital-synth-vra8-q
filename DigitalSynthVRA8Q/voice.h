@@ -261,8 +261,7 @@ public:
       break;
 
     case P_BEND_RANGE   :
-      IOsc<0>::set_pitch_bend_minus_range(controller_value);
-      IOsc<0>::set_pitch_bend_plus_range(controller_value);
+      IOsc<0>::set_pitch_bend_range(controller_value);
       break;
 
     case ALL_NOTES_OFF  :

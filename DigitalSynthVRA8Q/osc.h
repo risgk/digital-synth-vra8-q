@@ -37,8 +37,7 @@ class Osc {
 
   static uint8_t        m_waveform;
   static int16_t        m_pitch_bend;
-  static uint8_t        m_pitch_bend_minus_range;
-  static uint8_t        m_pitch_bend_plus_range;
+  static uint8_t        m_pitch_bend_range;
   static int16_t        m_pitch_bend_normalized;
   static uint16_t       m_pitch_target[4];
   static uint16_t       m_pitch_current[4];
@@ -115,8 +114,8 @@ public:
     m_osc_gain[2] = 0;
     m_osc_gain[3] = 0;
 
-    set_pitch_bend_minus_range(2);
-    set_pitch_bend_plus_range(2);
+    set_pitch_bend_range(2);
+    set_pitch_bend_range(2);
   }
 
   INLINE static void set_osc_waveforms(uint8_t controller_value) {
@@ -215,21 +214,12 @@ public:
     }
   }
 
-  INLINE static void set_pitch_bend_minus_range(uint8_t controller_value) {
+  INLINE static void set_pitch_bend_range(uint8_t controller_value) {
     uint8_t range = controller_value;
     if (range > 24) {
       range = 24;
     }
-    m_pitch_bend_minus_range = range;
-    update_pitch_bend();
-  }
-
-  INLINE static void set_pitch_bend_plus_range(uint8_t controller_value) {
-    uint8_t range = controller_value;
-    if (range > 24) {
-      range = 24;
-    }
-    m_pitch_bend_plus_range = range;
+    m_pitch_bend_range = range;
     update_pitch_bend();
   }
 
@@ -527,11 +517,7 @@ private:
   INLINE static void update_pitch_bend() {
     int16_t b = m_pitch_bend + 1;
     b >>= 3;
-    if (b < 0) {
-      m_pitch_bend_normalized = (b * m_pitch_bend_minus_range) >> 2;
-    } else {
-      m_pitch_bend_normalized = (b * m_pitch_bend_plus_range) >> 2;
-    }
+    m_pitch_bend_normalized = (b * m_pitch_bend_range) >> 2;
   }
 };
 
@@ -559,8 +545,7 @@ template <uint8_t T> uint8_t         Osc<T>::m_lfo_waveform;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_sampled;
 template <uint8_t T> uint8_t         Osc<T>::m_waveform;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_bend;
-template <uint8_t T> uint8_t         Osc<T>::m_pitch_bend_minus_range;
-template <uint8_t T> uint8_t         Osc<T>::m_pitch_bend_plus_range;
+template <uint8_t T> uint8_t         Osc<T>::m_pitch_bend_range;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_bend_normalized;
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_target[4];
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_current[4];
