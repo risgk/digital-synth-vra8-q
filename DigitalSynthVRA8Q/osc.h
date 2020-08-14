@@ -534,7 +534,7 @@ private:
   INLINE static int16_t get_chorus_lfo_wave_level(uint16_t phase) {
     int16_t triangle_wave_level = 0;
     phase &= 0x1FFC;
-    phase = phase >> 2;
+    phase = (phase >> 2);
 
     if (phase < 0x0400) {
       triangle_wave_level = phase - 512;
