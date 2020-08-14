@@ -97,7 +97,6 @@
     | Change                     11 | x             | o             | EXPRESSION            |
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC (SAW/PUL)         |
-    |                           104 | x             | o             | EG > PITCH (-/+)      |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
     |                            17 | x             | o             | RESONANCE             |
