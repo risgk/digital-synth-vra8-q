@@ -245,7 +245,7 @@ public:
       case (0x01 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<0>();               break;
       case (0x02 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<0>();               break;
       case (0x03 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<0>();               break;
-      case (0x04 << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<0>();               break;
+      case (0x04 << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x05 << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x06 << OSC_CONTROL_INTERVAL_BITS): update_lfo_1st();                   break;
       case (0x07 << OSC_CONTROL_INTERVAL_BITS): update_lfo_2nd();                   break;
@@ -253,7 +253,7 @@ public:
       case (0x09 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<1>();               break;
       case (0x0A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<1>();               break;
       case (0x0B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<1>();               break;
-      case (0x0C << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<1>();               break;
+      case (0x0C << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x0D << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x0E << OSC_CONTROL_INTERVAL_BITS): update_lfo_3rd();                   break;
       case (0x0F << OSC_CONTROL_INTERVAL_BITS): update_lfo_4th();                   break;
@@ -261,7 +261,7 @@ public:
       case (0x11 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<2>();               break;
       case (0x12 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<2>();               break;
       case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
-      case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<2>();               break;
+      case (0x14 << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x15 << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_0th();            break;
       case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_1st();            break;
@@ -269,7 +269,7 @@ public:
       case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>();               break;
       case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
       case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();               break;
-      case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_freq_4th<3>();               break;
+      case (0x1C << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x1D << OSC_CONTROL_INTERVAL_BITS):                                     break;
       case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_2nd();            break;
       case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_3rd();            break;
@@ -376,29 +376,22 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_0th() {
-    if (m_osc_gain[N] != 0) {
+//    if (m_osc_gain[N] != 0) {
       m_pitch_current[N] = m_pitch_target[N] - mul_q15_q8(m_pitch_target[N] - m_pitch_current[N], m_portamento_coef);
-    }
+//    }
 
     m_pitch_real[N] = (64 << 8) + m_pitch_current[N] + m_pitch_bend_normalized;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
     if (coarse <= (NOTE_NUMBER_MIN + 64)) {
-      m_pitch_real[N] = NOTE_NUMBER_MIN << 8;
+      m_pitch_real[N] = ((NOTE_NUMBER_MIN + 64) << 8);
     } else if (coarse >= (NOTE_NUMBER_MAX + 64)) {
-      m_pitch_real[N] = NOTE_NUMBER_MAX << 8;
-    } else {
-      m_pitch_real[N] -= (64 << 8);
+      m_pitch_real[N] = ((NOTE_NUMBER_MAX + 64) << 8);
     }
   }
 
   template <uint8_t N>
   INLINE static void update_freq_1st() {
-    m_pitch_real[N] += (64 << 8);
-  }
-
-  template <uint8_t N>
-  INLINE static void update_freq_2nd() {
     m_pitch_real[N] += m_lfo_mod_level;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
@@ -414,14 +407,14 @@ private:
   }
 
   template <uint8_t N>
-  INLINE static void update_freq_3rd() {
+  INLINE static void update_freq_2nd() {
     uint8_t coarse = high_byte(m_pitch_real[N]);
     m_freq_temp[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN];
     m_wave_table_temp[N] = get_wave_table(m_waveform, coarse);
   }
 
   template <uint8_t N>
-  INLINE static void update_freq_4th() {
+  INLINE static void update_freq_3rd() {
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_512 = m_freq_temp[N] >> 8;
     freq_div_512 >>= 1;
