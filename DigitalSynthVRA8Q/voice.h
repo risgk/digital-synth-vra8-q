@@ -182,7 +182,6 @@ public:
   INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
     case EXPRESSION     :
-      IFilter<0>::set_expression(controller_value);
       IEnvGen<1>::set_expression(controller_value);
       break;
     case MODULATION     :
