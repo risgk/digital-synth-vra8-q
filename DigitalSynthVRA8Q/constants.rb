@@ -55,7 +55,6 @@ MODULATION      = 1
 EXPRESSION      = 11
 
 OSC_WAVE        = 24
-EG_TO_PITCH     = 104
 
 CUTOFF          = 16
 RESONANCE       = 17

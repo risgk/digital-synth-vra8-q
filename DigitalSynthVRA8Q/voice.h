@@ -266,10 +266,6 @@ public:
       IOsc<0>::set_pitch_bend_plus_range(controller_value);
       break;
 
-    case EG_TO_PITCH    :
-      IOsc<0>::set_pitch_eg_amt(controller_value);
-      break;
-
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
     case OMNI_MODE_ON   :
@@ -313,7 +309,6 @@ public:
       }
 
       control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
-      control_change(EG_TO_PITCH    , g_preset_table_EG_TO_PITCH    [program_number]);
 
       control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
       control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
@@ -341,12 +336,10 @@ public:
   INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
+    int16_t osc_output = IOsc<0>::clock(m_count);
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
-    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0);
-
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
-
     uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);
     int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_1);
 
