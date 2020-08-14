@@ -189,10 +189,10 @@ public:
   }
 
   INLINE static void set_chorus_rate(uint8_t controller_value) {
-    if (controller_value < 4) {
-      m_chorus_rate_control = (4 << 1);
+    if (controller_value < 2) {
+      m_chorus_rate_control = 1;
     } else {
-      m_chorus_rate_control = (controller_value << 1);
+      m_chorus_rate_control = (controller_value + 2) >> 2;
     }
   }
 
@@ -533,7 +533,8 @@ private:
 
   INLINE static int16_t get_chorus_lfo_wave_level(uint16_t phase) {
     int16_t triangle_wave_level = 0;
-    phase = phase >> 5;
+    phase &= 0x1FFC;
+    phase = phase >> 2;
 
     if (phase < 0x0400) {
       triangle_wave_level = phase - 512;
