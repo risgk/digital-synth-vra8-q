@@ -416,9 +416,8 @@ private:
   template <uint8_t N>
   INLINE static void update_freq_3rd() {
     uint8_t fine = low_byte(m_pitch_real[N]);
-    uint16_t freq_div_512 = m_freq_temp[N] >> 8;
-    freq_div_512 >>= 1;
-    int16_t freq_offset = (freq_div_512 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]);
+    uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
+    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]);
     m_freq[N] = m_freq_temp[N] + freq_offset;
     m_wave_table[N] = m_wave_table_temp[N];
   }
