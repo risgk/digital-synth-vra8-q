@@ -95,7 +95,7 @@ public:
           m_rest = m_attack_update_coef;
 
           uint8_t coef;
-          coef = 223 + m_attack_update_coef;
+          coef = 222 + m_attack_update_coef;
 
           m_level = ENV_GEN_LEVEL_MAX_X_1_5 - mul_q16_q8(ENV_GEN_LEVEL_MAX_X_1_5 - m_level, coef);
           if (m_level >= ENV_GEN_LEVEL_MAX) {
@@ -113,7 +113,7 @@ public:
 
           if (m_level > m_sustain) {
             uint8_t coef;
-            coef = 223 + m_decay_update_coef;
+            coef = 222 + m_decay_update_coef;
 
             m_level = m_sustain + mul_q16_q8(m_level - m_sustain, coef);
             if (m_level < m_sustain) {
@@ -130,7 +130,7 @@ public:
 
           if (m_level > 0) {
             uint8_t coef;
-            coef = 223 + m_release_update_coef;
+            coef = 222 + m_release_update_coef;
 
             m_level = mul_q16_q8(m_level, coef);
             if (m_level < 0x0100) {
