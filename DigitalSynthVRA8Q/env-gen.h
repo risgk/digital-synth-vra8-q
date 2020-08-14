@@ -117,12 +117,14 @@ public:
           } else {
             m_rest = m_attack_update_coef;
           }
+
           uint8_t coef;
           if (m_attack_update_coef == 0) {
             coef = 189;
           } else {
             coef = 223 + m_attack_update_coef;
           }
+
           m_level = ENV_GEN_LEVEL_MAX_X_1_5 - mul_q16_q8(ENV_GEN_LEVEL_MAX_X_1_5 - m_level, coef);
           if (m_level >= ENV_GEN_LEVEL_MAX) {
             m_level = ENV_GEN_LEVEL_MAX;
@@ -144,6 +146,7 @@ public:
           } else {
             m_rest = m_decay_update_coef;
           }
+
           if (m_level > m_sustain) {
             uint8_t coef;
             if (m_decay_update_coef == 0) {
@@ -151,6 +154,7 @@ public:
             } else {
               coef = 223 + m_decay_update_coef;
             }
+
             m_level = m_sustain + mul_q16_q8(m_level - m_sustain, coef);
             if (m_level < m_sustain) {
               m_level = m_sustain;
@@ -174,6 +178,7 @@ public:
             } else {
               coef = 223 + m_release_update_coef;
             }
+
             m_level = mul_q16_q8(m_level, coef);
             if (m_level < 0x0100) {
               m_level = 0;
