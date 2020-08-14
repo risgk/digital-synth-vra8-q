@@ -137,8 +137,7 @@ private:
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {
-    int8_t lfo_mod = high_sbyte(mul_q15_q7(lfo_input, m_cutoff_lfo_amt) << 1);
-    m_cutoff_candidate -= lfo_mod;
+    m_cutoff_candidate -= high_sbyte(mul_q15_q7(lfo_input, m_cutoff_lfo_amt) << 1);
   }
 
   INLINE static void update_coefs_2nd() {
