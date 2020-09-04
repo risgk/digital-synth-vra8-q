@@ -54,6 +54,7 @@ MODULATION      = 1
 EXPRESSION      = 11
 
 OSC_WAVE        = 24
+OSC_LEVEL       = 108
 
 CUTOFF          = 16
 RESONANCE       = 17

@@ -97,6 +97,7 @@
     | Change                     11 | x             | o             | EXPRESSION            |
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC (SAW/PUL)         |
+    |                           108 | x             | o             | OSC LEVEL             |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
     |                            17 | x             | o             | RESONANCE             |

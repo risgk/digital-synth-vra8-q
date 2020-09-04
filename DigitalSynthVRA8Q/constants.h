@@ -54,6 +54,7 @@ const uint8_t   MODULATION      = 1;
 const uint8_t   EXPRESSION      = 11;
 
 const uint8_t   OSC_WAVE        = 24;
+const uint8_t   OSC_LEVEL       = 108;
 
 const uint8_t   CUTOFF          = 16;
 const uint8_t   RESONANCE       = 17;
