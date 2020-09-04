@@ -52,15 +52,15 @@
     - Values 0-63: Saw Wave
     - Values 64-127: Pulse Wave (Square Wave)
 - "CHORUS DEPTH":
-    - Value 8: +/- 0.5 ms (min)
-    - Value 32: +/- 2.0 ms (init)
-    - Value 64: +/- 4.1 ms
-    - Value 127: +/- 8.1 ms (max)
+    - Value 8: Delay Time +/- 0.5 ms (min)
+    - Value 32: Delay Time +/- 2.0 ms (init)
+    - Value 64: Delay Time +/- 4.1 ms
+    - Value 127: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
-    - Value 4: 0.06 Hz (min)
-    - Value 16: 0.24 (init)
-    - Value 64: 0.95 Hz
-    - Value 127: 1.9 Hz (max)
+    - Value 4: LFO Rate 0.06 Hz (min)
+    - Value 16: LFO Rate 0.24 (init)
+    - Value 64: LFO Rate 0.95 Hz
+    - Value 127: LFO Rate 1.9 Hz (max)
 - "CHORUS DELAY TIME":
     - Value 8: 1.0 ms (min)
     - Value 64: 8.2 ms
