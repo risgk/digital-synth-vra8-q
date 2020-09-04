@@ -46,9 +46,9 @@
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 
 
-## Details of Controllers
+## Details of Control Change
 
-- "OSC (SAW/PUL)":
+- "OSC WAVE (SAW/PUL)":
     - Values 0-63: Saw Wave
     - Values 64-127: Pulse Wave (Square Wave)
 - "CHORUS DEPTH":
