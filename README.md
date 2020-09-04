@@ -57,10 +57,10 @@
     - Value 64: Delay Time +/- 4.1 ms
     - Value 127: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
-    - Value 4: LFO Rate 0.06 Hz (min)
-    - Value 16: LFO Rate 0.24 (init)
-    - Value 64: LFO Rate 0.95 Hz
-    - Value 127: LFO Rate 1.9 Hz (max)
+    - Value 4: LFO Frequency 0.06 Hz (min)
+    - Value 16: LFO Frequency 0.24 (init)
+    - Value 64: LFO Frequency 0.95 Hz
+    - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
     - Value 8: 1.0 ms (min)
     - Value 64: 8.2 ms
