@@ -170,11 +170,11 @@ public:
   template <uint8_t N>
   INLINE static void set_pitch_lfo_amt(uint8_t controller_value) {
     if (controller_value < 16) {
-      m_pitch_lfo_amt = -48;
+      m_pitch_lfo_amt = -96;
     } else if (controller_value < 112) {
-      m_pitch_lfo_amt = controller_value - 64;
+      m_pitch_lfo_amt = ((controller_value - 64) << 1);
     } else {
-      m_pitch_lfo_amt = 48;
+      m_pitch_lfo_amt = 96;
     }
   }
 
