@@ -244,6 +244,10 @@ public:
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
+    case DAMPER_PEDAL   :
+      // todo
+      break;
+
     case CHORUS_DEPTH   :
       IOsc<0>::set_chorus_depth(controller_value);
       break;

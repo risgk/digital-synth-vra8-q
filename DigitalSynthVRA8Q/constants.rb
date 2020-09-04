@@ -52,6 +52,7 @@ ACTIVE_SENSING        = 0xFE
 
 MODULATION      = 1
 EXPRESSION      = 11
+DAMPER_PEDAL    = 64
 
 OSC_WAVE        = 24
 OSC_LEVEL       = 108
