@@ -212,6 +212,6 @@ const uint8_t g_filter_lpf_table_5[] PROGMEM = {
 
 const uint8_t* g_filter_lpf_tables[] = {
   g_filter_lpf_table_0 , g_filter_lpf_table_0 , g_filter_lpf_table_1 , g_filter_lpf_table_2 ,
-  g_filter_lpf_table_3 , g_filter_lpf_table_4 , g_filter_lpf_table_5 , g_filter_lpf_table_5 ,
-  g_filter_lpf_table_5 , };
+  g_filter_lpf_table_3 , g_filter_lpf_table_4 , g_filter_lpf_table_5 , g_filter_lpf_table_6 ,
+  g_filter_lpf_table_7 , };
 

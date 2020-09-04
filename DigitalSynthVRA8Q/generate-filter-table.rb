@@ -45,7 +45,6 @@ end
 $file.printf("const uint8_t* g_filter_lpf_tables[] = {\n  ")
 (0..8).each do |idx|
   i = (idx > 0) ? (idx - 1) : 0
-  i = (i > 5) ? 5 : i
   $file.printf("g_filter_lpf_table_%-2d,", i)
   if idx == DATA_BYTE_MAX
     $file.printf("\n")
