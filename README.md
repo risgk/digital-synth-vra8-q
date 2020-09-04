@@ -97,7 +97,7 @@
     | Change                     11 | x             | o             | EXPRESSION            |
     |                            64 | x             | o             | DAMPER PEDAL          |
     |                               |               |               |                       |
-    |                            24 | x             | o             | OSC (SAW/PUL)         |
+    |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
     |                           108 | x             | o             | OSC LEVEL             |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
