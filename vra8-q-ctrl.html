@@ -427,13 +427,16 @@ function setRandom() {
       onChangeControlChange(i, rand(128));
     }
   });
+}
 
-  // Reset EXPRESSION
-  document.getElementById("spanCC11").innerHTML = "-";
-  if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), EXPRESSION, 127]);
-    sleep(2);
-  }
+function setRandomChorus() {
+  controllersInLocalStorage.forEach(function(i) {
+    if((i == CHORUS_DEPTH   ) ||
+       (i == CHORUS_RATE    ) ||
+       (i == CHORUS_DELAY_T )) {
+      onChangeControlChange(i, rand(128));
+    }
+  });
 }
 
 function rand(n) {
@@ -684,7 +687,9 @@ function getStoredCCValueString(index, number) {
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>MISC</td>
-    <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td></tr>
+    <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td>
+    <td>&nbsp;</td>
+    <td><input type="button" value="RANDOM FX"      onclick="setRandomChorus()"></td></tr>
 <tr><td></td>
     <td><input type="button" value="#0 POLY"        onclick="preset(0)"></td>
     <td>&nbsp;</td>
