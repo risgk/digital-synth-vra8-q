@@ -4,6 +4,7 @@ const uint8_t PROGRAM_NUMBER_DEFAULT = 0;
 
 // PRESET                                         #0   #1   #2   #3   #4   #5   #6   #7   
 const uint8_t g_preset_table_OSC_WAVE       [] = {0  , 0  , 0  , 127, 0  , 0  , 0  , 0  };
+const uint8_t g_preset_table_OSC_LEVEL      [] = {64 , 80 , 80 , 80 , 64 , 64 , 64 , 64 };
 
 const uint8_t g_preset_table_CUTOFF         [] = {64 , 16 , 112, 64 , 127, 127, 127, 127};
 const uint8_t g_preset_table_RESONANCE      [] = {96 , 80 , 32 , 64 , 0  , 0  , 0  , 0  };

@@ -146,7 +146,7 @@ var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
-presetControllers[OSC_LEVEL      ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
+presetControllers[OSC_LEVEL      ] = [64 , 80 , 80 , 80 , 64 , 64 , 64 , 64 ];
 
 presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
 presetControllers[RESONANCE      ] = [96 , 80 , 32 , 64 , 0  , 0  , 0  , 0  ];
@@ -418,7 +418,12 @@ function preset(number) {
 
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
-    if((i != CHORUS_MODE    )) {
+    if((i != OSC_LEVEL      ) &&
+       (i != CHORUS_DEPTH   ) &&
+       (i != CHORUS_RATE    ) &&
+       (i != CHORUS_DELAY_T ) &&
+       (i != CHORUS_MODE    ) &&
+       (i != P_BEND_RANGE   )) {
       onChangeControlChange(i, rand(128));
     }
   });

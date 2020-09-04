@@ -311,6 +311,7 @@ public:
     }
 
     control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
+    control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
 
     control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
     control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
