@@ -257,6 +257,10 @@ public:
       IOsc<0>::set_chorus_mode(controller_value);
       break;
 
+    case OSC_LEVEL      :
+      IOsc<0>::set_osc_level(controller_value);
+      break;
+
     case P_BEND_RANGE   :
       IOsc<0>::set_pitch_bend_range(controller_value);
       break;

@@ -48,6 +48,7 @@ class Osc {
   static uint16_t       m_freq_temp[4];
   static uint16_t       m_phase[4];
   static uint8_t        m_osc_gain[4];
+  static uint8_t        m_osc_level;
 
 public:
   INLINE static void initialize() {
@@ -113,6 +114,7 @@ public:
     m_osc_gain[1] = 0;
     m_osc_gain[2] = 0;
     m_osc_gain[3] = 0;
+    m_osc_level = 32;
 
     set_pitch_bend_range(2);
     set_pitch_bend_range(2);
@@ -123,6 +125,14 @@ public:
       m_waveform = OSC_WAVEFORM_SAW;
     } else {
       m_waveform = OSC_WAVEFORM_PUL;
+    }
+  }
+
+  INLINE static void set_osc_level(uint8_t controller_value) {
+    if (controller_value < 32) {
+      m_osc_level = (32 >> 1);
+    } else {
+      m_osc_level = (controller_value >> 1);
     }
   }
 
@@ -201,7 +211,7 @@ public:
 
   INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
     m_pitch_target[osc_index] = note_number << 8;
-    m_osc_gain[osc_index] = 48;
+    m_osc_gain[osc_index] = m_osc_level;
   }
 
   INLINE static void note_off(uint8_t osc_index) {
@@ -548,3 +558,4 @@ template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
+template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
