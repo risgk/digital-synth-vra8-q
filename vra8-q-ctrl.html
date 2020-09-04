@@ -631,9 +631,6 @@ function getStoredCCValueString(index, number) {
 <table>
 <tr><td>MIDI IN 1</td>
     <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
-    <td>&nbsp;</td>
-    <td>MIDI OUT</td>
-    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
     <td>P. BEND</td>
@@ -643,23 +640,22 @@ function getStoredCCValueString(index, number) {
 <tr><td>MIDI IN 2</td>
     <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
     <td>&nbsp;</td>
-    <td>KBD TRS</td>
-    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
-    <td><span id="spanTranspose" >-1</span></td>
     <td>&nbsp;</td>
     <td>MOD</td>
     <td>&nbsp;</td>
     <td><span id="spanCC1">-</span></td></tr>
-<tr><td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+<tr><td>MIDI OUT</td>
+    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
+    <td>&nbsp;</td>
     <td>&nbsp;</td>
     <td>EXP</td>
     <td>&nbsp;</td>
     <td><span id="spanCC11">-</span></td></tr>
+<tr><td>KBD TRANSPOSE</td>
+    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
+    <td><span id="spanTranspose" >-1</span></td>
+    <td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
