@@ -68,6 +68,13 @@
     - Value 127: 16.3 ms (max)
 
 
+## Sample Chorus Settings
+
+- Setting 1: CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
+- Setting 2: CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
+- Setting 3: CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
+
+
 ## MIDI Implementation Chart
 
       [Monophonic Synthesizer]                                        Date: 2020-08-14       
