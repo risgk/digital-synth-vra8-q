@@ -187,7 +187,7 @@ window.onload = function() {
   document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
 
   if (navigator.requestMIDIAccess) {
-    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+    navigator.requestMIDIAccess({sysex: false}).then(onMIDISuccess, onMIDIFailure);
   } else {
     console.log("No MIDI support present in your browser.");
   }
@@ -682,9 +682,9 @@ function getStoredCCValueString(index, number) {
 <tr><td>PRESET</td>
     <td><input type="button" value="#4 SAW"         onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 --"          onclick="preset(5)"></td>
+    <td><input type="button" value="#5 ----"        onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 --"          onclick="preset(6)"></td>
+    <td><input type="button" value="#6 ----"        onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -695,9 +695,9 @@ function getStoredCCValueString(index, number) {
 <tr><td></td>
     <td><input type="button" value="#0 PARA"        onclick="preset(0)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#1 BRASS"       onclick="preset(1)"></td>
+    <td><input type="button" value="#1 PLUS"        onclick="preset(1)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#2 REV"         onclick="preset(2)"></td>
+    <td><input type="button" value="#2 MINUS"       onclick="preset(2)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
