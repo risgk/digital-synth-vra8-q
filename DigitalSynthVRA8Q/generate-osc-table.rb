@@ -10,7 +10,7 @@ def freq_from_note_number(note_number)
   freq_full = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)) / SAMPLING_RATE).round.to_i
   freq = freq_full / (1 << 8)
   freq_fine = freq_full % (1 << 8)
-# p [note_number, freq.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)))]
+# p [note_number, freq_full.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)))]
   return freq, freq_fine
 end
 
