@@ -90,14 +90,14 @@ def generate_osc_wave_table_arrays(organ = false, organ_last = 8)
 end
 
 generate_osc_wave_table_arrays do |last|
-  generate_osc_wave_table("saw", last, 6.0 / 6.0) do |n, k|
+  generate_osc_wave_table("saw", last, 1.0) do |n, k|
     (2.0 / Math::PI) * Math.sin((2.0 * Math::PI) *
                                 (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
   end
 end
 
 generate_osc_wave_table_arrays do |last|
-  generate_osc_wave_table("sq", last, 4.0 / 6.0) do |n, k|
+  generate_osc_wave_table("sq", last, 1.0 / Math.sqrt(3)) do |n, k|
     if k % 2 == 1
       (4.0 / Math::PI) * Math.sin((2.0 * Math::PI) *
                                   (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
