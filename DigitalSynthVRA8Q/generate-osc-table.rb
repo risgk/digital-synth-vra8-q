@@ -97,7 +97,7 @@ generate_osc_wave_table_arrays do |last|
 end
 
 generate_osc_wave_table_arrays do |last|
-  generate_osc_wave_table("sq", last, 1.0 / Math.sqrt(3)) do |n, k|
+  generate_osc_wave_table("pulse", last, 1.0 / Math.sqrt(3)) do |n, k|
     if k % 2 == 1
       (4.0 / Math::PI) * Math.sin((2.0 * Math::PI) *
                                   (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
@@ -127,6 +127,6 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
 end
 
 generate_osc_wave_tables_array("saw")
-generate_osc_wave_tables_array("sq")
+generate_osc_wave_tables_array("pulse")
 
 $file.close

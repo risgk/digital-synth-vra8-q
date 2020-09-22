@@ -328,13 +328,13 @@ private:
     if (waveform == OSC_WAVEFORM_SAW) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
     } else {     // OSC_WAVEFORM_PUL
-      result = g_osc_sq_wave_tables[note_number - NOTE_NUMBER_MIN];
+      result = g_osc_pulse_wave_tables[note_number - NOTE_NUMBER_MIN];
     }
 #else
     if (waveform == OSC_WAVEFORM_SAW) {
       result = pgm_read_word(g_osc_saw_wave_tables + (note_number - NOTE_NUMBER_MIN));
     } else {     // OSC_WAVEFORM_PUL
-      result = pgm_read_word(g_osc_sq_wave_tables + (note_number - NOTE_NUMBER_MIN));
+      result = pgm_read_word(g_osc_pulse_wave_tables + (note_number - NOTE_NUMBER_MIN));
     }
 #endif
     return result;
