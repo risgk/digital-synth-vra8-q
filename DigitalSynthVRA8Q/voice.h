@@ -98,15 +98,17 @@ public:
 
         m_on_note_number[osc_index] = note_number;
         IOsc<0>::note_on(osc_index, note_number);
+        IOsc<0>::trigger_lfo();
+        IEnvGen<0>::note_on();
+        IEnvGen<1>::note_on();
       }
     }
 
-    if ((old_on_note_total_count == 0) && (m_on_note_total_count > 0)) {
-      IOsc<0>::set_portamento(0);
-      IOsc<0>::trigger_lfo();
-      IEnvGen<0>::note_on();
-      IEnvGen<1>::note_on();
-    }
+//    if ((old_on_note_total_count == 0) && (m_on_note_total_count > 0)) {
+//      IOsc<0>::trigger_lfo();
+//      IEnvGen<0>::note_on();
+//      IEnvGen<1>::note_on();
+//    }
   }
 
   INLINE static void note_off(uint8_t note_number) {
