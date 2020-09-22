@@ -11,6 +11,7 @@ class Voice {
   static uint8_t  m_note_on_number[4];
   static uint8_t  m_note_on_count[NOTE_NUMBER_MAX - NOTE_NUMBER_MIN + 1];
   static uint8_t  m_note_on_total_count;
+  static boolean  m_damper_pedal;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -19,6 +20,7 @@ class Voice {
   static uint8_t  m_sustain;
   static uint8_t  m_release;
   static uint8_t  m_amp_env_gen;
+
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
 
@@ -38,6 +40,7 @@ public:
       m_note_on_count[i] = 0;
     }
     m_note_on_total_count = 0;
+    m_damper_pedal = false;
 
     m_output_error = 0;
     m_portamento = 0;
@@ -111,6 +114,10 @@ public:
     --m_note_on_total_count;
     --m_note_on_count[note_number];
 
+    if (m_damper_pedal) {
+      return;
+    }
+
     if (m_note_on_number[0] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
@@ -144,6 +151,7 @@ public:
   }
 
   INLINE static void all_note_off() {
+    m_damper_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
     m_note_on_number[2] = NOTE_NUMBER_INVALID;
@@ -233,7 +241,48 @@ public:
       break;
 
     case DAMPER_PEDAL   :
-      // todo
+      if ((m_damper_pedal == false) && (controller_value >= 64)) {
+        m_damper_pedal = true;
+      } else if (m_damper_pedal && (controller_value < 64)) {
+        m_damper_pedal = false;
+
+        if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[0]] == 0) {
+            m_note_on_number[0] = NOTE_NUMBER_INVALID;
+            note_queue_off(0);
+            IOsc<0>::note_off(0);
+          }
+        }
+
+        if (m_note_on_number[1] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[1]] == 0) {
+            m_note_on_number[1] = NOTE_NUMBER_INVALID;
+            note_queue_off(1);
+            IOsc<1>::note_off(1);
+          }
+        }
+
+        if (m_note_on_number[2] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[2]] == 0) {
+            m_note_on_number[2] = NOTE_NUMBER_INVALID;
+            note_queue_off(2);
+            IOsc<2>::note_off(2);
+          }
+        }
+
+        if (m_note_on_number[3] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[3]] == 0) {
+            m_note_on_number[3] = NOTE_NUMBER_INVALID;
+            note_queue_off(3);
+            IOsc<3>::note_off(3);
+          }
+        }
+
+        if (m_note_on_total_count == 0) {
+          IEnvGen<0>::note_off();
+          IEnvGen<1>::note_off();
+        }
+      }
       break;
 
     case CHORUS_DEPTH   :
@@ -430,6 +479,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[NOTE_NUMBER_MAX - NOTE_NUMBER_MIN + 1];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
+template <uint8_t T> boolean  Voice<T>::m_damper_pedal;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
@@ -438,5 +488,6 @@ template <uint8_t T> uint8_t  Voice<T>::m_decay;
 template <uint8_t T> uint8_t  Voice<T>::m_sustain;
 template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
+
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];
