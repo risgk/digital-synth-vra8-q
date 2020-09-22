@@ -72,16 +72,36 @@ public:
 
     if        (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(0, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
     } else if (m_note_on_number[1] == note_number) {
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(1, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
     } else if (m_note_on_number[2] == note_number) {
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(2, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
     } else if (m_note_on_number[3] == note_number) {
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(3, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
     } else {
       uint8_t osc_index = m_note_queue[0];
       m_note_queue[0] = m_note_queue[1];
@@ -90,7 +110,7 @@ public:
       m_note_queue[3] = osc_index;
 
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
 
       m_note_on_number[osc_index] = note_number;
       IOsc<0>::note_on(osc_index, note_number);
@@ -112,32 +132,32 @@ public:
     }
 
     --m_note_on_total_count;
-    --m_note_on_count[note_number];
+    --m_note_on_count[note_number - NOTE_NUMBER_MIN];
 
     if (m_damper_pedal) {
       return;
     }
 
     if (m_note_on_number[0] == note_number) {
-      if (m_note_on_count[note_number] == 0) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         note_queue_off(0);
         IOsc<0>::note_off(0);
       }
     } else if (m_note_on_number[1] == note_number) {
-      if (m_note_on_count[note_number] == 0) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
         m_note_on_number[1] = NOTE_NUMBER_INVALID;
         note_queue_off(1);
         IOsc<0>::note_off(1);
       }
     } else if (m_note_on_number[2] == note_number) {
-      if (m_note_on_count[note_number] == 0) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
         m_note_on_number[2] = NOTE_NUMBER_INVALID;
         note_queue_off(2);
         IOsc<0>::note_off(2);
       }
     } else if (m_note_on_number[3] == note_number) {
-      if (m_note_on_count[note_number] == 0) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
         m_note_on_number[3] = NOTE_NUMBER_INVALID;
         note_queue_off(3);
         IOsc<0>::note_off(3);
@@ -247,7 +267,7 @@ public:
         m_damper_pedal = false;
 
         if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[0]] == 0) {
+          if (m_note_on_count[m_note_on_number[0] - NOTE_NUMBER_MIN] == 0) {
             m_note_on_number[0] = NOTE_NUMBER_INVALID;
             note_queue_off(0);
             IOsc<0>::note_off(0);
@@ -255,26 +275,26 @@ public:
         }
 
         if (m_note_on_number[1] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[1]] == 0) {
+          if (m_note_on_count[m_note_on_number[1] - NOTE_NUMBER_MIN] == 0) {
             m_note_on_number[1] = NOTE_NUMBER_INVALID;
             note_queue_off(1);
-            IOsc<1>::note_off(1);
+            IOsc<0>::note_off(1);
           }
         }
 
         if (m_note_on_number[2] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[2]] == 0) {
+          if (m_note_on_count[m_note_on_number[2] - NOTE_NUMBER_MIN] == 0) {
             m_note_on_number[2] = NOTE_NUMBER_INVALID;
             note_queue_off(2);
-            IOsc<2>::note_off(2);
+            IOsc<0>::note_off(2);
           }
         }
 
         if (m_note_on_number[3] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[3]] == 0) {
+          if (m_note_on_count[m_note_on_number[3] - NOTE_NUMBER_MIN] == 0) {
             m_note_on_number[3] = NOTE_NUMBER_INVALID;
             note_queue_off(3);
-            IOsc<3>::note_off(3);
+            IOsc<0>::note_off(3);
           }
         }
 
