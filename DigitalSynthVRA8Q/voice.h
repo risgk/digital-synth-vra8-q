@@ -48,7 +48,7 @@ public:
 
     IEnvGen<0>::initialize();
     IEnvGen<1>::initialize();
-    IEnvGen<1>::set_gain(91);
+    IEnvGen<1>::set_gain(90);
 
     IDelayFx<0>::initialize();
 
