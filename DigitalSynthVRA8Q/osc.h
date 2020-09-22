@@ -47,7 +47,11 @@ class Osc {
   static uint16_t       m_freq[4];
   static uint16_t       m_freq_temp[4];
   static uint16_t       m_phase[4];
+  static boolean        m_osc_on[4];
   static uint8_t        m_osc_gain[4];
+  static uint8_t        m_osc_level;
+
+  static uint8_t        m_rnd;
 
 public:
   INLINE static void initialize() {
@@ -61,6 +65,7 @@ public:
     m_lfo_rate = 0;
     m_lfo_depth[0] = 0;
     m_lfo_depth[1] = 0;
+    m_pitch_lfo_amt = 0;
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
 
@@ -109,10 +114,17 @@ public:
     m_phase[1] = 0;
     m_phase[2] = 0;
     m_phase[3] = 0;
+    m_osc_on[0] = false;
+    m_osc_on[1] = false;
+    m_osc_on[2] = false;
+    m_osc_on[3] = false;
     m_osc_gain[0] = 0;
     m_osc_gain[1] = 0;
     m_osc_gain[2] = 0;
     m_osc_gain[3] = 0;
+    m_osc_level = 32;
+
+    m_rnd = 1;
 
     set_pitch_bend_range(2);
     set_pitch_bend_range(2);
@@ -123,6 +135,14 @@ public:
       m_waveform = OSC_WAVEFORM_SAW;
     } else {
       m_waveform = OSC_WAVEFORM_PUL;
+    }
+  }
+
+  INLINE static void set_osc_level(uint8_t controller_value) {
+    if (controller_value < 16) {
+      m_osc_level = (16 >> 1);
+    } else {
+      m_osc_level = (controller_value >> 1);
     }
   }
 
@@ -160,11 +180,11 @@ public:
   template <uint8_t N>
   INLINE static void set_pitch_lfo_amt(uint8_t controller_value) {
     if (controller_value < 16) {
-      m_pitch_lfo_amt = -48;
+      m_pitch_lfo_amt = -96;
     } else if (controller_value < 112) {
-      m_pitch_lfo_amt = controller_value - 64;
+      m_pitch_lfo_amt = ((controller_value - 64) << 1);
     } else {
-      m_pitch_lfo_amt = 48;
+      m_pitch_lfo_amt = 96;
     }
   }
 
@@ -201,11 +221,11 @@ public:
 
   INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
     m_pitch_target[osc_index] = note_number << 8;
-    m_osc_gain[osc_index] = 48;
+    m_osc_on[osc_index] = true;
   }
 
   INLINE static void note_off(uint8_t osc_index) {
-    m_osc_gain[osc_index] = 0;
+    m_osc_on[osc_index] = false;
   }
 
   INLINE static void trigger_lfo() {
@@ -245,32 +265,32 @@ public:
       case (0x01 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<0>();               break;
       case (0x02 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<0>();               break;
       case (0x03 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<0>();               break;
-      case (0x04 << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x05 << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x04 << OSC_CONTROL_INTERVAL_BITS): update_gate<0>();                   break;
+      case (0x05 << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
       case (0x06 << OSC_CONTROL_INTERVAL_BITS): update_lfo_1st();                   break;
       case (0x07 << OSC_CONTROL_INTERVAL_BITS): update_lfo_2nd();                   break;
       case (0x08 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<1>();               break;
       case (0x09 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<1>();               break;
       case (0x0A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<1>();               break;
       case (0x0B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<1>();               break;
-      case (0x0C << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x0D << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x0C << OSC_CONTROL_INTERVAL_BITS): update_gate<1>();                   break;
+      case (0x0D << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
       case (0x0E << OSC_CONTROL_INTERVAL_BITS): update_lfo_3rd();                   break;
       case (0x0F << OSC_CONTROL_INTERVAL_BITS): update_lfo_4th();                   break;
       case (0x10 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<2>();               break;
       case (0x11 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<2>();               break;
       case (0x12 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<2>();               break;
       case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
-      case (0x14 << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x15 << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_gate<2>();                   break;
+      case (0x15 << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
       case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_0th();            break;
       case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_1st();            break;
       case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();               break;
       case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>();               break;
       case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
       case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();               break;
-      case (0x1C << OSC_CONTROL_INTERVAL_BITS):                                     break;
-      case (0x1D << OSC_CONTROL_INTERVAL_BITS):                                     break;
+      case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_gate<3>();                   break;
+      case (0x1D << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
       case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_2nd();            break;
       case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_3rd();            break;
       }
@@ -308,13 +328,13 @@ private:
     if (waveform == OSC_WAVEFORM_SAW) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
     } else {     // OSC_WAVEFORM_PUL
-      result = g_osc_sq_wave_tables[note_number - NOTE_NUMBER_MIN];
+      result = g_osc_pulse_wave_tables[note_number - NOTE_NUMBER_MIN];
     }
 #else
     if (waveform == OSC_WAVEFORM_SAW) {
       result = pgm_read_word(g_osc_saw_wave_tables + (note_number - NOTE_NUMBER_MIN));
     } else {     // OSC_WAVEFORM_PUL
-      result = pgm_read_word(g_osc_sq_wave_tables + (note_number - NOTE_NUMBER_MIN));
+      result = pgm_read_word(g_osc_pulse_wave_tables + (note_number - NOTE_NUMBER_MIN));
     }
 #endif
     return result;
@@ -372,13 +392,11 @@ private:
     return level;
   }
 
-
-
   template <uint8_t N>
   INLINE static void update_freq_0th() {
-//    if (m_osc_gain[N] != 0) {
+    if (m_osc_on[N]) {
       m_pitch_current[N] = m_pitch_target[N] - mul_q15_q8(m_pitch_target[N] - m_pitch_current[N], m_portamento_coef);
-//    }
+    }
 
     m_pitch_real[N] = (64 << 8) + m_pitch_current[N] + m_pitch_bend_normalized;
 
@@ -415,14 +433,30 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_3rd() {
+    uint8_t coarse = high_byte(m_pitch_real[N]);
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
-    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]);
+    uint8_t bit = (g_osc_freq_fine_table[coarse] >= m_rnd) ? 1 : 0;
+    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit;
     m_freq[N] = m_freq_temp[N] + freq_offset;
     m_wave_table[N] = m_wave_table_temp[N];
   }
 
+  template <uint8_t N>
+  INLINE static void update_gate() {
+    if (m_osc_on[N]) {
+      m_osc_gain[N] = m_osc_level;
+    }
+    else {
+      m_osc_gain[N] = 0;
+    }
+  }
 
+  INLINE static void update_rnd() {
+    m_rnd ^= m_rnd << 1;
+    m_rnd ^= m_rnd >> 1;
+    m_rnd ^= m_rnd << 2;
+  }
 
   INLINE static void update_lfo_1st() {
     if (m_lfo_rate >= 32) {
@@ -547,4 +581,8 @@ template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
+template <uint8_t T> boolean         Osc<T>::m_osc_on[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
+template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
+
+template <uint8_t T> uint8_t         Osc<T>::m_rnd;

@@ -20,8 +20,7 @@ const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 9;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;
 const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 8;
 const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MIN          = 64;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = 16;
 const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
@@ -52,8 +51,10 @@ const uint8_t   ACTIVE_SENSING        = 0xFE;
 
 const uint8_t   MODULATION      = 1;
 const uint8_t   EXPRESSION      = 11;
+const uint8_t   DAMPER_PEDAL    = 64;
 
 const uint8_t   OSC_WAVE        = 24;
+const uint8_t   OSC_LEVEL       = 108;
 
 const uint8_t   CUTOFF          = 16;
 const uint8_t   RESONANCE       = 17;

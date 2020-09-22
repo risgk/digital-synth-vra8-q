@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v0.2.1";
+const APP_NAME_VERSION = "VRA8-Q CTRL v1.0.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -51,8 +51,10 @@ const PITCH_BEND     = 0xE0;
 
 const MODULATION      = 1;
 const EXPRESSION      = 11;
+const DAMPER_PEDAL    = 64;
 
 const OSC_WAVE        = 24;
+const OSC_LEVEL       = 108;
 
 const CUTOFF          = 16;
 const RESONANCE       = 17;
@@ -90,6 +92,7 @@ const SP_PROG_CHG_7   = 119;
 
 var controlNumberToStringMap = new Map([
   [ OSC_WAVE       , "OSC_WAVE       " ],
+  [ OSC_LEVEL      , "OSC_LEVEL      " ],
 
   [ CUTOFF         , "CUTOFF         " ],
   [ RESONANCE      , "RESONANCE      " ],
@@ -115,6 +118,7 @@ var controlNumberToStringMap = new Map([
 
 var controllersInLocalStorage = [
   OSC_WAVE       ,
+  OSC_LEVEL      ,
 
   CUTOFF         ,
   RESONANCE      ,
@@ -142,25 +146,26 @@ var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
+presetControllers[OSC_LEVEL      ] = [64 , 80 , 72 , 96 , 64 , 64 , 64 , 64 ];
 
 presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
-presetControllers[RESONANCE      ] = [96 , 80 , 32 , 64 , 0  , 0  , 0  , 0  ];
+presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  ];
 presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
-presetControllers[ATTACK         ] = [0  , 0  , 96 , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[DECAY          ] = [0  , 64 , 96 , 96 , 0  , 0  , 0  , 0  ];
+presetControllers[ATTACK         ] = [0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[DECAY          ] = [127, 64 , 96 , 96 , 127, 0  , 0  , 0  ];
 presetControllers[SUSTAIN        ] = [127, 0  , 0  , 0  , 127, 127, 127, 127];
 
-presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 0  , 0  , 0  , 0  ];
+presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 8  , 0  , 0  , 0  ];
 presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[LFO_TO_PITCH   ] = [66 , 66 , 66 , 66 , 66 , 66 , 66 , 64 ];
+presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 64 , 64 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 40 , 24 , 32 ];
-presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 16 , 32 , 16 ];
-presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 60 , 60 , 80 ];
-presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
+presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 16 , 16 , 16 ];
+presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 ];
+presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 0  , 0  , 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 
@@ -182,7 +187,7 @@ window.onload = function() {
   document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
 
   if (navigator.requestMIDIAccess) {
-    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+    navigator.requestMIDIAccess({sysex: false}).then(onMIDISuccess, onMIDIFailure);
   } else {
     console.log("No MIDI support present in your browser.");
   }
@@ -270,6 +275,8 @@ function onMIDIMessage(event) {
       document.getElementById("spanCC1").innerHTML = value;
     } else if (number == EXPRESSION     ) {
       document.getElementById("spanCC11").innerHTML = value;
+    } else if (number == DAMPER_PEDAL   ) {
+      document.getElementById("spanCC64").innerHTML = value;
     } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
       // Special Program Change (only for VRA8-Q CTRL)
       var programIndex = number - SP_PROG_CHG_0;
@@ -413,17 +420,25 @@ function preset(number) {
 
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
-    if((i != CHORUS_MODE    )) {
+    if((i != OSC_LEVEL      ) &&
+       (i != CHORUS_DEPTH   ) &&
+       (i != CHORUS_RATE    ) &&
+       (i != CHORUS_DELAY_T ) &&
+       (i != CHORUS_MODE    ) &&
+       (i != P_BEND_RANGE   )) {
       onChangeControlChange(i, rand(128));
     }
   });
+}
 
-  // Reset EXPRESSION
-  document.getElementById("spanCC11").innerHTML = "-";
-  if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), EXPRESSION, 127]);
-    sleep(2);
-  }
+function setRandomChorus() {
+  controllersInLocalStorage.forEach(function(i) {
+    if((i == CHORUS_DEPTH   ) ||
+       (i == CHORUS_RATE    ) ||
+       (i == CHORUS_DELAY_T )) {
+      onChangeControlChange(i, rand(128));
+    }
+  });
 }
 
 function rand(n) {
@@ -559,6 +574,7 @@ function fileExport() {
   str += "  \"_version     \" : \"" + APP_NAME_VERSION + "\",\n";
   str += "  \"_comment     \" : \"  CURRENT  #8   #9   #10  #11  #12  #13  #14  #15  \",\n";
   str += fileExportOneLine(OSC_WAVE       );
+  str += fileExportOneLine(OSC_LEVEL      );
   str += "\n";
   str += fileExportOneLine(CUTOFF         );
   str += fileExportOneLine(RESONANCE      );
@@ -580,6 +596,7 @@ function fileExport() {
   str += fileExportOneLine(CHORUS_MODE    );
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
+  str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
 
@@ -624,62 +641,63 @@ function getStoredCCValueString(index, number) {
 <body>
 
 <table>
-<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth VRA8-Q Controller (<a href="https://github.com/risgk/digital-synth-vra8-q">View on GitHub</a>), We recommend Google Chrome</td></tr>
+<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth VRA8-Q Controller (<a href="https://github.com/risgk/digital-synth-vra8-q">View on GitHub</a>) (We recommend using Google Chrome)</td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>MIDI IN 1</td>
     <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
-    <td>&nbsp;</td>
-    <td>MIDI OUT</td>
-    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
-    <td>P. BEND</td>
+    <td>PITCH BEND</td>
     <td>&nbsp;</td>
     <td><span id="spanPB">-</span></td>
     </tr>
 <tr><td>MIDI IN 2</td>
     <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
+    <td></td>
     <td>&nbsp;</td>
-    <td>KBD TRS</td>
-    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
-    <td><span id="spanTranspose" >-1</span></td>
-    <td>&nbsp;</td>
-    <td>MOD</td>
+    <td>MODULATION</td>
     <td>&nbsp;</td>
     <td><span id="spanCC1">-</span></td></tr>
-<tr><td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+<tr><td>MIDI OUT</td>
+    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td></td>
     <td>&nbsp;</td>
-    <td>EXP</td>
+    <td>EXPRESSION</td>
     <td>&nbsp;</td>
     <td><span id="spanCC11">-</span></td></tr>
+<tr><td>KBD TRANSPOSE</td>
+    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
+    <td><span id="spanTranspose" >-</span></td>
+    <td>&nbsp;</td>
+    <td>DAMPER PEDAL</td>
+    <td>&nbsp;</td>
+    <td><span id="spanCC64">-</span></td></tr>
+<tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>PRESET</td>
     <td><input type="button" value="#4 SAW"         onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 SAW2"        onclick="preset(5)"></td>
+    <td><input type="button" value="#5 ----"        onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 SAW3"        onclick="preset(6)"></td>
+    <td><input type="button" value="#6 ----"        onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>MISC</td>
-    <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td></tr>
+    <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td>
+    <td>&nbsp;</td>
+    <td><input type="button" value="RANDOM FX"      onclick="setRandomChorus()"></td></tr>
 <tr><td></td>
-    <td><input type="button" value="#0 POLY"        onclick="preset(0)"></td>
+    <td><input type="button" value="#0 PARA"        onclick="preset(0)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#1 BRASS"       onclick="preset(1)"></td>
+    <td><input type="button" value="#1 PLUS"        onclick="preset(1)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#2 INVERSE"     onclick="preset(2)"></td>
+    <td><input type="button" value="#2 MINUS"       onclick="preset(2)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -737,12 +755,14 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td>OSC (SAW/PUL)         </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<tr><td>OSC WAVE (SAW/PUL)    </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>OSC LEVEL             </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
 <tr><td><input  id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_WAVE       , value)"></td>
-    <td><span    id="spanCC24">-1</span></td>
+    <td><span    id="spanCC24">-</span></td>
+    <td><input id="inputCC108" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_LEVEL      , value)"></td>
+    <td><span   id="spanCC108">-</span></td>
     <td></td>
     <td></td>
     <td></td>
@@ -755,24 +775,24 @@ function getStoredCCValueString(index, number) {
     <td>EG > CUTOFF (-/+)     </td><td></td>
     <td>AMP EG (OFF/ON)       </td><td></td></tr>
 <tr><td><input  id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF         , value)"></td>
-    <td><span    id="spanCC16">-1</span></td>
+    <td><span    id="spanCC16">-</span></td>
     <td><input  id="inputCC17" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RESONANCE      , value)"></td>
-    <td><span    id="spanCC17">-1</span></td>
+    <td><span    id="spanCC17">-</span></td>
     <td><input  id="inputCC18" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_TO_CUTOFF   , value)"></td>
-    <td><span    id="spanCC18">-1</span></td>
+    <td><span    id="spanCC18">-</span></td>
     <td><input  id="inputCC31" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EG         , value)"></td>
-    <td><span    id="spanCC31">-1</span></td></tr>
+    <td><span    id="spanCC31">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>ATTACK                </td><td></td>
     <td>DECAY                 </td><td></td>
     <td>SUSTAIN               </td><td></td>
     <td>                      </td><td></td></tr>
 <tr><td><input  id="inputCC23" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(ATTACK         , value)"></td>
-    <td><span    id="spanCC23">-1</span></td>
+    <td><span    id="spanCC23">-</span></td>
     <td><input  id="inputCC19" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DECAY          , value)"></td>
-    <td><span    id="spanCC19">-1</span></td>
+    <td><span    id="spanCC19">-</span></td>
     <td><input  id="inputCC27" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUSTAIN        , value)"></td>
-    <td><span    id="spanCC27">-1</span></td>
+    <td><span    id="spanCC27">-</span></td>
     <td></td>
     <td> </td></tr>
 <tr><td>&nbsp;</td></tr>
@@ -781,33 +801,33 @@ function getStoredCCValueString(index, number) {
     <td>LFO > PITCH (-/+)     </td><td></td>
     <td>LFO > CUTOFF (-/+)    </td><td></td></tr>
 <tr><td><input  id="inputCC81" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
-    <td><span    id="spanCC81">-1</span></td>
+    <td><span    id="spanCC81">-</span></td>
     <td><input  id="inputCC80" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
-    <td><span    id="spanCC80">-1</span></td>
+    <td><span    id="spanCC80">-</span></td>
     <td><input  id="inputCC82" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_PITCH   , value)"></td>
-    <td><span    id="spanCC82">-1</span></td>
+    <td><span    id="spanCC82">-</span></td>
     <td><input  id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_CUTOFF  , value)"></td>
-    <td><span    id="spanCC83">-1</span></td></tr>
+    <td><span    id="spanCC83">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
     <td>CHORUS DEPTH          </td><td></td>
     <td>CHORUS RATE           </td><td></td>
     <td>CHORUS DELAY TIME     </td><td></td>
     <td>CHORUS (OFF/ON)       </td><td></td></tr>
 <tr><td><input  id="inputCC60" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
-    <td><span    id="spanCC60">-1</span></td>
+    <td><span    id="spanCC60">-</span></td>
     <td><input  id="inputCC61" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
-    <td><span    id="spanCC61">-1</span></td>
+    <td><span    id="spanCC61">-</span></td>
     <td><input  id="inputCC62" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DELAY_T , value)"></td>
-    <td><span    id="spanCC62">-1</span></td>
+    <td><span    id="spanCC62">-</span></td>
     <td><input  id="inputCC63" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
-    <td><span    id="spanCC63">-1</span></td></tr>
+    <td><span    id="spanCC63">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>P. BEND RANGE         </td><td></td>
+<tr><td>PITCH BEND RANGE      </td><td></td>
     <td>                      </td><td></td>
     <td>                      </td><td></td>
     <td>                      </td><td></td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
-    <td><span    id="spanCC85">-1</span></td>
+    <td><span    id="spanCC85">-</span></td>
     <td></td>
     <td></td>
     <td></td>

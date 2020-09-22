@@ -8,9 +8,10 @@ class Voice {
   static uint8_t  m_count;
 
   static uint8_t  m_note_queue[4];
-  static uint8_t  m_on_note_number[4];
-  static uint8_t  m_on_note_count[4];
-  static uint8_t  m_on_note_total_count;
+  static uint8_t  m_note_on_number[4];
+  static uint8_t  m_note_on_count[NOTE_NUMBER_MAX - NOTE_NUMBER_MIN + 1];
+  static uint8_t  m_note_on_total_count;
+  static boolean  m_damper_pedal;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -19,6 +20,7 @@ class Voice {
   static uint8_t  m_sustain;
   static uint8_t  m_release;
   static uint8_t  m_amp_env_gen;
+
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
 
@@ -30,15 +32,15 @@ public:
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
     m_note_queue[3] = 3;
-    m_on_note_number[0] = NOTE_NUMBER_INVALID;
-    m_on_note_number[1] = NOTE_NUMBER_INVALID;
-    m_on_note_number[2] = NOTE_NUMBER_INVALID;
-    m_on_note_number[3] = NOTE_NUMBER_INVALID;
-    m_on_note_count[0] = 0;
-    m_on_note_count[1] = 0;
-    m_on_note_count[2] = 0;
-    m_on_note_count[3] = 0;
-    m_on_note_total_count = 0;
+    m_note_on_number[0] = NOTE_NUMBER_INVALID;
+    m_note_on_number[1] = NOTE_NUMBER_INVALID;
+    m_note_on_number[2] = NOTE_NUMBER_INVALID;
+    m_note_on_number[3] = NOTE_NUMBER_INVALID;
+    for (uint8_t i = 0; i < sizeof(m_note_on_count); ++i) {
+      m_note_on_count[i] = 0;
+    }
+    m_note_on_total_count = 0;
+    m_damper_pedal = false;
 
     m_output_error = 0;
     m_portamento = 0;
@@ -48,7 +50,7 @@ public:
 
     IEnvGen<0>::initialize();
     IEnvGen<1>::initialize();
-    IEnvGen<1>::set_gain(91);
+    IEnvGen<1>::set_gain(90);
 
     IDelayFx<0>::initialize();
 
@@ -62,108 +64,122 @@ public:
   }
 
   INLINE static void note_on(uint8_t note_number, uint8_t /* velocity */) {
-    uint8_t old_on_note_total_count = m_on_note_total_count;
-
-    if        (m_on_note_number[0] == note_number) {
-      if (m_on_note_total_count < 255) {
-        ++m_on_note_total_count;
-        ++m_on_note_count[0];
-      }
-    } else if (m_on_note_number[1] == note_number) {
-      if (m_on_note_total_count < 255) {
-        ++m_on_note_total_count;
-        ++m_on_note_count[1];
-      }
-    } else if (m_on_note_number[2] == note_number) {
-      if (m_on_note_total_count < 255) {
-        ++m_on_note_total_count;
-        ++m_on_note_count[2];
-      }
-    } else if (m_on_note_number[3] == note_number) {
-      if (m_on_note_total_count < 255) {
-        ++m_on_note_total_count;
-        ++m_on_note_count[3];
-      }
-    } else {
-      if (m_on_note_total_count < 255) {
-        uint8_t osc_index = m_note_queue[0];
-        m_note_queue[0] = m_note_queue[1];
-        m_note_queue[1] = m_note_queue[2];
-        m_note_queue[2] = m_note_queue[3];
-        m_note_queue[3] = osc_index;
-
-        m_on_note_total_count -= m_on_note_count[osc_index];
-        ++m_on_note_total_count;
-        m_on_note_count[osc_index] = 1;
-
-        m_on_note_number[osc_index] = note_number;
-        IOsc<0>::note_on(osc_index, note_number);
-      }
+    if (m_note_on_total_count == 255) {
+      return;
     }
 
-    if ((old_on_note_total_count == 0) && (m_on_note_total_count > 0)) {
-      IOsc<0>::set_portamento(0);
+//  uint8_t old_note_on_total_count = m_note_on_total_count;
+
+    if        (m_note_on_number[0] == note_number) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(0, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+    } else if (m_note_on_number[1] == note_number) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(1, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+    } else if (m_note_on_number[2] == note_number) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(2, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+    } else if (m_note_on_number[3] == note_number) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      IOsc<0>::note_on(3, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+    } else {
+      uint8_t osc_index = m_note_queue[0];
+      m_note_queue[0] = m_note_queue[1];
+      m_note_queue[1] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = osc_index;
+
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+      m_note_on_number[osc_index] = note_number;
+      IOsc<0>::note_on(osc_index, note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
     }
+
+//  if ((old_note_on_total_count == 0) && (m_note_on_total_count > 0)) {
+//    IOsc<0>::trigger_lfo();
+//    IEnvGen<0>::note_on();
+//    IEnvGen<1>::note_on();
+//  }
   }
 
   INLINE static void note_off(uint8_t note_number) {
-    if (m_on_note_number[0] == note_number) {
-      --m_on_note_total_count;
-      --m_on_note_count[0];
+    if (m_note_on_total_count == 0) {
+      return;
+    }
 
-      if (m_on_note_count[0] == 0) {
-        m_on_note_number[0] = NOTE_NUMBER_INVALID;
+    --m_note_on_total_count;
+    --m_note_on_count[note_number - NOTE_NUMBER_MIN];
+
+    if (m_damper_pedal) {
+      return;
+    }
+
+    if (m_note_on_number[0] == note_number) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
+        m_note_on_number[0] = NOTE_NUMBER_INVALID;
         note_queue_off(0);
         IOsc<0>::note_off(0);
       }
-    } else if (m_on_note_number[1] == note_number) {
-      --m_on_note_total_count;
-      --m_on_note_count[1];
-
-      if (m_on_note_count[1] == 0) {
-        m_on_note_number[1] = NOTE_NUMBER_INVALID;
+    } else if (m_note_on_number[1] == note_number) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
+        m_note_on_number[1] = NOTE_NUMBER_INVALID;
         note_queue_off(1);
         IOsc<0>::note_off(1);
       }
-    } else if (m_on_note_number[2] == note_number) {
-      --m_on_note_total_count;
-      --m_on_note_count[2];
-
-      if (m_on_note_count[2] == 0) {
-        m_on_note_number[2] = NOTE_NUMBER_INVALID;
+    } else if (m_note_on_number[2] == note_number) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
+        m_note_on_number[2] = NOTE_NUMBER_INVALID;
         note_queue_off(2);
         IOsc<0>::note_off(2);
       }
-    } else if (m_on_note_number[3] == note_number) {
-      --m_on_note_total_count;
-      --m_on_note_count[3];
-
-      if (m_on_note_count[3] == 0) {
-        m_on_note_number[3] = NOTE_NUMBER_INVALID;
+    } else if (m_note_on_number[3] == note_number) {
+      if (m_note_on_count[note_number - NOTE_NUMBER_MIN] == 0) {
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
         note_queue_off(3);
         IOsc<0>::note_off(3);
       }
     }
 
-    if (m_on_note_total_count == 0) {
+    if (m_note_on_total_count == 0) {
       IEnvGen<0>::note_off();
       IEnvGen<1>::note_off();
     }
   }
 
   INLINE static void all_note_off() {
-    m_on_note_number[0] = NOTE_NUMBER_INVALID;
-    m_on_note_number[1] = NOTE_NUMBER_INVALID;
-    m_on_note_number[2] = NOTE_NUMBER_INVALID;
-    m_on_note_number[3] = NOTE_NUMBER_INVALID;
-    m_on_note_count[0] = 0;
-    m_on_note_count[1] = 0;
-    m_on_note_count[2] = 0;
-    m_on_note_count[3] = 0;
-    m_on_note_total_count = 0;
+    m_damper_pedal = false;
+    m_note_on_number[0] = NOTE_NUMBER_INVALID;
+    m_note_on_number[1] = NOTE_NUMBER_INVALID;
+    m_note_on_number[2] = NOTE_NUMBER_INVALID;
+    m_note_on_number[3] = NOTE_NUMBER_INVALID;
+    for (uint8_t i = 0; i < sizeof(m_note_on_count); ++i) {
+      m_note_on_count[i] = 0;
+    }
+    m_note_on_total_count = 0;
     m_note_queue[0] = 0;
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
@@ -244,6 +260,51 @@ public:
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
+    case DAMPER_PEDAL   :
+      if ((m_damper_pedal == false) && (controller_value >= 64)) {
+        m_damper_pedal = true;
+      } else if (m_damper_pedal && (controller_value < 64)) {
+        m_damper_pedal = false;
+
+        if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[0] - NOTE_NUMBER_MIN] == 0) {
+            m_note_on_number[0] = NOTE_NUMBER_INVALID;
+            note_queue_off(0);
+            IOsc<0>::note_off(0);
+          }
+        }
+
+        if (m_note_on_number[1] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[1] - NOTE_NUMBER_MIN] == 0) {
+            m_note_on_number[1] = NOTE_NUMBER_INVALID;
+            note_queue_off(1);
+            IOsc<0>::note_off(1);
+          }
+        }
+
+        if (m_note_on_number[2] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[2] - NOTE_NUMBER_MIN] == 0) {
+            m_note_on_number[2] = NOTE_NUMBER_INVALID;
+            note_queue_off(2);
+            IOsc<0>::note_off(2);
+          }
+        }
+
+        if (m_note_on_number[3] != NOTE_NUMBER_INVALID) {
+          if (m_note_on_count[m_note_on_number[3] - NOTE_NUMBER_MIN] == 0) {
+            m_note_on_number[3] = NOTE_NUMBER_INVALID;
+            note_queue_off(3);
+            IOsc<0>::note_off(3);
+          }
+        }
+
+        if (m_note_on_total_count == 0) {
+          IEnvGen<0>::note_off();
+          IEnvGen<1>::note_off();
+        }
+      }
+      break;
+
     case CHORUS_DEPTH   :
       IOsc<0>::set_chorus_depth(controller_value);
       break;
@@ -255,6 +316,10 @@ public:
       break;
     case CHORUS_MODE    :
       IOsc<0>::set_chorus_mode(controller_value);
+      break;
+
+    case OSC_LEVEL      :
+      IOsc<0>::set_osc_level(controller_value);
       break;
 
     case P_BEND_RANGE   :
@@ -303,6 +368,7 @@ public:
     }
 
     control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
+    control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
 
     control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
     control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
@@ -430,9 +496,10 @@ private:
 template <uint8_t T> uint8_t  Voice<T>::m_count;
 
 template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
-template <uint8_t T> uint8_t  Voice<T>::m_on_note_number[4];
-template <uint8_t T> uint8_t  Voice<T>::m_on_note_count[4];
-template <uint8_t T> uint8_t  Voice<T>::m_on_note_total_count;
+template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
+template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[NOTE_NUMBER_MAX - NOTE_NUMBER_MIN + 1];
+template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
+template <uint8_t T> boolean  Voice<T>::m_damper_pedal;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
@@ -441,5 +508,6 @@ template <uint8_t T> uint8_t  Voice<T>::m_decay;
 template <uint8_t T> uint8_t  Voice<T>::m_sustain;
 template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
+
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];

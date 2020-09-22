@@ -1,4 +1,4 @@
-# Digital Synth VRA8-Q v0.2.1
+# Digital Synth VRA8-Q v1.0.0
 
 - 2020-08-14 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
@@ -42,25 +42,25 @@
 - MIDI Controller (Editor) for VRA8-Q, HTML5 App (Web App)
 - VRA8-Q CTRL converts Program Changes (#0-7 for PRESET) into Control Changes
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
-- We recommend Google Chrome, which implements Web MIDI API
+- We recommend using Google Chrome, which implements Web MIDI API
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 
 
-## Details of Controllers
+## Details of Control Change
 
-- "OSC (SAW/PUL)":
+- "OSC WAVE (SAW/PUL)":
     - Values 0-63: Saw Wave
     - Values 64-127: Pulse Wave (Square Wave)
 - "CHORUS DEPTH":
-    - Value 8: +/- 0.5 ms (min)
-    - Value 32: +/- 2.0 ms (init)
-    - Value 64: +/- 4.1 ms
-    - Value 127: +/- 8.1 ms (max)
+    - Value 8: Delay Time +/- 0.5 ms (min)
+    - Value 32: Delay Time +/- 2.0 ms (init)
+    - Value 64: Delay Time +/- 4.1 ms
+    - Value 127: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
-    - Value 4: 0.06 Hz (min)
-    - Value 16: 0.24 (init)
-    - Value 64: 0.95 Hz
-    - Value 127: 1.9 Hz (max)
+    - Value 4: LFO Frequency 0.06 Hz (min)
+    - Value 16: LFO Frequency 0.24 (init)
+    - Value 64: LFO Frequency 0.95 Hz
+    - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
     - Value 8: 1.0 ms (min)
     - Value 64: 8.2 ms
@@ -68,10 +68,17 @@
     - Value 127: 16.3 ms (max)
 
 
+## Sample Chorus Settings
+
+- Setting 1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
+- Setting 2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
+- Setting 3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
+
+
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2020-08-14       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 0.2.1         
+      [Monophonic Synthesizer]                                        Date: 2020-09-22       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.0.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -93,11 +100,12 @@
     +-------------------------------+---------------+---------------+-----------------------+
     | Pitch Bend                    | x             | o             |                       |
     +-------------------------------+---------------+---------------+-----------------------+
-    | Control                     1 | x             | o             | MODULATION DEPTH      |
+    | Control                     1 | x             | o             | MODULATION            |
     | Change                     11 | x             | o             | EXPRESSION            |
+    |                            64 | x             | o             | DAMPER PEDAL          |
     |                               |               |               |                       |
-    |                            24 | x             | o             | OSC (SAW/PUL)         |
-    |                           104 | x             | o             | EG > PITCH (-/+)      |
+    |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
+    |                           108 | x             | o             | OSC LEVEL             |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
     |                            17 | x             | o             | RESONANCE             |
@@ -118,12 +126,12 @@
     |                            62 | x             | o             | CHORUS DELAY TIME     |
     |                            63 | x             | o             | CHORUS (OFF/ON)       |
     |                               |               |               |                       |
-    |                            85 | x             | o             | P. BEND RANGE         |
+    |                            85 | x             | o             | PITCH BEND RANGE      |
     |                               |               |               |                       |
     |                       112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
     | Program                       | x             | o             |                       |
-    | Change       : True #         | ************* | 0-7, 127      | 127: Random Control   |
+    | Change       : True #         | ************* | 0-7           |                       |
     +-------------------------------+---------------+---------------+-----------------------+
     | System Exclusive              | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+
