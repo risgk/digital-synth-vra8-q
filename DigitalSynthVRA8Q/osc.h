@@ -410,7 +410,7 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_1st() {
-    m_pitch_real[N] += m_lfo_mod_level - (m_rnd & 0x0F) + 0x08;
+    m_pitch_real[N] += m_lfo_mod_level + (m_rnd & 0x0F) - 0x08;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
     if (coarse <= (NOTE_NUMBER_MIN + 64)) {
