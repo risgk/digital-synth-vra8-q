@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v1.0.3
+# Digital Synth VRA8-Q v1.1.0
 
-- 2020-09-22 ISGK Instruments
+- 2020-09-23 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 
@@ -14,6 +14,14 @@
 - We *strongly recommend* **Arduino AVR Boards core 1.8.3**
     - If you use other than AVR Boards core 1.8.3 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
+
+
+## Change History
+
+- v1.1.0: Change the behavior of the oscillators
+- v1.0.3: Fix the problems with bass or treble note on
+- v1.0.2: Fix the oscillator frequency
+- v1.0.1: Fix the release date
 
 
 ## Features
@@ -77,8 +85,8 @@
 
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2020-09-22       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.0.3         
+      [Monophonic Synthesizer]                                        Date: 2020-09-23       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.1.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
