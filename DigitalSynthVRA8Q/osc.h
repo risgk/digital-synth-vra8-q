@@ -410,7 +410,7 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_1st() {
-    m_pitch_real[N] += m_lfo_mod_level;
+    m_pitch_real[N] += m_lfo_mod_level - (m_rnd & 0x0F) + 0x08;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
     if (coarse <= (NOTE_NUMBER_MIN + 64)) {
@@ -433,11 +433,9 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_3rd() {
-    uint8_t coarse = high_byte(m_pitch_real[N]);
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
-    uint8_t bit = (g_osc_freq_fine_table[coarse - NOTE_NUMBER_MIN] >= m_rnd) ? 1 : 0;
-    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit;
+    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]);
     m_freq[N] = m_freq_temp[N] + freq_offset;
     m_wave_table[N] = m_wave_table_temp[N];
   }

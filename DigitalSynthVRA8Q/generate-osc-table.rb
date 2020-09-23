@@ -7,36 +7,20 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  freq_full = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)) / SAMPLING_RATE).round.to_i
-  freq = freq_full / (1 << 8)
-  freq_fine = freq_full % (1 << 8)
-# p [note_number, freq_full.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)))]
-  return freq, freq_fine
+  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
+  freq = freq + 1 if freq.even?
+# p [note_number, freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS))]
+  return freq
 end
 
 $file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(note_number)[0]
+  freq = freq_from_note_number(note_number)
 
   $file.printf("0x%04X,", freq)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
-  elsif note_number % 6 == (6 - 1)
-    $file.printf("\n  ")
-  else
-    $file.printf(" ")
-  end
-end
-$file.printf("};\n\n")
-
-$file.printf("const uint8_t g_osc_freq_fine_table[] = {\n  ")
-(NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq_fine = freq_from_note_number(note_number)[1]
-
-  $file.printf("0x%02X,", freq_fine)
-  if note_number == DATA_BYTE_MAX
-    $file.printf("\n")
-  elsif note_number % 6 == (6 - 1)
+  elsif note_number % 12 == (12 - 1)
     $file.printf("\n  ")
   else
     $file.printf(" ")
@@ -87,7 +71,7 @@ end
 $osc_harmonics_restriction_table = []
 
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)[0]
+  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)
   $osc_harmonics_restriction_table << (freq + 1)
 end
 
