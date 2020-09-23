@@ -16,6 +16,14 @@
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
 
 
+## Change History
+
+- v1.1.0: Change the behavior of the oscillators
+- v1.0.3: Fix the problems with bass or treble note on
+- v1.0.2: Fix the oscillator frequency
+- v1.0.1: Fix the release date
+
+
 ## Features
 
 - Serial MIDI In (38.4 kbps)
