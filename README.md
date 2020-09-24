@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v1.1.1
+# Digital Synth VRA8-Q v1.1.2
 
-- 2020-09-23 ISGK Instruments
+- 2020-09-24 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 
@@ -18,6 +18,7 @@
 
 ## Change History
 
+- v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
 - v1.1.0: Change the behavior of the oscillators
 - v1.0.3: Fix the problems with bass or treble note on
@@ -86,8 +87,8 @@
 
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2020-09-23       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.1.1         
+      [Monophonic Synthesizer]                                        Date: 2020-09-24       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.1.2         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
