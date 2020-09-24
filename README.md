@@ -87,7 +87,7 @@
 
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2020-09-24       
+      [Quadraphonic Synthesizer]                                      Date: 2020-09-24       
       Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.1.2         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
