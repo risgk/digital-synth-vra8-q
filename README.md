@@ -18,6 +18,7 @@
 
 ## Change History
 
+- v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
 - v1.1.0: Change the behavior of the oscillators
 - v1.0.3: Fix the problems with bass or treble note on
