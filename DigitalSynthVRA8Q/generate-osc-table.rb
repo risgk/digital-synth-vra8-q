@@ -7,8 +7,12 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
-  freq = freq + 1 if freq.even?
+  if note_number < NOTE_NUMBER_MIN + 12
+    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).round.to_i
+  else
+    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
+    freq = freq + 1 if freq.even?
+  end
 # p [note_number, freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS))]
   return freq
 end
