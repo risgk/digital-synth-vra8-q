@@ -65,7 +65,7 @@
     - Value 8: Delay Time +/- 0.5 ms (min)
     - Value 32: Delay Time +/- 2.0 ms (init)
     - Value 64: Delay Time +/- 4.1 ms
-    - Value 127: Delay Time +/- 8.1 ms (max)
+    - Value 126: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
     - Value 4: LFO Frequency 0.06 Hz (min)
     - Value 16: LFO Frequency 0.24 (init)

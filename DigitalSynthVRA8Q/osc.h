@@ -192,8 +192,10 @@ public:
   INLINE static void set_chorus_depth(uint8_t controller_value) {
     if (controller_value < 8) {
       m_chorus_depth_control = 8;
-    } else {
+    } else if (controller_value < 126) {
       m_chorus_depth_control = controller_value;
+    } else {
+      m_chorus_depth_control = 126;
     }
   }
 
@@ -492,14 +494,14 @@ private:
 
   INLINE static void update_chorus_lfo_0th() {
     if (m_chorus_delay_time_control < 64) {
-      if (m_chorus_depth_control > m_chorus_delay_time_control) {
-        m_chorus_depth_control_actual = m_chorus_delay_time_control;
+      if (m_chorus_depth_control > (m_chorus_delay_time_control << 1)) {
+        m_chorus_depth_control_actual = (m_chorus_delay_time_control << 1);
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
     } else {
-      if (m_chorus_depth_control > (127 - m_chorus_delay_time_control)) {
-        m_chorus_depth_control_actual = (127 - m_chorus_delay_time_control);
+      if (m_chorus_depth_control > ((127 - m_chorus_delay_time_control) << 1)) {
+        m_chorus_depth_control_actual = ((127 - m_chorus_delay_time_control) << 1);
       } else {
         m_chorus_depth_control_actual = m_chorus_depth_control;
       }
