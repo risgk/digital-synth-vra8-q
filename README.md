@@ -61,6 +61,9 @@
 - "OSC WAVE (SAW/PUL)":
     - Values 0-63: Saw Wave
     - Values 64-127: Pulse Wave (Square Wave)
+- "DECAY":
+    - Values 0-126: Decay Time
+    - Values 127: No Decay
 - "CHORUS DEPTH":
     - Value 8: Delay Time +/- 0.5 ms (min)
     - Value 32: Delay Time +/- 2.0 ms (init)
