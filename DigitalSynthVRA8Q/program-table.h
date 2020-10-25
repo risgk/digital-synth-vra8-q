@@ -12,8 +12,8 @@ const uint8_t g_preset_table_EG_TO_CUTOFF   [] = {82 , 112, 16 , 88 , 64 , 64 , 
 const uint8_t g_preset_table_AMP_EG         [] = {127, 0  , 0  , 127, 127, 127, 127, 127};
 
 const uint8_t g_preset_table_ATTACK         [] = {0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  };
-const uint8_t g_preset_table_DECAY          [] = {127, 64 , 96 , 96 , 127, 0  , 0  , 0  };
-const uint8_t g_preset_table_SUSTAIN        [] = {127, 0  , 0  , 0  , 127, 127, 127, 127};
+const uint8_t g_preset_table_DECAY          [] = {127, 64 , 96 , 96 , 127, 127, 127, 127};
+const uint8_t g_preset_table_SUSTAIN        [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
 const uint8_t g_preset_table_LFO_DEPTH      [] = {8  , 8  , 8  , 8  , 8  , 0  , 0  , 0  };
 const uint8_t g_preset_table_LFO_RATE       [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
