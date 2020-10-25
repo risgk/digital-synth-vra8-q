@@ -75,7 +75,7 @@
     - Value 8: 1.0 ms (min)
     - Value 64: 8.2 ms
     - Value 80: 10.2 ms (init)
-    - Value 127: 16.3 ms (max)
+    - Value 119: 15.2 ms (max)
 
 
 ## Sample Chorus Settings
