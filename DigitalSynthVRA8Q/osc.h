@@ -208,12 +208,12 @@ public:
   }
 
   INLINE static void set_chorus_delay_time(uint8_t controller_value) {
-    if (controller_value < 8) {
-      m_chorus_delay_time_control = 8;
-    } else if (controller_value < 119) {
+    if (controller_value < 4) {
+      m_chorus_delay_time_control = 4;
+    } else if (controller_value < 123) {
       m_chorus_delay_time_control = controller_value;
     } else {
-      m_chorus_delay_time_control = 119;
+      m_chorus_delay_time_control = 123;
     }
   }
 

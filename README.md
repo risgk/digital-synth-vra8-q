@@ -72,10 +72,10 @@
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
-    - Value 8: 1.0 ms (min)
+    - Value 4: 0.5 ms (min)
     - Value 64: 8.2 ms
     - Value 80: 10.2 ms (init)
-    - Value 119: 15.2 ms (max)
+    - Value 123: 15.7 ms (max)
 
 
 ## Sample Chorus Settings
