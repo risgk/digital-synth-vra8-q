@@ -7,23 +7,33 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  if note_number < NOTE_NUMBER_MIN + 12
-    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).round.to_i
-  else
-    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
-    freq = freq + 1 if freq.even?
-  end
-#  printf("%3d, %+f\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)))
-  return freq
+  freq_full = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8)) / SAMPLING_RATE).round.to_i
+  freq = freq_full / (1 << 8)
+  freq_fine = freq_full % (1 << 8)
+#  printf("%3d, %+f\n",note_number, 1.0 - freq_full.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS + 8))))
+  return freq, freq_fine
 end
 
 $file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(note_number)
+  freq = freq_from_note_number(note_number)[0]
 
   $file.printf("0x%04X,", freq)
+  if note_number == DATA_BYTE_MAX
+    $file.printf("\n")
+  elsif note_number % 12 == (12 - 1)
+    $file.printf("\n  ")
+  else
+    $file.printf(" ")
+  end
+end
+$file.printf("};\n\n")
+
+$file.printf("const uint8_t g_osc_freq_fine_table[] = {\n  ")
+(NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
+  freq_fine = freq_from_note_number(note_number)[1]
+
+  $file.printf("0x%02X,", freq_fine)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
   elsif note_number % 12 == (12 - 1)
@@ -77,7 +87,7 @@ end
 $osc_harmonics_restriction_table = []
 
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)
+  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)[0]
   $osc_harmonics_restriction_table << (freq + 1)
 end
 
