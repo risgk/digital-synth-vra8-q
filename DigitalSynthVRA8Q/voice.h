@@ -333,6 +333,8 @@ public:
         if (m_chorus_mode != new_chorus_mode) {
           m_chorus_mode = new_chorus_mode;
 
+          IDelayFx<0>::attenuate();
+
           switch (m_chorus_mode) {
           case CHORUS_MODE_OFF      :
             IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
