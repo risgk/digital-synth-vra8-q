@@ -34,7 +34,7 @@
     - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
         - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
-            - We recommend using film capacitors (J = +-5% or K = +-10%)
+            - We recommend using film capacitors (K = +-10% or less)
         - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
     - We recommend adding AC coupling capacitors (10 uF, electrolytic capacitors) to reduce DC components
 - Files
