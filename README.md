@@ -3,18 +3,15 @@
 - 2020-09-24 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
-
 ## Concept
 
 - Quadraphonic (4-voice Paraphonic) Synthesizer (MIDI Sound Module) with Stereo Chorus Effector for Arduino Uno
-
 
 ## Caution about Arduino
 
 - We *strongly recommend* **Arduino AVR Boards core 1.8.3**
     - If you use other than AVR Boards core 1.8.3 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
-
 
 ## Change History
 
@@ -24,7 +21,6 @@
 - v1.0.3: Fix the problems with bass or treble note on
 - v1.0.2: Fix the oscillator frequency
 - v1.0.1: Fix the release date
-
 
 ## Features
 
@@ -46,7 +42,6 @@
     - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
 
-
 ## VRA8-Q CTRL
 
 - MIDI Controller (Editor) for VRA8-Q, HTML5 App (Web App)
@@ -54,7 +49,6 @@
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend using Google Chrome, which implements Web MIDI API
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
-
 
 ## Details of Control Change
 
@@ -66,18 +60,15 @@
     - Values 127: No Decay
 - "CHORUS DEPTH":
     - Value 8: Delay Time +/- 0.5 ms (min)
-    - Value 32: Delay Time +/- 2.0 ms (init)
     - Value 64: Delay Time +/- 4.1 ms
     - Value 126: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
     - Value 4: LFO Frequency 0.06 Hz (min)
-    - Value 16: LFO Frequency 0.24 (init)
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
     - Value 4: 0.5 ms (min)
     - Value 64: 8.2 ms
-    - Value 80: 10.2 ms (init)
     - Value 123: 15.7 ms (max)
 - "CHORUS (-/-/M/S/S2)":
     - Value 0 (0-15): Off
@@ -88,10 +79,11 @@
 
 ## Sample Chorus Settings
 
-- Setting 1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
-- Setting 2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
-- Setting 3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
-
+- Setting J1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20
+- Setting J2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20
+- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
+- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
+- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
 
 ## MIDI Implementation Chart
 
