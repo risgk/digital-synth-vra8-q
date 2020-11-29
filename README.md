@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
 - v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
 - v1.1.0: Change the behavior of the oscillators
@@ -33,7 +34,9 @@
     - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
         - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
+            - We recommend using film capacitors (J = +-5% or K = +-10%)
         - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
+    - We recommend adding AC coupling capacitors (10 uF, electrolytic capacitors) to reduce DC components
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
