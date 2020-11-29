@@ -92,11 +92,16 @@ const uint8_t   SP_PROG_CHG_5   = 117;
 const uint8_t   SP_PROG_CHG_6   = 118;
 const uint8_t   SP_PROG_CHG_7   = 119;
 
-const uint8_t   OSC_WAVEFORM_SAW       = 0;
-const uint8_t   OSC_WAVEFORM_PUL       = 127;
+const uint8_t   OSC_WAVE_SAW       = 0;
+const uint8_t   OSC_WAVE_PUL       = 127;
 
-const uint8_t   LFO_WAVEFORM_TRI_ASYNC = 0;
-const uint8_t   LFO_WAVEFORM_TRI_SYNC  = 32;
-const uint8_t   LFO_WAVEFORM_SAW_DOWN  = 64;
-const uint8_t   LFO_WAVEFORM_RANDOM    = 96;
-const uint8_t   LFO_WAVEFORM_SQ        = 127;
+const uint8_t   LFO_WAVE_TRI_ASYNC = 0;
+const uint8_t   LFO_WAVE_TRI_SYNC  = 32;
+const uint8_t   LFO_WAVE_SAW_DOWN  = 64;
+const uint8_t   LFO_WAVE_RANDOM    = 96;
+const uint8_t   LFO_WAVE_SQ        = 127;
+
+const uint8_t   CHORUS_OFF         = 0;
+const uint8_t   CHORUS_MONO        = 64;
+const uint8_t   CHORUS_STEREO      = 96;
+const uint8_t   CHORUS_STEREO_2    = 127;

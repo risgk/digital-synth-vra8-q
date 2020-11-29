@@ -21,6 +21,8 @@ class Voice {
   static uint8_t  m_release;
   static uint8_t  m_amp_env_gen;
 
+  static uint8_t  m_chorus_mode;
+
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
 
@@ -60,6 +62,9 @@ public:
     m_release = 0;
     m_amp_env_gen = 127;
     update_env_gen();
+
+    m_chorus_mode = CHORUS_MODE_OFF;
+
     m_rnd = 1;
   }
 
@@ -315,7 +320,39 @@ public:
       IOsc<0>::set_chorus_delay_time(controller_value);
       break;
     case CHORUS_MODE    :
-      IOsc<0>::set_chorus_mode(controller_value);
+      {
+        uint8_t new_chorus_mode = CHORUS_MODE_STEREO_2;
+        if        (controller_value < 48) {
+          new_chorus_mode = CHORUS_MODE_OFF;
+        } else if (controller_value < 80) {
+          new_chorus_mode = CHORUS_MODE_MONO;
+        } else if (controller_value < 112) {
+          new_chorus_mode = CHORUS_MODE_STEREO;
+        }
+
+        if (m_chorus_mode != new_chorus_mode) {
+          m_chorus_mode = new_chorus_mode;
+
+          switch (m_chorus_mode) {
+          case CHORUS_MODE_OFF      :
+            IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
+            IEnvGen<1>::set_gain(90);
+            break;
+          case CHORUS_MODE_STEREO   :
+            IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO);
+            IEnvGen<1>::set_gain(90);
+            break;
+          case CHORUS_MODE_MONO     :
+            IOsc<0>::set_chorus_mode(CHORUS_MODE_MONO);
+            IEnvGen<1>::set_gain(64);
+            break;
+          case CHORUS_MODE_STEREO_2 :
+            IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO_2);
+            IEnvGen<1>::set_gain(64);
+            break;
+          }
+        }
+      }
       break;
 
     case OSC_LEVEL      :
@@ -409,10 +446,18 @@ public:
     int8_t dir_sample = high_sbyte(output);
     IDelayFx<0>::push(dir_sample);
 
-    int8_t eff_sample = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time());
+    int8_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
+    int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
 
+    // For Mono Chorus and Stereo Two-phase Chorus
+    if (m_chorus_mode >= CHORUS_MODE_MONO) {
+      right_level = dir_sample + eff_sample_0;
+      return        dir_sample + eff_sample_1;
+    }
+
+    // For Off and Stereo Chorus
     right_level = dir_sample;
-    return eff_sample;
+    return        eff_sample_0;
   }
 
 private:
@@ -508,6 +553,8 @@ template <uint8_t T> uint8_t  Voice<T>::m_decay;
 template <uint8_t T> uint8_t  Voice<T>::m_sustain;
 template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
+
+template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
 
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];

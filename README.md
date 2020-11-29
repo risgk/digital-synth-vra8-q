@@ -59,8 +59,8 @@
 ## Details of Control Change
 
 - "OSC WAVE (SAW/PUL)":
-    - Values 0-63: Saw Wave
-    - Values 64-127: Pulse Wave (Square Wave)
+    - Values 0 (0-63): Saw Wave
+    - Values 127 (64-127): Pulse Wave (Square Wave)
 - "DECAY":
     - Values 0-126: Decay Time
     - Values 127: No Decay
@@ -79,7 +79,12 @@
     - Value 64: 8.2 ms
     - Value 80: 10.2 ms (init)
     - Value 123: 15.7 ms (max)
-
+- "CHORUS (-/-/M/S/S2)":
+    - Value 0 (0-15): Off
+    - Value 32 (16-47): Off
+    - Value 64 (48-79): Mono Chorus
+    - Value 96 (80-111): Stereo Chorus
+    - Value 127 (112-127): Stereo 2-phase Chorus
 
 ## Sample Chorus Settings
 
@@ -137,7 +142,7 @@
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |
     |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (OFF/ON)       |
+    |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                               |               |               |                       |
