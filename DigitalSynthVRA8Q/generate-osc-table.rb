@@ -4,18 +4,26 @@ $file = File.open("osc-table.h", "w")
 
 $file.printf("#pragma once\n\n")
 
-def freq_from_note_number(note_number)
+def freq_from_note_number(note_number, pr = false)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_PITCH * (2.0 ** (cent / 1200.0))
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
-  freq = freq + 1 if freq.even?
-# p [note_number, freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS))]
+  bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
+  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
+  if note_number < NOTE_NUMBER_MIN + 12
+    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).round.to_i
+  else
+    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
+    freq = freq + 1 if freq.even?
+  end
+  if pr
+    printf("%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
+  end
   return freq
 end
 
 $file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(note_number)
+  freq = freq_from_note_number(note_number, true)
 
   $file.printf("0x%04X,", freq)
   if note_number == DATA_BYTE_MAX

@@ -5,9 +5,11 @@
 
 template <uint8_t T>
 class EnvGen {
-  static const uint8_t STATE_ATTACK             = 0;
-  static const uint8_t STATE_SUSTAIN            = 1;
-  static const uint8_t STATE_IDLE               = 2;
+  static const uint8_t STATE_ATTACK  = 0;
+  static const uint8_t STATE_SUSTAIN = 1;
+  static const uint8_t STATE_IDLE    = 2;
+
+  static const uint8_t NO_DECAY      = 255;
 
   static uint8_t  m_state;
   static uint16_t m_level;
@@ -41,7 +43,11 @@ public:
   }
 
   INLINE static void set_decay(uint8_t controller_value) {
-    m_decay_update_coef = (controller_value + 6) >> 2;
+    if (controller_value == 127) {
+      m_decay_update_coef = NO_DECAY;
+    } else {
+      m_decay_update_coef = (controller_value + 6) >> 2;
+    }
   }
 
   INLINE static void set_release(uint8_t controller_value) {
@@ -111,7 +117,7 @@ public:
         if (m_rest == 0) {
           m_rest = m_decay_update_coef;
 
-          if (m_level > m_sustain) {
+          if ((m_level > m_sustain) && (m_decay_update_coef != NO_DECAY)) {
             uint8_t coef;
             coef = 222 + m_decay_update_coef;
 

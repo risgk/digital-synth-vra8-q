@@ -1,13 +1,11 @@
-# Digital Synth VRA8-Q v1.1.2
+# Digital Synth VRA8-Q v2.0.0
 
-- 2020-09-24 ISGK Instruments
+- 2020-11-29 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
-
 
 ## Concept
 
 - Quadraphonic (4-voice Paraphonic) Synthesizer (MIDI Sound Module) with Stereo Chorus Effector for Arduino Uno
-
 
 ## Caution about Arduino
 
@@ -15,16 +13,15 @@
     - If you use other than AVR Boards core 1.8.3 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
 
-
 ## Change History
 
+- v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
 - v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
 - v1.1.0: Change the behavior of the oscillators
 - v1.0.3: Fix the problems with bass or treble note on
 - v1.0.2: Fix the oscillator frequency
 - v1.0.1: Fix the release date
-
 
 ## Features
 
@@ -37,7 +34,9 @@
     - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
         - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
+            - We recommend using film capacitors (K = +-10% or less)
         - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
+    - We recommend adding AC coupling capacitors (10 uF, electrolytic capacitors) to reduce DC components
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
@@ -45,7 +44,6 @@
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
     - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
-
 
 ## VRA8-Q CTRL
 
@@ -55,40 +53,45 @@
 - We recommend using Google Chrome, which implements Web MIDI API
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 
-
 ## Details of Control Change
 
 - "OSC WAVE (SAW/PUL)":
-    - Values 0-63: Saw Wave
-    - Values 64-127: Pulse Wave (Square Wave)
+    - Values 0 (0-63): Saw Wave
+    - Values 127 (64-127): Pulse Wave (Square Wave)
+- "DECAY":
+    - Values 0-126: Decay Time
+    - Values 127: No Decay
 - "CHORUS DEPTH":
     - Value 8: Delay Time +/- 0.5 ms (min)
-    - Value 32: Delay Time +/- 2.0 ms (init)
     - Value 64: Delay Time +/- 4.1 ms
-    - Value 127: Delay Time +/- 8.1 ms (max)
+    - Value 126: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
     - Value 4: LFO Frequency 0.06 Hz (min)
-    - Value 16: LFO Frequency 0.24 (init)
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
-    - Value 8: 1.0 ms (min)
+    - Value 4: 0.5 ms (min)
     - Value 64: 8.2 ms
-    - Value 80: 10.2 ms (init)
-    - Value 127: 16.3 ms (max)
-
+    - Value 123: 15.7 ms (max)
+- "CHORUS (-/-/M/S/S2)":
+    - Value 0 (0-15): Off
+    - Value 32 (16-47): Off
+    - Value 64 (48-79): Mono Chorus
+    - Value 96 (80-111): Stereo Chorus
+    - Value 127 (112-127): Stereo 2-phase Chorus
 
 ## Sample Chorus Settings
 
-- Setting 1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
-- Setting 2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
-- Setting 3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
-
+- Setting J1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20
+- Setting J2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20
+- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
+- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
+- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
 
 ## MIDI Implementation Chart
 
-      [Monophonic Synthesizer]                                        Date: 2020-09-24       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 1.1.2         
+      [Quadraphonic Synthesizer]                                      Date: 2020-11-29       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.0.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -134,7 +137,7 @@
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |
     |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (OFF/ON)       |
+    |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                               |               |               |                       |

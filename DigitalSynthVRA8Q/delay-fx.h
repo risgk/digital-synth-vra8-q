@@ -6,7 +6,7 @@ template <uint8_t T>
 class DelayFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
 
-  static uint8_t  m_buff[DELAY_BUFF_SIZE];
+  static int8_t   m_buff[DELAY_BUFF_SIZE];
   static uint16_t m_wp;
 
 public:
@@ -26,7 +26,13 @@ public:
     uint16_t rp = (m_wp - sample_delay) & (DELAY_BUFF_SIZE - 1);
     return m_buff[rp];
   }
+
+  INLINE static void attenuate() {
+    for (uint16_t i = 0; i < DELAY_BUFF_SIZE; ++i) {
+      m_buff[i] = m_buff[i] >> 1;
+    }
+  }
 };
 
-template <uint8_t T> uint8_t  DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
+template <uint8_t T> int8_t   DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
 template <uint8_t T> uint16_t DelayFx<T>::m_wp;
