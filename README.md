@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v2.0.0
+# Digital Synth VRA8-Q v2.0.x
 
-- 2020-11-29 ISGK Instruments
+- 2020-xx-xx ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -82,16 +82,16 @@
 
 ## Sample Chorus Settings
 
-- Setting J1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20
-- Setting J2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20
-- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
-- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
-- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
+- Setting J1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20, CHORUS: 127
+- Setting J2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20, CHORUS: 127
+- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80, CHORUS: 96
+- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60, CHORUS: 96
+- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60, CHORUS: 96
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2020-11-29       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.0.0         
+      [Quadraphonic Synthesizer]                                      Date: 2020-xx-xx       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.0.x         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
