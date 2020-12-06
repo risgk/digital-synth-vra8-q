@@ -82,12 +82,16 @@ control_change(CHORUS_MODE, 0)
 play_a(3)
 sound_off
 
-control_change(CHORUS_MODE, 127)
+control_change(CHORUS_MODE, 64)
 play_a(3)
 sound_off
 
-control_change(CHORUS_MODE, 0)
-play_b(3)
+control_change(CHORUS_MODE, 96)
+play_a(3)
+sound_off
+
+control_change(CHORUS_MODE, 127)
+play_a(3)
 sound_off
 
 control_change(CHORUS_MODE, 127)
