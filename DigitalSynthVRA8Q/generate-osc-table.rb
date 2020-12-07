@@ -79,7 +79,7 @@ end
 $osc_harmonics_restriction_table = []
 
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(((note_number + (4 - 1)) / 4) * 4 + 1)
+  freq = freq_from_note_number(((note_number + (3 - 1)) / 3) * 3 + 1)
   $osc_harmonics_restriction_table << (freq + 1)
 end
 
@@ -126,7 +126,7 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
       $file.printf("\n")
-    elsif (idx + 4) % 4 == (4 - 1)
+    elsif (idx + 3) % 3 == (3 - 1)
       $file.printf("\n  ")
     else
       $file.printf(" ")
