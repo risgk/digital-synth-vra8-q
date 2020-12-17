@@ -130,7 +130,7 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
       $file.printf("\n")
-    elsif (idx + 2) % 2 == (2 - 1)
+    elsif (idx + 6) % 6 == (6 - 1)
       $file.printf("\n  ")
     else
       $file.printf(" ")
