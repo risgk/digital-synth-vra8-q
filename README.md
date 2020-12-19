@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
 - v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
