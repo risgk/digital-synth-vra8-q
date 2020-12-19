@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v2.0.0
+# Digital Synth VRA8-Q v2.1.0
 
-- 2020-11-29 ISGK Instruments
+- 2020-12-19 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
 - v1.1.2: Change the oscillator drift
 - v1.1.1: Modify the PRESET programs
@@ -82,16 +83,16 @@
 
 ## Sample Chorus Settings
 
-- Setting J1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20
-- Setting J2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20
-- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80
-- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60
-- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60
+- Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80, CHORUS: 127
+- Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60, CHORUS: 127
+- Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60, CHORUS: 127
+- Setting U1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20, CHORUS: 127
+- Setting U2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20, CHORUS: 127
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2020-11-29       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.0.0         
+      [Quadraphonic Synthesizer]                                      Date: 2020-12-19       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.1.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+

@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v2.0.0";
+const APP_NAME_VERSION = "VRA8-Q CTRL v2.1.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -146,7 +146,7 @@ var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
-presetControllers[OSC_LEVEL      ] = [64 , 64 , 64 , 80 , 64 , 64 , 64 , 64 ];
+presetControllers[OSC_LEVEL      ] = [100, 100, 100, 127, 100, 100, 100, 100];
 
 presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
 presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  ];
@@ -157,15 +157,15 @@ presetControllers[ATTACK         ] = [0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[DECAY          ] = [127, 64 , 96 , 96 , 127, 127, 127, 127];
 presetControllers[SUSTAIN        ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
-presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 8  , 8  , 0  , 0  ];
+presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 8  , 8  , 8  , 0  ];
 presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 65 , 64 , 64 ];
+presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
-presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 32 , 16 , 32 , 32 ];
-presetControllers[CHORUS_DELAY_T ] = [20 , 20 , 20 , 20 , 20 , 80 , 20 , 20 ];
-presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 96 , 0  , 0  ];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 24 , 32 ];
+presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 32 , 32 , 16 ];
+presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 20 , 60 , 80 ];
+presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 96 , 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 
@@ -681,11 +681,11 @@ function getStoredCCValueString(index, number) {
 
 <table>
 <tr><td>PRESET</td>
-    <td><input type="button" value="#4 SAW J1"      onclick="preset(4)"></td>
+    <td><input type="button" value="#4 SAW D"       onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 SAW D1"      onclick="preset(5)"></td>
+    <td><input type="button" value="#5 SAW U"       onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 ----"        onclick="preset(6)"></td>
+    <td><input type="button" value="#6 SAW S"       onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>

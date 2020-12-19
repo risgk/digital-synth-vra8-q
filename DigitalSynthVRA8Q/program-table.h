@@ -4,7 +4,7 @@ const uint8_t PROGRAM_NUMBER_DEFAULT = 0;
 
 // PRESET                                         #0   #1   #2   #3   #4   #5   #6   #7   
 const uint8_t g_preset_table_OSC_WAVE       [] = {0  , 0  , 0  , 127, 0  , 0  , 0  , 0  };
-const uint8_t g_preset_table_OSC_LEVEL      [] = {64 , 64 , 64 , 80 , 64 , 64 , 64 , 64 };
+const uint8_t g_preset_table_OSC_LEVEL      [] = {100, 100, 100, 127, 100, 100, 100, 100};
 
 const uint8_t g_preset_table_CUTOFF         [] = {64 , 16 , 112, 64 , 127, 127, 127, 127};
 const uint8_t g_preset_table_RESONANCE      [] = {64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  };
@@ -15,14 +15,14 @@ const uint8_t g_preset_table_ATTACK         [] = {0  , 16 , 96 , 0  , 0  , 0  , 
 const uint8_t g_preset_table_DECAY          [] = {127, 64 , 96 , 96 , 127, 127, 127, 127};
 const uint8_t g_preset_table_SUSTAIN        [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
-const uint8_t g_preset_table_LFO_DEPTH      [] = {8  , 8  , 8  , 8  , 8  , 8  , 0  , 0  };
+const uint8_t g_preset_table_LFO_DEPTH      [] = {8  , 8  , 8  , 8  , 8  , 8  , 8  , 0  };
 const uint8_t g_preset_table_LFO_RATE       [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-const uint8_t g_preset_table_LFO_TO_PITCH   [] = {65 , 65 , 65 , 65 , 65 , 65 , 64 , 64 };
+const uint8_t g_preset_table_LFO_TO_PITCH   [] = {65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 };
 const uint8_t g_preset_table_LFO_TO_CUTOFF  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 
-const uint8_t g_preset_table_CHORUS_DEPTH   [] = {32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 };
-const uint8_t g_preset_table_CHORUS_RATE    [] = {32 , 32 , 32 , 32 , 32 , 16 , 32 , 32 };
-const uint8_t g_preset_table_CHORUS_DELAY_T [] = {20 , 20 , 20 , 20 , 20 , 80 , 20 , 20 };
-const uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 96 , 0  , 0  };
+const uint8_t g_preset_table_CHORUS_DEPTH   [] = {32 , 32 , 32 , 32 , 32 , 32 , 24 , 32 };
+const uint8_t g_preset_table_CHORUS_RATE    [] = {16 , 16 , 16 , 16 , 16 , 32 , 32 , 16 };
+const uint8_t g_preset_table_CHORUS_DELAY_T [] = {80 , 80 , 80 , 80 , 80 , 20 , 60 , 80 };
+const uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 127, 96 , 0  };
 
 const uint8_t g_preset_table_P_BEND_RANGE   [] = {2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  };

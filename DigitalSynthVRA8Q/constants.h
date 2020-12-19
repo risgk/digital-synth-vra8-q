@@ -4,7 +4,7 @@ const double    A4_PITCH = 440.0;
 
 const uint8_t   MIDI_CH             = 0;
 const uint16_t  SAMPLING_RATE       = 31250;
-const uint16_t  FREQUENCY_MAX       = 14000;
+const uint16_t  FREQUENCY_MAX       = 14500;
 const uint8_t   BIT_DEPTH           = 8;
 const uint8_t   NOTE_NUMBER_MIN     = 24;
 const uint8_t   NOTE_NUMBER_MAX     = 96;
@@ -20,7 +20,7 @@ const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 9;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;
 const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 8;
 const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 16;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
 const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
