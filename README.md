@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v2.1.0
+# Digital Synth VRA8-Q v2.2.0
 
-- 2020-12-19 ISGK Instruments
+- 2020-12-20 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
 - v1.1.2: Change the oscillator drift
@@ -91,8 +92,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2020-12-19       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.1.0         
+      [Quadraphonic Synthesizer]                                      Date: 2020-12-20       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.2.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+

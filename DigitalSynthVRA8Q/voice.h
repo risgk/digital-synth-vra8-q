@@ -402,9 +402,17 @@ public:
   }
 
   /* INLINE */ static void program_change(uint8_t program_number) {
+#if defined(ENABLE_SPECIAL_PROGRAM_CHANGE)
+    if (program_number > (PROGRAM_NUMBER_MAX * 2) + 1) {
+      return;
+    } else if (program_number > PROGRAM_NUMBER_MAX) {
+      program_number -= (PROGRAM_NUMBER_MAX + 1);
+    }
+#else
     if (program_number > PROGRAM_NUMBER_MAX) {
       return;
     }
+#endif
 
     control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
     control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
