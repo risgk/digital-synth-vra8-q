@@ -12,6 +12,7 @@
 #define CPU_BUSY_LED_OUT_PIN (13)       // Pin D13 (Fixed)
 
 #define ENABLE_SPECIAL_PROGRAM_CHANGE   // Program Change by Control Change (112-119)
+                                        // Interpret Program Change 8-15 as 0-7
 
 
 
