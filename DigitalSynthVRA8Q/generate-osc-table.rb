@@ -36,11 +36,13 @@ $file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
 end
 $file.printf("};\n\n")
 
+max_tune_rate = -Float::INFINITY
 $file.printf("const int8_t g_osc_tune_table[] = {\n  ")
 (0..(1 << OSC_TUNE_TABLE_STEPS_BITS) - 1).each do |i|
   tune_rate = ((2.0 ** ((i - (1 << (OSC_TUNE_TABLE_STEPS_BITS - 1))) / (12.0 * (1 << OSC_TUNE_TABLE_STEPS_BITS)))) *
                (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0).round -
               (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0
+  max_tune_rate = tune_rate if max_tune_rate < tune_rate
 
   $file.printf("%5d,", tune_rate)
   if i == (1 << OSC_TUNE_TABLE_STEPS_BITS) - 1
@@ -79,7 +81,9 @@ end
 $osc_harmonics_restriction_table = []
 
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(((note_number + (2 - 1)) / 2) * 2 + 1)
+  correction = (max_tune_rate.to_f + (1 << OSC_TUNE_DENOMINATOR_BITS)) / (1 << OSC_TUNE_DENOMINATOR_BITS)
+  freq = freq_from_note_number(((note_number + (2 - 1)) / 2) * 2) * correction
+  freq = freq.floor
   $osc_harmonics_restriction_table << (freq + 1)
 end
 
@@ -87,7 +91,6 @@ def last_harmonic(freq, organ = false, organ_last)
   last = (freq != 0) ? ((FREQUENCY_MAX * (1 << OSC_PHASE_RESOLUTION_BITS)) /
                         ((freq + OSC_DETUNE_FREQ_MAX) * SAMPLING_RATE)) : 0
   last = organ_last if organ && last > organ_last
-  last = 12 if last == 13
   last = 10 if last == 11
   last = 8 if last == 9
   last = 6 if last == 7
