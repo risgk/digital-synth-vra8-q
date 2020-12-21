@@ -84,7 +84,7 @@ $osc_harmonics_restriction_table = []
   correction = (max_tune_rate.to_f + (1 << OSC_TUNE_DENOMINATOR_BITS)) / (1 << OSC_TUNE_DENOMINATOR_BITS)
   freq = freq_from_note_number(((note_number + (2 - 1)) / 2) * 2) * correction
   freq = freq.floor
-  $osc_harmonics_restriction_table << (freq + 1)
+  $osc_harmonics_restriction_table << freq
 end
 
 def last_harmonic(freq, organ = false, organ_last)
