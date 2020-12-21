@@ -95,6 +95,7 @@ def last_harmonic(freq, organ = false, organ_last)
   last = 10 if last == 11
   last = 8 if last == 9
   last = 6 if last == 7
+  last = 4 if last == 5
   last = [last, 127].min
   last
 end
