@@ -112,17 +112,17 @@ public:
     tmp         -= mul_q15_q15(m_y_2,                      m_a_2_over_a_0);
     int16_t y_0  = tmp << (16 - FILTER_TABLE_FRACTION_BITS);
 
+    m_x_2 = m_x_1;
+    m_y_2 = m_y_1;
+    m_x_1 = x_0;
+    m_y_1 = y_0;
+
     if (high_sbyte(y_0) > high_sbyte(MAX_ABS_OUTPUT)) {
       y_0 = MAX_ABS_OUTPUT;
     }
     if (high_sbyte(y_0) < high_sbyte(-MAX_ABS_OUTPUT)) {
       y_0 = -MAX_ABS_OUTPUT;
     }
-
-    m_x_2 = m_x_1;
-    m_y_2 = m_y_1;
-    m_x_1 = x_0;
-    m_y_1 = y_0;
 #else
     int16_t y_0  = 0;
 #endif
