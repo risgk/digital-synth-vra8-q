@@ -462,8 +462,9 @@ private:
 
   template <uint8_t N>
   INLINE static void update_gate() {
-    const uint8_t quarter_level = (m_osc_level >> 2) + 1;
     if (m_osc_on[N]) {
+      const uint8_t quarter_level = (m_osc_level >> 2) + 1;
+
       if (m_osc_gain[N] >= (m_osc_level - quarter_level)) {
         m_osc_gain[N] = m_osc_level;
       } else {
@@ -471,10 +472,12 @@ private:
       }
     }
     else {
-      if (m_osc_gain[N] <= quarter_level) {
+      const uint8_t one_eighth_level = (m_osc_level >> 3) + 1;
+
+      if (m_osc_gain[N] <= one_eighth_level) {
         m_osc_gain[N] = 0;
       } else {
-        m_osc_gain[N] -= quarter_level;
+        m_osc_gain[N] -= one_eighth_level;
       }
     }
   }
