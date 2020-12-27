@@ -13,7 +13,7 @@ class Voice {
   static uint8_t  m_note_on_total_count;
   static boolean  m_damper_pedal;
 
-  static uint8_t  m_output_error;
+  static uint8_t  m_output_error[2];
   static uint8_t  m_portamento;
   static uint8_t  m_attack;
   static uint8_t  m_decay;
@@ -44,7 +44,8 @@ public:
     m_note_on_total_count = 0;
     m_damper_pedal = false;
 
-    m_output_error = 0;
+    m_output_error[0] = 0;
+    m_output_error[1] = 0;
     m_portamento = 0;
     IOsc<0>::initialize();
     IFilter<0>::initialize();
@@ -449,25 +450,28 @@ public:
     uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);
     int16_t amp_output = IAmp<0>::clock(filter_output, env_gen_output_1);
 
-    // error diffusion
-    int16_t output = amp_output + m_output_error;
-    m_output_error = low_byte(output);
+    IDelayFx<0>::push(amp_output);
+    int16_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
 
-    int8_t dir_sample = high_sbyte(output);
-    IDelayFx<0>::push(dir_sample);
-
-    int8_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
-    int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
-
-    // For Mono Chorus and Stereo Two-phase Chorus
+    // Error diffusion
+    int16_t left;
+    int16_t right;
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
-      right_level = dir_sample + eff_sample_0;
-      return        dir_sample + eff_sample_1;
+      // For Mono Chorus and Stereo Two-phase Chorus
+      left  = amp_output + (eff_sample_0 + m_output_error[0]);
+      right = amp_output + (eff_sample_1 + m_output_error[1]);
     }
+    else {
+      // For Off and Stereo Chorus
+      left  = eff_sample_0 + m_output_error[0];
+      right = amp_output   + m_output_error[1];
+    }
+    m_output_error[0] = low_byte(left);
+    m_output_error[1] = low_byte(right);
 
-    // For Off and Stereo Chorus
-    right_level = dir_sample;
-    return        eff_sample_0;
+    right_level = high_sbyte(right);
+    return        high_sbyte(left);
   }
 
 private:
@@ -556,7 +560,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[128];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
 template <uint8_t T> boolean  Voice<T>::m_damper_pedal;
 
-template <uint8_t T> uint8_t  Voice<T>::m_output_error;
+template <uint8_t T> uint8_t  Voice<T>::m_output_error[2];
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
 template <uint8_t T> uint8_t  Voice<T>::m_attack;
 template <uint8_t T> uint8_t  Voice<T>::m_decay;
