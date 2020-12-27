@@ -462,12 +462,17 @@ private:
 
   template <uint8_t N>
   INLINE static void update_gate() {
+    const uint8_t half_level = (m_osc_level >> 1);
     if (m_osc_on[N]) {
-      m_osc_gain[N] = m_osc_level;
+      if (m_osc_gain[N] >= half_level) {
+        m_osc_gain[N] = m_osc_level;
+      } else {
+        m_osc_gain[N] = half_level;
+      }
     }
     else {
-      if (m_osc_gain[N] > (m_osc_level >> 1)) {
-        m_osc_gain[N] >>= 1;
+      if (m_osc_gain[N] > half_level) {
+        m_osc_gain[N] = half_level;
       } else {
         m_osc_gain[N] = 0;
       }
