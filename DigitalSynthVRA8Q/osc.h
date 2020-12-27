@@ -466,7 +466,11 @@ private:
       m_osc_gain[N] = m_osc_level;
     }
     else {
-      m_osc_gain[N] = 0;
+      if (m_osc_gain[N] > (m_osc_level >> 1)) {
+        m_osc_gain[N] >>= 1;
+      } else {
+        m_osc_gain[N] = 0;
+      }
     }
   }
 
