@@ -6,7 +6,7 @@ template <uint8_t T>
 class DelayFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
 
-  static int16_t  m_buff[DELAY_BUFF_SIZE];
+  static int8_t   m_buff[DELAY_BUFF_SIZE];
   static uint16_t m_wp;
 
 public:
@@ -17,12 +17,12 @@ public:
     m_wp = DELAY_BUFF_SIZE - 1;
   }
 
-  INLINE static void push(int16_t audio_input) {
+  INLINE static void push(int8_t audio_input) {
     m_wp = (m_wp + 1) & (DELAY_BUFF_SIZE - 1);
     m_buff[m_wp] = audio_input;
   }
 
-  INLINE static int16_t get(uint16_t sample_delay) {
+  INLINE static int8_t get(uint16_t sample_delay) {
     uint16_t rp = (m_wp - sample_delay) & (DELAY_BUFF_SIZE - 1);
     return m_buff[rp];
   }
@@ -34,5 +34,5 @@ public:
   }
 };
 
-template <uint8_t T> int16_t  DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
+template <uint8_t T> int8_t   DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
 template <uint8_t T> uint16_t DelayFx<T>::m_wp;
