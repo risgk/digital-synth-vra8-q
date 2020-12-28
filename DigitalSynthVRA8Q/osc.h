@@ -156,9 +156,9 @@ public:
 
   INLINE static void set_osc_level(uint8_t controller_value) {
     if (controller_value < 16) {
-      m_osc_level = (16 >> 1);
+      m_osc_level = 8;
     } else {
-      m_osc_level = (controller_value >> 1);
+      m_osc_level = ((controller_value + 1) >> 1);
     }
   }
 
