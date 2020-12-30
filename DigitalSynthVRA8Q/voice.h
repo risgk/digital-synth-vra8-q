@@ -452,12 +452,11 @@ public:
     // error diffusion
     int16_t output = amp_output + m_output_error;
     m_output_error = low_byte(output);
-
     int8_t dir_sample = high_sbyte(output);
-    IDelayFx<0>::push(dir_sample);
 
     int8_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
     int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
+    IDelayFx<0>::push(dir_sample);
 
     // For Mono Chorus and Stereo Two-phase Chorus
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
