@@ -280,38 +280,38 @@ public:
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
       switch (count & (0x1F << OSC_CONTROL_INTERVAL_BITS)) {
-      case (0x00 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<0>();               break;
-      case (0x01 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<0>();               break;
-      case (0x02 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<0>();               break;
-      case (0x03 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<0>();               break;
-      case (0x04 << OSC_CONTROL_INTERVAL_BITS): update_gate<0>();                   break;
-      case (0x05 << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
-      case (0x06 << OSC_CONTROL_INTERVAL_BITS): update_lfo_1st();                   break;
-      case (0x07 << OSC_CONTROL_INTERVAL_BITS): update_lfo_2nd();                   break;
-      case (0x08 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<1>();               break;
-      case (0x09 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<1>();               break;
-      case (0x0A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<1>();               break;
-      case (0x0B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<1>();               break;
-      case (0x0C << OSC_CONTROL_INTERVAL_BITS): update_gate<1>();                   break;
-      case (0x0D << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
-      case (0x0E << OSC_CONTROL_INTERVAL_BITS): update_lfo_3rd();                   break;
-      case (0x0F << OSC_CONTROL_INTERVAL_BITS): update_lfo_4th();                   break;
-      case (0x10 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<2>();               break;
-      case (0x11 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<2>();               break;
-      case (0x12 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<2>();               break;
-      case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();               break;
-      case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_gate<2>();                   break;
-      case (0x15 << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
-      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_0th();            break;
-      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_1st();            break;
-      case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();               break;
-      case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>();               break;
-      case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();               break;
-      case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();               break;
-      case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_gate<3>();                   break;
-      case (0x1D << OSC_CONTROL_INTERVAL_BITS): update_rnd();                       break;
-      case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_2nd();            break;
-      case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_3rd();            break;
+      case (0x00 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<0>();     break;
+      case (0x01 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<0>();     break;
+      case (0x02 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<0>();     break;
+      case (0x03 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<0>();     break;
+      case (0x04 << OSC_CONTROL_INTERVAL_BITS): update_gate<0>();         break;
+      case (0x05 << OSC_CONTROL_INTERVAL_BITS): update_rnd();             break;
+      case (0x06 << OSC_CONTROL_INTERVAL_BITS): update_lfo_1st();         break;
+      case (0x07 << OSC_CONTROL_INTERVAL_BITS): update_lfo_2nd();         break;
+      case (0x08 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<1>();     break;
+      case (0x09 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<1>();     break;
+      case (0x0A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<1>();     break;
+      case (0x0B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<1>();     break;
+      case (0x0C << OSC_CONTROL_INTERVAL_BITS): update_gate<1>();         break;
+      case (0x0D << OSC_CONTROL_INTERVAL_BITS): update_rnd();             break;
+      case (0x0E << OSC_CONTROL_INTERVAL_BITS): update_lfo_3rd();         break;
+      case (0x0F << OSC_CONTROL_INTERVAL_BITS): update_lfo_4th();         break;
+      case (0x10 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<2>();     break;
+      case (0x11 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<2>();     break;
+      case (0x12 << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<2>();     break;
+      case (0x13 << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<2>();     break;
+      case (0x14 << OSC_CONTROL_INTERVAL_BITS): update_gate<2>();         break;
+      case (0x15 << OSC_CONTROL_INTERVAL_BITS): update_rnd();             break;
+      case (0x16 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_0th();  break;
+      case (0x17 << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_1st();  break;
+      case (0x18 << OSC_CONTROL_INTERVAL_BITS): update_freq_0th<3>();     break;
+      case (0x19 << OSC_CONTROL_INTERVAL_BITS): update_freq_1st<3>();     break;
+      case (0x1A << OSC_CONTROL_INTERVAL_BITS): update_freq_2nd<3>();     break;
+      case (0x1B << OSC_CONTROL_INTERVAL_BITS): update_freq_3rd<3>();     break;
+      case (0x1C << OSC_CONTROL_INTERVAL_BITS): update_gate<3>();         break;
+      case (0x1D << OSC_CONTROL_INTERVAL_BITS): update_rnd();             break;
+      case (0x1E << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_2nd();  break;
+      case (0x1F << OSC_CONTROL_INTERVAL_BITS): update_chorus_lfo_3rd();  break;
       }
     }
 #endif
@@ -462,9 +462,9 @@ private:
 
   template <uint8_t N>
   INLINE static void update_gate() {
-    if (m_osc_on[N]) {
-      const uint8_t quarter_level = (m_osc_level >> 2) + 1;
+    const uint8_t quarter_level = (m_osc_level >> 2) + 1;
 
+    if (m_osc_on[N]) {
       if (m_osc_gain[N] >= (m_osc_level - quarter_level)) {
         m_osc_gain[N] = m_osc_level;
       } else {
@@ -472,12 +472,10 @@ private:
       }
     }
     else {
-      const uint8_t one_eighth_level = (m_osc_level >> 3) + 1;
-
-      if (m_osc_gain[N] <= one_eighth_level) {
+      if (m_osc_gain[N] <= quarter_level) {
         m_osc_gain[N] = 0;
       } else {
-        m_osc_gain[N] -= one_eighth_level;
+        m_osc_gain[N] -= quarter_level;
       }
     }
   }
