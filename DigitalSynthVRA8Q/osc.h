@@ -85,7 +85,7 @@ public:
     m_lfo_sampled = 64;
 
     set_chorus_depth     (32 );
-    set_chorus_rate      (16 );
+    set_chorus_rate      (32 );
     set_chorus_delay_time(80 );
     set_chorus_mode      (CHORUS_MODE_OFF);
 
