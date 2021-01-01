@@ -472,12 +472,12 @@ private:
       }
     }
     else {
-      const uint8_t quarter_level = (m_osc_level >> 2) + 1;
+      const uint8_t one_eighth_level = (m_osc_level >> 3) + 1;
 
-      if (m_osc_gain[N] <= quarter_level) {
+      if (m_osc_gain[N] <= one_eighth_level) {
         m_osc_gain[N] = 0;
       } else {
-        m_osc_gain[N] -= quarter_level;
+        m_osc_gain[N] -= one_eighth_level;
       }
     }
   }
