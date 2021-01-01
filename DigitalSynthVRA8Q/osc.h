@@ -206,9 +206,7 @@ public:
 
 
   INLINE static void set_chorus_depth(uint8_t controller_value) {
-    if (controller_value < 8) {
-      m_chorus_depth_control = 8;
-    } else if (controller_value < 126) {
+    if (controller_value < 126) {
       m_chorus_depth_control = controller_value;
     } else {
       m_chorus_depth_control = 126;
@@ -224,13 +222,7 @@ public:
   }
 
   INLINE static void set_chorus_delay_time(uint8_t controller_value) {
-    if (controller_value < 4) {
-      m_chorus_delay_time_control = 4;
-    } else if (controller_value < 123) {
-      m_chorus_delay_time_control = controller_value;
-    } else {
-      m_chorus_delay_time_control = 123;
-    }
+    m_chorus_delay_time_control = controller_value;
   }
 
   INLINE static void set_chorus_mode(uint8_t chorus_mode) {

@@ -64,17 +64,20 @@
     - Values 0-126: Decay Time
     - Values 127: No Decay
 - "CHORUS DEPTH":
-    - Value 8: Delay Time +/- 0.5 ms (min)
+    - Value 0: Delay Time +/- 0.0 ms (min)
+    - Value 32: Delay Time +/- 2.0 ms
     - Value 64: Delay Time +/- 4.1 ms
     - Value 126: Delay Time +/- 8.1 ms (max)
 - "CHORUS RATE":
     - Value 4: LFO Frequency 0.06 Hz (min)
+    - Value 32: LFO Frequency 0.48 Hz
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
 - "CHORUS DELAY TIME":
-    - Value 4: 0.5 ms (min)
+    - Value 0: 0.03 ms (min)
     - Value 64: 8.2 ms
-    - Value 123: 15.7 ms (max)
+    - Value 80: 10.3 ms
+    - Value 127: 16.3 ms (max)
 - "CHORUS (-/-/M/S/S2)":
     - Value 0 (0-15): Off
     - Value 32 (16-47): Off
