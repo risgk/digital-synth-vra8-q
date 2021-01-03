@@ -117,10 +117,9 @@ public:
     m_x_1 = x_0;
     m_y_1 = y_0;
 
-    if (high_sbyte(y_0) > high_sbyte(MAX_ABS_OUTPUT)) {
-      y_0 = MAX_ABS_OUTPUT;
-    }
-    if (high_sbyte(y_0) < high_sbyte(-MAX_ABS_OUTPUT)) {
+    if        (high_sbyte(y_0) >= high_sbyte(+MAX_ABS_OUTPUT)) {
+      y_0 = +MAX_ABS_OUTPUT;
+    } else if (high_sbyte(y_0) <= high_sbyte(-MAX_ABS_OUTPUT)) {
       y_0 = -MAX_ABS_OUTPUT;
     }
 #else
