@@ -22,11 +22,14 @@ def generate_filter_lpf_table(name, q)
 
     b_2_over_a_0 = ((b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     b_2_over_a_0 += 0x10000 if b_2_over_a_0 < 0
-    a_1_over_a_0 = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
+    a_1_over_a_0_orig = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
+    a_1_over_a_0_orig += 0x100  # correction
+    a_1_over_a_0 = a_1_over_a_0_orig
     a_1_over_a_0 += 0x10000 if a_1_over_a_0 < 0
-    a_1_over_a_0 += 0x100  # correction
+    a_2_over_a_0 = (b_2_over_a_0 << 2) - ((a_1_over_a_0_orig >> 8) << 8) - (1 << FILTER_TABLE_FRACTION_BITS);
+    a_2_over_a_0 += 0x10000 if a_2_over_a_0 < 0
 
-    $file.printf("0x%02x, 0x%02x, 0x%02x,", b_2_over_a_0 & 0xFF, b_2_over_a_0 >> 8, a_1_over_a_0 >> 8)
+    $file.printf("0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x,", b_2_over_a_0 & 0xFF, b_2_over_a_0 >> 8, a_1_over_a_0 >> 8, a_2_over_a_0 & 0xFF, a_2_over_a_0 >> 8)
     if i == DATA_BYTE_MAX
       $file.printf("\n")
     elsif i % 4 == (4 - 1)
