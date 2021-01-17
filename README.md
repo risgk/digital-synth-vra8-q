@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.0.0: Improve sound quality; Change the Q range of RESONANCE (mix: 0.25, max: 5.6); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Other changes
+- v3.0.0: Improve sound quality; Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
@@ -128,7 +128,7 @@
     |                           108 | x             | o             | OSC LEVEL             |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
-    |                            17 | x             | o             | RESONANCE (-/+)       |
+    |                            17 | x             | o             | RESONANCE             |
     |                            18 | x             | o             | EG > CUTOFF (-/+)     |
     |                            31 | x             | o             | AMP EG (OFF/ON)       |
     |                               |               |               |                       |

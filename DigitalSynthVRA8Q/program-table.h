@@ -7,7 +7,7 @@ const uint8_t g_preset_table_OSC_WAVE       [] = {0  , 0  , 0  , 127, 0  , 0  , 
 const uint8_t g_preset_table_OSC_LEVEL      [] = {112, 112, 112, 112, 112, 112, 112, 112};
 
 const uint8_t g_preset_table_CUTOFF         [] = {64 , 16 , 112, 64 , 127, 127, 127, 127};
-const uint8_t g_preset_table_RESONANCE      [] = {88 , 88 , 72 , 88 , 64 , 64 , 64 , 64 };
+const uint8_t g_preset_table_RESONANCE      [] = {64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_EG_TO_CUTOFF   [] = {82 , 112, 16 , 88 , 64 , 64 , 64 , 64 };
 const uint8_t g_preset_table_AMP_EG         [] = {127, 0  , 0  , 127, 127, 127, 127, 127};
 

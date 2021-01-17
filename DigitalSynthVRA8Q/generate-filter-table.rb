@@ -43,13 +43,13 @@ def generate_filter_lpf_table(idx, name, q)
   $file.printf("};\n\n")
 end
 
-(5..14).each do |idx|
-  generate_filter_lpf_table((idx - 8), idx.to_s, Math.sqrt(2.0) ** ((idx - 8) - 1.0))
+(0..6).each do |idx|
+  generate_filter_lpf_table(idx, idx.to_s, Math.sqrt(2.0) ** (idx - 1.0))
 end
 
 $file.printf("const uint8_t* g_filter_lpf_tables[] = {\n  ")
-(0..16).each do |idx|
-  i = [[idx, 5].max, 14].min
+(0..8).each do |idx|
+  i = [[idx - 1, 0].max, 6].min
   $file.printf("g_filter_lpf_table_%-2d,", i)
   if idx == DATA_BYTE_MAX
     $file.printf("\n")
