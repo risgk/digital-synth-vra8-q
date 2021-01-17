@@ -84,8 +84,9 @@ $osc_harmonics_restriction_table = []
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
   correction = (max_tune_rate.to_f + (1 << OSC_TUNE_DENOMINATOR_BITS)) / (1 << OSC_TUNE_DENOMINATOR_BITS)
   freq = freq_from_note_number(((note_number + (2 - 1)) / 2) * 2) * correction
-  freq += 1
   freq = freq.floor
+  bit = 1
+  freq += bit
   $osc_harmonics_restriction_table << freq
 end
 
