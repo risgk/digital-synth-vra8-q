@@ -149,7 +149,7 @@ presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
 presetControllers[OSC_LEVEL      ] = [112, 112, 112, 112, 112, 112, 112, 112];
 
 presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
-presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  ];
+presetControllers[RESONANCE      ] = [88 , 88 , 72 , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
@@ -387,6 +387,7 @@ function updateDisplayOfControl(number, value) {
   document.getElementById("inputCC" + String(number)).value = parseInt(value);
 
   switch (number) {
+  case RESONANCE      :
   case EG_TO_CUTOFF   :
   case LFO_TO_PITCH   :
   case LFO_TO_CUTOFF  :
@@ -772,7 +773,7 @@ function getStoredCCValueString(index, number) {
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>CUTOFF                </td><td></td>
-    <td>RESONANCE             </td><td></td>
+    <td>RESONANCE (-/+)       </td><td></td>
     <td>EG > CUTOFF (-/+)     </td><td></td>
     <td>AMP EG (OFF/ON)       </td><td></td></tr>
 <tr><td><input  id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF         , value)"></td>

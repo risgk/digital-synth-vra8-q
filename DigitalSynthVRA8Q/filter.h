@@ -37,7 +37,7 @@ public:
     m_cutoff_current = 127;
 
     set_cutoff(127);
-    set_resonance(0);
+    set_resonance(64);
     set_cutoff_env_amt(64);
     set_cutoff_lfo_amt(64);
 
@@ -59,7 +59,7 @@ public:
   }
 
   INLINE static void set_resonance(uint8_t controller_value) {
-    uint8_t index = (controller_value + 4) >> 4;
+    uint8_t index = (controller_value + 2) >> 3;
     m_lpf_table = g_filter_lpf_tables[index];
   }
 
