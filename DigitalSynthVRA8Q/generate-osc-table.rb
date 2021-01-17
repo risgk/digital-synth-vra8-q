@@ -43,6 +43,7 @@ $file.printf("const int8_t g_osc_tune_table[] = {\n  ")
                (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0).round -
               (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0
   max_tune_rate = tune_rate if max_tune_rate < tune_rate
+  tune_rate = -14 if tune_rate < -14  # special correction
 
   $file.printf("%5d,", tune_rate)
   if i == (1 << OSC_TUNE_TABLE_STEPS_BITS) - 1

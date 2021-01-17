@@ -412,7 +412,7 @@ private:
     m_pitch_real[N] = (64 << 8) + m_pitch_current[N] + m_pitch_bend_normalized;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
-    if (coarse <= (NOTE_NUMBER_MIN + 64)) {
+    if (coarse < (NOTE_NUMBER_MIN + 64)) {
       m_pitch_real[N] = ((NOTE_NUMBER_MIN + 64) << 8);
     } else if (coarse >= (NOTE_NUMBER_MAX + 64)) {
       m_pitch_real[N] = ((NOTE_NUMBER_MAX + 64) << 8);
@@ -424,7 +424,7 @@ private:
     m_pitch_real[N] += m_lfo_mod_level;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
-    if (coarse <= (NOTE_NUMBER_MIN + 64)) {
+    if (coarse < (NOTE_NUMBER_MIN + 64)) {
       m_pitch_real[N] = NOTE_NUMBER_MIN << 8;
     } else if (coarse >= (NOTE_NUMBER_MAX + 64)) {
       m_pitch_real[N] = NOTE_NUMBER_MAX << 8;
