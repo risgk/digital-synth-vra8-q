@@ -6,9 +6,9 @@ const uint8_t PROGRAM_NUMBER_DEFAULT = 0;
 const uint8_t g_preset_table_OSC_WAVE       [] = {0  , 0  , 0  , 127, 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_OSC_LEVEL      [] = {112, 112, 112, 112, 112, 112, 112, 112};
 
-const uint8_t g_preset_table_CUTOFF         [] = {64 , 16 , 112, 64 , 127, 127, 127, 127};
+const uint8_t g_preset_table_CUTOFF         [] = {100, 16 , 112, 64 , 127, 127, 127, 127};
 const uint8_t g_preset_table_RESONANCE      [] = {64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  };
-const uint8_t g_preset_table_EG_TO_CUTOFF   [] = {82 , 112, 16 , 88 , 64 , 64 , 64 , 64 };
+const uint8_t g_preset_table_EG_TO_CUTOFF   [] = {64 , 112, 16 , 88 , 64 , 64 , 64 , 64 };
 const uint8_t g_preset_table_AMP_EG         [] = {127, 0  , 0  , 127, 127, 127, 127, 127};
 
 const uint8_t g_preset_table_ATTACK         [] = {0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  };
@@ -20,9 +20,9 @@ const uint8_t g_preset_table_LFO_RATE       [] = {64 , 64 , 64 , 64 , 64 , 64 , 
 const uint8_t g_preset_table_LFO_TO_PITCH   [] = {65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 };
 const uint8_t g_preset_table_LFO_TO_CUTOFF  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 
-const uint8_t g_preset_table_CHORUS_DEPTH   [] = {32 , 32 , 32 , 32 , 32 , 32 , 24 , 32 };
+const uint8_t g_preset_table_CHORUS_DEPTH   [] = {32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 };
 const uint8_t g_preset_table_CHORUS_RATE    [] = {32 , 32 , 32 , 32 , 16 , 48 , 32 , 32 };
-const uint8_t g_preset_table_CHORUS_DELAY_T [] = {64 , 64 , 64 , 64 , 80 , 20 , 60 , 64 };
+const uint8_t g_preset_table_CHORUS_DELAY_T [] = {64 , 64 , 64 , 64 , 80 , 20 , 64 , 64 };
 const uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 127, 127, 0  };
 
 const uint8_t g_preset_table_P_BEND_RANGE   [] = {2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  };

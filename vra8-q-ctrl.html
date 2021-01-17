@@ -148,9 +148,9 @@ var presetControllers = {};
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
 presetControllers[OSC_LEVEL      ] = [112, 112, 112, 112, 112, 112, 112, 112];
 
-presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
+presetControllers[CUTOFF         ] = [100, 16 , 112, 64 , 127, 127, 127, 127];
 presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  ];
-presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
+presetControllers[EG_TO_CUTOFF   ] = [64 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
 presetControllers[ATTACK         ] = [0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  ];
@@ -162,9 +162,9 @@ presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 24 , 32 ];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
 presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 16 , 48 , 32 , 32 ];
-presetControllers[CHORUS_DELAY_T ] = [64 , 64 , 64 , 64 , 80 , 20 , 60 , 64 ];
+presetControllers[CHORUS_DELAY_T ] = [64 , 64 , 64 , 64 , 80 , 20 , 64 , 64 ];
 presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
@@ -685,7 +685,7 @@ function getStoredCCValueString(index, number) {
     <td>&nbsp;</td>
     <td><input type="button" value="#5 SAW U2"      onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 SAW D3"      onclick="preset(6)"></td>
+    <td><input type="button" value="#6 SAW Q1"      onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
