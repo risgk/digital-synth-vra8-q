@@ -10,8 +10,7 @@ def generate_filter_lpf_table(idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
     f = [[24, i + 8].max, 120].min
-    g4_pitch = A4_PITCH * (2.0 ** (-200.0 / 1200.0))
-    f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((g4_pitch * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
+    f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
                   (2.0 ** (OCTAVES.to_f + 1.0))
     w_0 = 2.0 * Math::PI * f_0_over_fs
     alpha = Math.sin(w_0) / (2.0 * q)
