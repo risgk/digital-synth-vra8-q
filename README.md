@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Other changes
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
@@ -122,7 +122,7 @@
     +-------------------------------+---------------+---------------+-----------------------+
     | Control                     1 | x             | o             | MODULATION            |
     | Change                     11 | x             | o             | EXPRESSION            |
-    |                            64 | x             | o             | DAMPER PEDAL          |
+    |                            64 | x             | o             | SUSTAIN PEDAL         |
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
     |                           108 | x             | o             | OSC LEVEL             |
@@ -148,7 +148,7 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                               |               |               |                       |
-    |                       112-119 | x             | x             | (RESERVED)            |
+    |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
     | Program                       | x             | o             |                       |
     | Change       : True #         | ************* | 0-7           |                       |
@@ -162,8 +162,11 @@
     | System       : Clock          | x             | x             |                       |
     | Real Time    : Commands       | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+
-    | Aux          : Local ON/OFF   | x             | x             |                       |
-    | Messages     : All Notes OFF  | x             | o 123-127     |                       |
+    | Aux          : All Sound OFF  | x             | o 120         |                       |
+    | Messages     : Reset All      | x             | o 121         |                       |
+    |                Controllers    |               |               |                       |
+    |              : Local ON/OFF   | x             | x             |                       |
+    |              : All Notes OFF  | x             | o 123-127     |                       |
     |              : Active Sense   | x             | x             |                       |
     |              : Reset          | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+

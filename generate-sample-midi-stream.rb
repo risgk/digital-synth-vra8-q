@@ -71,7 +71,7 @@ def play_chord_b(x, y, z, w, oct, velocity)
 end
 
 def sound_off
-  control_change(ALL_NOTES_OFF, 0  )
+  control_change(ALL_SOUND_OFF, 0  )
   wait(800)
 end
 

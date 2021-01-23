@@ -51,7 +51,7 @@ const uint8_t   ACTIVE_SENSING        = 0xFE;
 
 const uint8_t   MODULATION      = 1;
 const uint8_t   EXPRESSION      = 11;
-const uint8_t   DAMPER_PEDAL    = 64;
+const uint8_t   SUSTAIN_PEDAL   = 64;
 
 const uint8_t   OSC_WAVE        = 24;
 const uint8_t   OSC_LEVEL       = 108;
@@ -77,6 +77,8 @@ const uint8_t   CHORUS_MODE     = 63;
 
 const uint8_t   P_BEND_RANGE    = 85;
 
+const uint8_t   ALL_SOUND_OFF   = 120;
+const uint8_t   RESET_ALL_CTRLS = 121;
 const uint8_t   ALL_NOTES_OFF   = 123;
 const uint8_t   OMNI_MODE_OFF   = 124;
 const uint8_t   OMNI_MODE_ON    = 125;

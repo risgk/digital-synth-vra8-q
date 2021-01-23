@@ -51,7 +51,7 @@ const PITCH_BEND     = 0xE0;
 
 const MODULATION      = 1;
 const EXPRESSION      = 11;
-const DAMPER_PEDAL    = 64;
+const SUSTAIN_PEDAL   = 64;
 
 const OSC_WAVE        = 24;
 const OSC_LEVEL       = 108;
@@ -77,7 +77,12 @@ const CHORUS_MODE     = 63;
 
 const P_BEND_RANGE    = 85;
 
+const ALL_SOUND_OFF   = 120;
+const RESET_ALL_CTRLS = 121;
 const ALL_NOTES_OFF   = 123;
+
+// Special Random Control (for VRA8-Q CTRL)
+const SP_RAND_CTRL    = 90;
 
 // Special Program Change (for VRA8-Q CTRL)
 const SP_PROG_CHG_0   = 112;
@@ -212,11 +217,20 @@ function sleep(msec) {
   } while (t2 < t1 + msec);
 }
 
-function allNotesOff() {
+function panic() {
   if (midiOutput) {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_NOTES_OFF, 0]);
-    sleep(50);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_SOUND_OFF, 0]);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
+    sleep(10);
   }
+
+  document.getElementById("spanPB").innerHTML = "+0";
+  document.getElementById("spanCC1").innerHTML = "0";
+  document.getElementById("spanCC11").innerHTML = "127";
+  document.getElementById("spanCC64").innerHTML = "0";
 }
 
 function restoreControllers() {
@@ -275,8 +289,13 @@ function onMIDIMessage(event) {
       document.getElementById("spanCC1").innerHTML = value;
     } else if (number == EXPRESSION     ) {
       document.getElementById("spanCC11").innerHTML = value;
-    } else if (number == DAMPER_PEDAL   ) {
+    } else if (number == SUSTAIN_PEDAL   ) {
       document.getElementById("spanCC64").innerHTML = value;
+    } else if (number == RESET_ALL_CTRLS) {
+      document.getElementById("spanPB").innerHTML = "+0";
+      document.getElementById("spanCC1").innerHTML = "0";
+      document.getElementById("spanCC11").innerHTML = "127";
+      document.getElementById("spanCC64").innerHTML = "0";
     } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
       // Special Program Change (only for VRA8-Q CTRL)
       var programIndex = number - SP_PROG_CHG_0;
@@ -284,6 +303,14 @@ function onMIDIMessage(event) {
       specialProgramChangeCCValues[programIndex] = value;
       if (oldValue <= 63 && value >= 64) {
         loadControllers(programIndex + 8);
+        return;
+      }
+    } else if (number == SP_RAND_CTRL   ) {
+      // Special Random Control (only for VRA8-Q CTRL)
+      var oldValue = specialRandomControlCCValue;
+      specialRandomControlCCValue = value;
+      if (oldValue <= 63 && value >= 64) {
+        setRandom();
         return;
       }
     }
@@ -374,7 +401,7 @@ function onChangeOutputPort() {
   var selectOutputPort = document.getElementById("selectOutputPort");
   midiOutput = midiOutputs[selectOutputPort.selectedIndex];
   if (midiOutput) {
-    allNotesOff();
+    panic();
     var result = restoreControllers();
     if (!result) {
       onChangeTranspose(0);
@@ -424,8 +451,7 @@ function setRandom() {
        (i != CHORUS_DEPTH   ) &&
        (i != CHORUS_RATE    ) &&
        (i != CHORUS_DELAY_T ) &&
-       (i != CHORUS_MODE    ) &&
-       (i != P_BEND_RANGE   )) {
+       (i != CHORUS_MODE    )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -673,7 +699,7 @@ function getStoredCCValueString(index, number) {
     <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td>
     <td>&nbsp;</td>
-    <td>DAMPER PEDAL</td>
+    <td>SUSTAIN PEDAL</td>
     <td>&nbsp;</td>
     <td><span id="spanCC64">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
@@ -703,55 +729,55 @@ function getStoredCCValueString(index, number) {
     <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
-    <td><input type="button" value="ALL NOTES OFF"  onclick="allNotesOff()"></td></tr>
+    <td><input type="button" value="RESET"          onclick="panic()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>RECALL</td>
-    <td><input type="button" value="#12"           onclick="loadControllers(12)"></td>
+    <td><input type="button" value="#12"            onclick="loadControllers(12)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#13"           onclick="loadControllers(13)"></td>
+    <td><input type="button" value="#13"            onclick="loadControllers(13)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#14"           onclick="loadControllers(14)"></td>
+    <td><input type="button" value="#14"            onclick="loadControllers(14)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#15"           onclick="loadControllers(15)"></td>
+    <td><input type="button" value="#15"            onclick="loadControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>STORE</td>
-    <td><input type="button" value="#12"           onclick="saveControllers(12)"></td>
+    <td><input type="button" value="#12"            onclick="saveControllers(12)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#13"           onclick="saveControllers(13)"></td>
+    <td><input type="button" value="#13"            onclick="saveControllers(13)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#14"           onclick="saveControllers(14)"></td>
+    <td><input type="button" value="#14"            onclick="saveControllers(14)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#15"           onclick="saveControllers(15)"></td>
+    <td><input type="button" value="#15"            onclick="saveControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>IMPORT</td>
     <td><input type="file" id="fileImportAll" style="display:none" accept=".json"/>
-        <input type="button" value="ALL"           onclick="fileImportAll()"></td>
+        <input type="button" value="ALL"            onclick="fileImportAll()"></td>
     <td>&nbsp;</td>
     <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
-        <input type="button" value="CURRENT"       onclick="fileImportCurrent()"></td></tr>
+        <input type="button" value="CURRENT"        onclick="fileImportCurrent()"></td></tr>
 <tr><td>&nbsp;</td>
-    <td><input type="button" value="#8 "           onclick="loadControllers(8)" ></td>
+    <td><input type="button" value="#8 "            onclick="loadControllers(8)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#9 "           onclick="loadControllers(9)" ></td>
+    <td><input type="button" value="#9 "            onclick="loadControllers(9)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#10"           onclick="loadControllers(10)"></td>
+    <td><input type="button" value="#10"            onclick="loadControllers(10)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#11"           onclick="loadControllers(11)"></td>
+    <td><input type="button" value="#11"            onclick="loadControllers(11)"></td>
     <td>&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#8 "           onclick="saveControllers(8)" ></td>
+    <td><input type="button" value="#8 "            onclick="saveControllers(8)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#9 "           onclick="saveControllers(9)" ></td>
+    <td><input type="button" value="#9 "            onclick="saveControllers(9)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#10"           onclick="saveControllers(10)"></td>
+    <td><input type="button" value="#10"            onclick="saveControllers(10)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#11"           onclick="saveControllers(11)"></td>
+    <td><input type="button" value="#11"            onclick="saveControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>EXPORT</td>
-    <td><input type="button" value="ALL"           onclick="fileExport()"></td></tr>
+    <td><input type="button" value="ALL"            onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
