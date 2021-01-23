@@ -76,6 +76,7 @@ const uint8_t   CHORUS_DELAY_T  = 62;
 const uint8_t   CHORUS_MODE     = 63;
 
 const uint8_t   P_BEND_RANGE    = 85;
+const uint8_t   V_TO_CUTOFF     = 89;
 
 const uint8_t   ALL_SOUND_OFF   = 120;
 const uint8_t   RESET_ALL_CTRLS = 121;

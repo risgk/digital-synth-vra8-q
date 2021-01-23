@@ -22,6 +22,7 @@ class Voice {
   static uint8_t  m_amp_env_gen;
 
   static uint8_t  m_chorus_mode;
+  static boolean  m_vel_to_cutoff_on;
 
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
@@ -64,16 +65,20 @@ public:
     update_env_gen();
 
     m_chorus_mode = CHORUS_MODE_OFF;
+    m_vel_to_cutoff_on = false;
 
     m_rnd = 1;
   }
 
-  INLINE static void note_on(uint8_t note_number, uint8_t /* velocity */) {
+  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_note_on_total_count == 255) {
       return;
     }
 
-//  uint8_t old_note_on_total_count = m_note_on_total_count;
+    int8_t cutoff_offset = 0;
+    if (m_vel_to_cutoff_on) {
+      cutoff_offset = velocity - 100;
+    }
 
     if        (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
@@ -83,6 +88,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[1] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -91,6 +97,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[2] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -99,6 +106,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[3] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -107,6 +115,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else {
       uint8_t osc_index = m_note_queue[0];
       m_note_queue[0] = m_note_queue[1];
@@ -122,13 +131,8 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     }
-
-//  if ((old_note_on_total_count == 0) && (m_note_on_total_count > 0)) {
-//    IOsc<0>::trigger_lfo();
-//    IEnvGen<0>::note_on();
-//    IEnvGen<1>::note_on();
-//  }
   }
 
   INLINE static void note_off(uint8_t note_number) {
@@ -331,6 +335,15 @@ public:
       IOsc<0>::set_pitch_bend_range(controller_value);
       break;
 
+    case V_TO_CUTOFF     :
+      if (controller_value < 64) {
+        m_vel_to_cutoff_on = false;
+      }
+      else {
+        m_vel_to_cutoff_on = true;
+      }
+      break;
+
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
     case OMNI_MODE_ON   :
@@ -411,6 +424,7 @@ public:
     control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
 
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
+    control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {
@@ -591,6 +605,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
 
 template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
+template <uint8_t T> boolean  Voice<T>::m_vel_to_cutoff_on;
 
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];

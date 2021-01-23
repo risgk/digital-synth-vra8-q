@@ -25,17 +25,17 @@ def wait(length)
 end
 
 def play_a(oct)
-  play_chord_a(12, 16, 19, 23, oct, 127)
-  play_chord_a(16, 19, 23, 26, oct, 127)
-  play_chord_a(14, 17, 21, 24, oct, 127)
-  play_chord_a(17, 21, 24, 28, oct, 127)
+  play_chord_a(12, 16, 19, 23, oct, 100)
+  play_chord_a(16, 19, 23, 26, oct, 100)
+  play_chord_a(14, 17, 21, 24, oct, 100)
+  play_chord_a(17, 21, 24, 28, oct, 100)
 end
 
 def play_b(oct)
-  play_chord_b(12, 16, 19, 23, oct, 127)
-  play_chord_b(16, 19, 23, 26, oct, 127)
-  play_chord_b(14, 17, 21, 24, oct, 127)
-  play_chord_b(17, 21, 24, 28, oct, 127)
+  play_chord_b(12, 16, 19, 23, oct, 100)
+  play_chord_b(16, 19, 23, 26, oct, 100)
+  play_chord_b(14, 17, 21, 24, oct, 100)
+  play_chord_b(17, 21, 24, 28, oct, 100)
 end
 
 def play_chord_a(x, y, z, w, oct, velocity)

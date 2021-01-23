@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
@@ -58,33 +58,36 @@
 
 ## Details of Control Change
 
-- "OSC WAVE (SAW/PUL)":
+- OSC WAVE (SAW/PUL):
     - Values 0 (0-63): Saw Wave
     - Values 127 (64-127): Pulse Wave (Square Wave)
-- "DECAY":
+- DECAY:
     - Values 0-126: Decay Time
     - Values 127: No Decay
-- "CHORUS DEPTH":
+- CHORUS DEPTH:
     - Value 0: Delay Time +/- 0.0 ms (min)
     - Value 32: Delay Time +/- 2.0 ms
     - Value 64: Delay Time +/- 4.1 ms
     - Value 126: Delay Time +/- 8.1 ms (max)
-- "CHORUS RATE":
+- CHORUS RATE:
     - Value 4: LFO Frequency 0.06 Hz (min)
     - Value 32: LFO Frequency 0.48 Hz
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
-- "CHORUS DELAY TIME":
+- CHORUS DELAY TIME:
     - Value 0: 0.03 ms (min)
     - Value 64: 8.2 ms
     - Value 80: 10.3 ms
     - Value 127: 16.3 ms (max)
-- "CHORUS (-/-/M/S/S2)":
+- CHORUS (-/-/M/S/S2):
     - Value 0 (0-15): Off
     - Value 32 (16-47): Off
     - Value 64 (48-79): Mono Chorus
     - Value 96 (80-111): Stereo Chorus
     - Value 127 (112-127): Stereo 2-phase Chorus
+- V > CUTOFF (OFF/ON):
+    - Values 0 (0-63): Velocity > CUTOFF Modulation OFF
+    - Values 127 (64-127): Velocity > CUTOFF Modulation ON
 
 ## Sample Chorus Settings
 
@@ -147,6 +150,7 @@
     |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
+    |                            89 | x             | o             | V > CUTOFF (OFF/ON)   |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+

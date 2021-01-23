@@ -21,6 +21,7 @@ class Filter {
   static uint8_t         m_cutoff;
   static int8_t          m_cutoff_env_gen_amt;
   static int8_t          m_cutoff_lfo_amt;
+  static int8_t          m_cutoff_offset;
 
   static const uint8_t AUDIO_FRACTION_BITS = 14;
   static const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
@@ -40,6 +41,7 @@ public:
     set_resonance(0);
     set_cutoff_env_amt(64);
     set_cutoff_lfo_amt(64);
+    set_cutoff_offset(0);
 
     update_coefs_0th(0);
     update_coefs_1st(0);
@@ -83,6 +85,10 @@ public:
     }
 
     m_cutoff_lfo_amt = (value - 64) << 1;
+  }
+
+  INLINE static void set_cutoff_offset(int8_t cutoff_offset) {
+    m_cutoff_offset = cutoff_offset;
   }
 
   INLINE static int16_t clock(uint8_t count, int16_t audio_input, uint8_t env_gen_input, int16_t lfo_input) {
@@ -133,6 +139,15 @@ private:
   INLINE static void update_coefs_0th(uint8_t env_gen_input) {
     m_cutoff_candidate = m_cutoff;
     m_cutoff_candidate += high_sbyte((m_cutoff_env_gen_amt * env_gen_input) << 1);
+
+    int8_t cutoff_offset = m_cutoff_offset;
+    if (cutoff_offset < -96) {
+      cutoff_offset = -96;
+    }
+    else if (cutoff_offset > +24) {
+      cutoff_offset = +24;
+    }
+    m_cutoff_candidate += cutoff_offset;
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {
@@ -172,3 +187,4 @@ template <uint8_t T> int16_t         Filter<T>::m_cutoff_candidate;
 template <uint8_t T> uint8_t         Filter<T>::m_cutoff;
 template <uint8_t T> int8_t          Filter<T>::m_cutoff_env_gen_amt;
 template <uint8_t T> int8_t          Filter<T>::m_cutoff_lfo_amt;
+template <uint8_t T> int8_t          Filter<T>::m_cutoff_offset;
