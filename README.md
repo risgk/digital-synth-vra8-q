@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 5.6); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Other changes
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases FILTER gain; Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
