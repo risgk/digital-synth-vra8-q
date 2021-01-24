@@ -78,6 +78,30 @@ end
 sound_off
 
 program_change(0)
+play_a(3)
+sound_off
+
+program_change(0)
+play_b(3)
+sound_off
+
+wait(4000)
+
+program_change(1)
+play_a(3)
+sound_off
+
+program_change(2)
+play_a(3)
+sound_off
+
+program_change(3)
+play_a(4)
+sound_off
+
+wait(4000)
+
+program_change(6)
 control_change(CHORUS_MODE, 0)
 play_a(3)
 sound_off
@@ -92,10 +116,6 @@ sound_off
 
 control_change(CHORUS_MODE, 127)
 play_a(3)
-sound_off
-
-control_change(CHORUS_MODE, 127)
-play_b(3)
 sound_off
 
 $file.close
