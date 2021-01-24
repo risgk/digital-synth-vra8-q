@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v2.2.0";
+const APP_NAME_VERSION = "VRA8-Q CTRL v3.0.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -51,7 +51,7 @@ const PITCH_BEND     = 0xE0;
 
 const MODULATION      = 1;
 const EXPRESSION      = 11;
-const DAMPER_PEDAL    = 64;
+const SUSTAIN_PEDAL   = 64;
 
 const OSC_WAVE        = 24;
 const OSC_LEVEL       = 108;
@@ -76,8 +76,14 @@ const CHORUS_DELAY_T  = 62;
 const CHORUS_MODE     = 63;
 
 const P_BEND_RANGE    = 85;
+const V_TO_CUTOFF     = 89;
 
+const ALL_SOUND_OFF   = 120;
+const RESET_ALL_CTRLS = 121;
 const ALL_NOTES_OFF   = 123;
+
+// Special Random Control (for VRA8-Q CTRL)
+const SP_RAND_CTRL    = 90;
 
 // Special Program Change (for VRA8-Q CTRL)
 const SP_PROG_CHG_0   = 112;
@@ -114,6 +120,7 @@ var controlNumberToStringMap = new Map([
   [ CHORUS_MODE    , "CHORUS_MODE    " ],
 
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
+  [ V_TO_CUTOFF    , "V_TO_CUTOFF    " ],
 ]);
 
 var controllersInLocalStorage = [
@@ -140,20 +147,21 @@ var controllersInLocalStorage = [
   CHORUS_MODE    ,
 
   P_BEND_RANGE   ,
+  V_TO_CUTOFF    ,
 ];
 
 var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
-presetControllers[OSC_LEVEL      ] = [127, 127, 127, 127, 127, 127, 127, 127];
+presetControllers[OSC_LEVEL      ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
 
-presetControllers[CUTOFF         ] = [64 , 16 , 112, 64 , 127, 127, 127, 127];
-presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 0  , 0  , 0  , 0  ];
-presetControllers[EG_TO_CUTOFF   ] = [82 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
+presetControllers[CUTOFF         ] = [100, 16 , 112, 64 , 100, 100, 127, 127];
+presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 64 , 64 , 0  , 0  ];
+presetControllers[EG_TO_CUTOFF   ] = [64 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
-presetControllers[ATTACK         ] = [0  , 16 , 96 , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[ATTACK         ] = [0  , 32 , 96 , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[DECAY          ] = [127, 64 , 96 , 96 , 127, 127, 127, 127];
 presetControllers[SUSTAIN        ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
@@ -162,12 +170,13 @@ presetControllers[LFO_RATE       ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 24 , 32 ];
-presetControllers[CHORUS_RATE    ] = [16 , 16 , 16 , 16 , 16 , 32 , 32 , 16 ];
-presetControllers[CHORUS_DELAY_T ] = [80 , 80 , 80 , 80 , 80 , 20 , 60 , 80 ];
-presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 96 , 0  ];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
+presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 16 , 48 , 32 , 32 ];
+presetControllers[CHORUS_DELAY_T ] = [64 , 64 , 64 , 64 , 80 , 20 , 64 , 64 ];
+presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
+presetControllers[V_TO_CUTOFF    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 const PRESET_NUMBER_NEUTRAL = 7;
 </script>
@@ -212,11 +221,20 @@ function sleep(msec) {
   } while (t2 < t1 + msec);
 }
 
-function allNotesOff() {
+function panic() {
   if (midiOutput) {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_NOTES_OFF, 0]);
-    sleep(50);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_SOUND_OFF, 0]);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
+    sleep(10);
   }
+
+  document.getElementById("spanPB").innerHTML = "+0";
+  document.getElementById("spanCC1").innerHTML = "0";
+  document.getElementById("spanCC11").innerHTML = "127";
+  document.getElementById("spanCC64").innerHTML = "0";
 }
 
 function restoreControllers() {
@@ -275,8 +293,13 @@ function onMIDIMessage(event) {
       document.getElementById("spanCC1").innerHTML = value;
     } else if (number == EXPRESSION     ) {
       document.getElementById("spanCC11").innerHTML = value;
-    } else if (number == DAMPER_PEDAL   ) {
+    } else if (number == SUSTAIN_PEDAL   ) {
       document.getElementById("spanCC64").innerHTML = value;
+    } else if (number == RESET_ALL_CTRLS) {
+      document.getElementById("spanPB").innerHTML = "+0";
+      document.getElementById("spanCC1").innerHTML = "0";
+      document.getElementById("spanCC11").innerHTML = "127";
+      document.getElementById("spanCC64").innerHTML = "0";
     } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
       // Special Program Change (only for VRA8-Q CTRL)
       var programIndex = number - SP_PROG_CHG_0;
@@ -284,6 +307,14 @@ function onMIDIMessage(event) {
       specialProgramChangeCCValues[programIndex] = value;
       if (oldValue <= 63 && value >= 64) {
         loadControllers(programIndex + 8);
+        return;
+      }
+    } else if (number == SP_RAND_CTRL   ) {
+      // Special Random Control (only for VRA8-Q CTRL)
+      var oldValue = specialRandomControlCCValue;
+      specialRandomControlCCValue = value;
+      if (oldValue <= 63 && value >= 64) {
+        setRandom();
         return;
       }
     }
@@ -374,7 +405,7 @@ function onChangeOutputPort() {
   var selectOutputPort = document.getElementById("selectOutputPort");
   midiOutput = midiOutputs[selectOutputPort.selectedIndex];
   if (midiOutput) {
-    allNotesOff();
+    panic();
     var result = restoreControllers();
     if (!result) {
       onChangeTranspose(0);
@@ -424,8 +455,7 @@ function setRandom() {
        (i != CHORUS_DEPTH   ) &&
        (i != CHORUS_RATE    ) &&
        (i != CHORUS_DELAY_T ) &&
-       (i != CHORUS_MODE    ) &&
-       (i != P_BEND_RANGE   )) {
+       (i != CHORUS_MODE    )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -471,7 +501,7 @@ function saveControllers(number) {
 
 function noteOn(noteNumber) {
   if (midiOutput) {
-    midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 127]);
+    midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
     sleep(2);
   }
 }
@@ -482,8 +512,6 @@ function noteOff(noteNumber) {
     sleep(2);
   }
 }
-
-
 
 function fileImportAll() {
   document.getElementById("fileImportAll").click();
@@ -597,6 +625,7 @@ function fileExport() {
   str += fileExportOneLine(CHORUS_MODE    );
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
+  str += fileExportOneLine(V_TO_CUTOFF    );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -673,7 +702,7 @@ function getStoredCCValueString(index, number) {
     <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td>
     <td>&nbsp;</td>
-    <td>DAMPER PEDAL</td>
+    <td>SUSTAIN PEDAL</td>
     <td>&nbsp;</td>
     <td><span id="spanCC64">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
@@ -681,11 +710,11 @@ function getStoredCCValueString(index, number) {
 
 <table>
 <tr><td>PRESET</td>
-    <td><input type="button" value="#4 SAW D"       onclick="preset(4)"></td>
+    <td><input type="button" value="#4 PARA D1"     onclick="preset(4)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#5 SAW U"       onclick="preset(5)"></td>
+    <td><input type="button" value="#5 PARA U2"     onclick="preset(5)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#6 SAW S"       onclick="preset(6)"></td>
+    <td><input type="button" value="#6 SAW"         onclick="preset(6)"></td>
     <td>&nbsp;</td>
     <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -703,55 +732,55 @@ function getStoredCCValueString(index, number) {
     <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
-    <td><input type="button" value="ALL NOTES OFF"  onclick="allNotesOff()"></td></tr>
+    <td><input type="button" value="RESET"          onclick="panic()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>RECALL</td>
-    <td><input type="button" value="#12"           onclick="loadControllers(12)"></td>
+    <td><input type="button" value="#12"            onclick="loadControllers(12)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#13"           onclick="loadControllers(13)"></td>
+    <td><input type="button" value="#13"            onclick="loadControllers(13)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#14"           onclick="loadControllers(14)"></td>
+    <td><input type="button" value="#14"            onclick="loadControllers(14)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#15"           onclick="loadControllers(15)"></td>
+    <td><input type="button" value="#15"            onclick="loadControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>STORE</td>
-    <td><input type="button" value="#12"           onclick="saveControllers(12)"></td>
+    <td><input type="button" value="#12"            onclick="saveControllers(12)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#13"           onclick="saveControllers(13)"></td>
+    <td><input type="button" value="#13"            onclick="saveControllers(13)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#14"           onclick="saveControllers(14)"></td>
+    <td><input type="button" value="#14"            onclick="saveControllers(14)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#15"           onclick="saveControllers(15)"></td>
+    <td><input type="button" value="#15"            onclick="saveControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>IMPORT</td>
     <td><input type="file" id="fileImportAll" style="display:none" accept=".json"/>
-        <input type="button" value="ALL"           onclick="fileImportAll()"></td>
+        <input type="button" value="ALL"            onclick="fileImportAll()"></td>
     <td>&nbsp;</td>
     <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
-        <input type="button" value="CURRENT"       onclick="fileImportCurrent()"></td></tr>
+        <input type="button" value="CURRENT"        onclick="fileImportCurrent()"></td></tr>
 <tr><td>&nbsp;</td>
-    <td><input type="button" value="#8 "           onclick="loadControllers(8)" ></td>
+    <td><input type="button" value="#8 "            onclick="loadControllers(8)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#9 "           onclick="loadControllers(9)" ></td>
+    <td><input type="button" value="#9 "            onclick="loadControllers(9)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#10"           onclick="loadControllers(10)"></td>
+    <td><input type="button" value="#10"            onclick="loadControllers(10)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#11"           onclick="loadControllers(11)"></td>
+    <td><input type="button" value="#11"            onclick="loadControllers(11)"></td>
     <td>&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#8 "           onclick="saveControllers(8)" ></td>
+    <td><input type="button" value="#8 "            onclick="saveControllers(8)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#9 "           onclick="saveControllers(9)" ></td>
+    <td><input type="button" value="#9 "            onclick="saveControllers(9)" ></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#10"           onclick="saveControllers(10)"></td>
+    <td><input type="button" value="#10"            onclick="saveControllers(10)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#11"           onclick="saveControllers(11)"></td>
+    <td><input type="button" value="#11"            onclick="saveControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>EXPORT</td>
-    <td><input type="button" value="ALL"           onclick="fileExport()"></td></tr>
+    <td><input type="button" value="ALL"            onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
@@ -824,13 +853,13 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC63">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>PITCH BEND RANGE      </td><td></td>
-    <td>                      </td><td></td>
+    <td>V > CUTOFF (OFF/ON)   </td><td></td>
     <td>                      </td><td></td>
     <td>                      </td><td></td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span    id="spanCC85">-</span></td>
-    <td></td>
-    <td></td>
+    <td><input  id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(V_TO_CUTOFF    , value)"></td>
+    <td><span    id="spanCC89">-</span></td>
     <td></td>
     <td></td>
     <td></td>

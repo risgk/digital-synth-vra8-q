@@ -25,17 +25,17 @@ def wait(length)
 end
 
 def play_a(oct)
-  play_chord_a(12, 16, 19, 23, oct, 127)
-  play_chord_a(16, 19, 23, 26, oct, 127)
-  play_chord_a(14, 17, 21, 24, oct, 127)
-  play_chord_a(17, 21, 24, 28, oct, 127)
+  play_chord_a(12, 16, 19, 23, oct, 100)
+  play_chord_a(16, 19, 23, 26, oct, 100)
+  play_chord_a(14, 17, 21, 24, oct, 100)
+  play_chord_a(17, 21, 24, 28, oct, 100)
 end
 
 def play_b(oct)
-  play_chord_b(12, 16, 19, 23, oct, 127)
-  play_chord_b(16, 19, 23, 26, oct, 127)
-  play_chord_b(14, 17, 21, 24, oct, 127)
-  play_chord_b(17, 21, 24, 28, oct, 127)
+  play_chord_b(12, 16, 19, 23, oct, 100)
+  play_chord_b(16, 19, 23, 26, oct, 100)
+  play_chord_b(14, 17, 21, 24, oct, 100)
+  play_chord_b(17, 21, 24, 28, oct, 100)
 end
 
 def play_chord_a(x, y, z, w, oct, velocity)
@@ -71,31 +71,30 @@ def play_chord_b(x, y, z, w, oct, velocity)
 end
 
 def sound_off
-  control_change(ALL_NOTES_OFF, 0  )
+  control_change(ALL_SOUND_OFF, 0  )
   wait(800)
 end
 
 sound_off
 
 program_change(0)
-control_change(CHORUS_MODE, 0)
 play_a(3)
 sound_off
 
-control_change(CHORUS_MODE, 64)
+program_change(1)
 play_a(3)
 sound_off
 
-control_change(CHORUS_MODE, 96)
+program_change(2)
 play_a(3)
 sound_off
 
-control_change(CHORUS_MODE, 127)
-play_a(3)
+program_change(3)
+play_a(4)
 sound_off
 
-control_change(CHORUS_MODE, 127)
-play_b(3)
+program_change(5)
+play_b(4)
 sound_off
 
 $file.close

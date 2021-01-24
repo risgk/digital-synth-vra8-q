@@ -6,12 +6,11 @@ $file.printf("#pragma once\n\n")
 
 OCTAVES = 5
 
-def generate_filter_lpf_table(name, q)
+def generate_filter_lpf_table(idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
     f = [[24, i + 8].max, 120].min
-    g4_pitch = A4_PITCH * (2.0 ** (-200.0 / 1200.0))
-    f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((g4_pitch * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
+    f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
                   (2.0 ** (OCTAVES.to_f + 1.0))
     w_0 = 2.0 * Math::PI * f_0_over_fs
     alpha = Math.sin(w_0) / (2.0 * q)
@@ -21,12 +20,17 @@ def generate_filter_lpf_table(name, q)
     a_1 = (-2.0) * Math.cos(w_0)
 
     b_2_over_a_0 = ((b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
+    input_gain = 1.0 / (2.0 ** (idx / 12.0))
+    b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     b_2_over_a_0 += 0x10000 if b_2_over_a_0 < 0
-    a_1_over_a_0 = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
+    a_1_over_a_0_orig = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
+    a_1_over_a_0_orig += 0x100  # correction
+    a_1_over_a_0 = a_1_over_a_0_orig
     a_1_over_a_0 += 0x10000 if a_1_over_a_0 < 0
-    a_1_over_a_0 += 0x100  # correction
+    a_2_over_a_0 = (b_2_over_a_0 << 2) - ((a_1_over_a_0_orig >> 8) << 8) - (1 << FILTER_TABLE_FRACTION_BITS);
+    a_2_over_a_0 += 0x10000 if a_2_over_a_0 < 0
 
-    $file.printf("0x%02x, 0x%02x, 0x%02x,", b_2_over_a_0 & 0xFF, b_2_over_a_0 >> 8, a_1_over_a_0 >> 8)
+    $file.printf("0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x,", b_2_over_a_0_gain & 0xFF, b_2_over_a_0_gain >> 8, a_1_over_a_0 >> 8, a_2_over_a_0 & 0xFF, a_2_over_a_0 >> 8)
     if i == DATA_BYTE_MAX
       $file.printf("\n")
     elsif i % 4 == (4 - 1)
@@ -38,13 +42,13 @@ def generate_filter_lpf_table(name, q)
   $file.printf("};\n\n")
 end
 
-(0..8).each do |idx|
-  generate_filter_lpf_table(idx.to_s, Math.sqrt(2.0) ** (idx - 1.0))
+(0..7).each do |idx|
+  generate_filter_lpf_table(idx, idx.to_s, Math.sqrt(2.0) ** (idx - 1.0))
 end
 
 $file.printf("const uint8_t* g_filter_lpf_tables[] = {\n  ")
 (0..8).each do |idx|
-  i = idx
+  i = [[idx - 1, 0].max, 7].min
   $file.printf("g_filter_lpf_table_%-2d,", i)
   if idx == DATA_BYTE_MAX
     $file.printf("\n")

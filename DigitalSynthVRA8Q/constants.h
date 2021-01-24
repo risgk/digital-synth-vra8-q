@@ -4,7 +4,7 @@ const double    A4_PITCH = 440.0;
 
 const uint8_t   MIDI_CH             = 0;
 const uint16_t  SAMPLING_RATE       = 31250;
-const uint16_t  FREQUENCY_MAX       = 14500;
+const uint16_t  FREQUENCY_MAX       = 15000;
 const uint8_t   BIT_DEPTH           = 8;
 const uint8_t   NOTE_NUMBER_MIN     = 24;
 const uint8_t   NOTE_NUMBER_MAX     = 96;
@@ -17,7 +17,7 @@ const uint8_t   OSC_CONTROL_INTERVAL         = 0x01 << OSC_CONTROL_INTERVAL_BITS
 const uint8_t   OSC_PHASE_RESOLUTION_BITS    = 16;
 const uint8_t   OSC_TUNE_TABLE_STEPS_BITS    = 8;
 const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 9;
-const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;
+const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 109;
 const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 8;
 const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
 const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
@@ -51,7 +51,7 @@ const uint8_t   ACTIVE_SENSING        = 0xFE;
 
 const uint8_t   MODULATION      = 1;
 const uint8_t   EXPRESSION      = 11;
-const uint8_t   DAMPER_PEDAL    = 64;
+const uint8_t   SUSTAIN_PEDAL   = 64;
 
 const uint8_t   OSC_WAVE        = 24;
 const uint8_t   OSC_LEVEL       = 108;
@@ -76,7 +76,10 @@ const uint8_t   CHORUS_DELAY_T  = 62;
 const uint8_t   CHORUS_MODE     = 63;
 
 const uint8_t   P_BEND_RANGE    = 85;
+const uint8_t   V_TO_CUTOFF     = 89;
 
+const uint8_t   ALL_SOUND_OFF   = 120;
+const uint8_t   RESET_ALL_CTRLS = 121;
 const uint8_t   ALL_NOTES_OFF   = 123;
 const uint8_t   OMNI_MODE_OFF   = 124;
 const uint8_t   OMNI_MODE_ON    = 125;

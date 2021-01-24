@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v2.2.0
+# Digital Synth VRA8-Q v3.0.0
 
-- 2020-12-20 ISGK Instruments
+- 2021-01-24 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
@@ -57,43 +58,50 @@
 
 ## Details of Control Change
 
-- "OSC WAVE (SAW/PUL)":
+- OSC WAVE (SAW/PUL):
     - Values 0 (0-63): Saw Wave
     - Values 127 (64-127): Pulse Wave (Square Wave)
-- "DECAY":
+- DECAY:
     - Values 0-126: Decay Time
     - Values 127: No Decay
-- "CHORUS DEPTH":
-    - Value 8: Delay Time +/- 0.5 ms (min)
+- CHORUS DEPTH:
+    - Value 0: Delay Time +/- 0.0 ms (min)
+    - Value 32: Delay Time +/- 2.0 ms
     - Value 64: Delay Time +/- 4.1 ms
     - Value 126: Delay Time +/- 8.1 ms (max)
-- "CHORUS RATE":
+- CHORUS RATE:
     - Value 4: LFO Frequency 0.06 Hz (min)
+    - Value 32: LFO Frequency 0.48 Hz
     - Value 64: LFO Frequency 0.95 Hz
     - Value 127: LFO Frequency 1.9 Hz (max)
-- "CHORUS DELAY TIME":
-    - Value 4: 0.5 ms (min)
+- CHORUS DELAY TIME:
+    - Value 0: 0.03 ms (min)
     - Value 64: 8.2 ms
-    - Value 123: 15.7 ms (max)
-- "CHORUS (-/-/M/S/S2)":
+    - Value 80: 10.3 ms
+    - Value 127: 16.3 ms (max)
+- CHORUS (-/-/M/S/S2):
     - Value 0 (0-15): Off
     - Value 32 (16-47): Off
     - Value 64 (48-79): Mono Chorus
     - Value 96 (80-111): Stereo Chorus
     - Value 127 (112-127): Stereo 2-phase Chorus
+- V > CUTOFF (OFF/ON):
+    - Values 0 (0-63): Velocity > CUTOFF Modulation OFF
+    - Values 127 (64-127): Velocity > CUTOFF Modulation ON
 
 ## Sample Chorus Settings
 
+- Setting Q1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 80, CHORUS: 127
 - Setting D1 -- CHORUS DEPTH: 32, CHORUS RATE: 16, CHORUS DELAY TIME: 80, CHORUS: 127
 - Setting D2 -- CHORUS DEPTH: 40, CHORUS RATE: 16, CHORUS DELAY TIME: 60, CHORUS: 127
 - Setting D3 -- CHORUS DEPTH: 24, CHORUS RATE: 32, CHORUS DELAY TIME: 60, CHORUS: 127
 - Setting U1 -- CHORUS DEPTH: 32, CHORUS RATE: 32, CHORUS DELAY TIME: 20, CHORUS: 127
-- Setting U2 -- CHORUS DEPTH: 32, CHORUS RATE: 52, CHORUS DELAY TIME: 20, CHORUS: 127
+- Setting U2 -- CHORUS DEPTH: 32, CHORUS RATE: 48, CHORUS DELAY TIME: 20, CHORUS: 127
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2020-12-20       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 2.2.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-01-24       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.0.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -117,7 +125,7 @@
     +-------------------------------+---------------+---------------+-----------------------+
     | Control                     1 | x             | o             | MODULATION            |
     | Change                     11 | x             | o             | EXPRESSION            |
-    |                            64 | x             | o             | DAMPER PEDAL          |
+    |                            64 | x             | o             | SUSTAIN PEDAL         |
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
     |                           108 | x             | o             | OSC LEVEL             |
@@ -142,8 +150,9 @@
     |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
+    |                            89 | x             | o             | V > CUTOFF (OFF/ON)   |
     |                               |               |               |                       |
-    |                       112-119 | x             | x             | (RESERVED)            |
+    |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
     | Program                       | x             | o             |                       |
     | Change       : True #         | ************* | 0-7           |                       |
@@ -157,8 +166,11 @@
     | System       : Clock          | x             | x             |                       |
     | Real Time    : Commands       | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+
-    | Aux          : Local ON/OFF   | x             | x             |                       |
-    | Messages     : All Notes OFF  | x             | o 123-127     |                       |
+    | Aux          : All Sound OFF  | x             | o 120         |                       |
+    | Messages     : Reset All      | x             | o 121         |                       |
+    |                Controllers    |               |               |                       |
+    |              : Local ON/OFF   | x             | x             |                       |
+    |              : All Notes OFF  | x             | o 123-127     |                       |
     |              : Active Sense   | x             | x             |                       |
     |              : Reset          | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+

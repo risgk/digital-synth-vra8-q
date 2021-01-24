@@ -11,7 +11,7 @@ class Voice {
   static uint8_t  m_note_on_number[4];
   static uint8_t  m_note_on_count[128];
   static uint8_t  m_note_on_total_count;
-  static boolean  m_damper_pedal;
+  static boolean  m_sustain_pedal;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -22,6 +22,7 @@ class Voice {
   static uint8_t  m_amp_env_gen;
 
   static uint8_t  m_chorus_mode;
+  static boolean  m_vel_to_cutoff_on;
 
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
@@ -42,7 +43,7 @@ public:
       m_note_on_count[i] = 0;
     }
     m_note_on_total_count = 0;
-    m_damper_pedal = false;
+    m_sustain_pedal = false;
 
     m_output_error = 0;
     m_portamento = 0;
@@ -64,16 +65,20 @@ public:
     update_env_gen();
 
     m_chorus_mode = CHORUS_MODE_OFF;
+    m_vel_to_cutoff_on = false;
 
     m_rnd = 1;
   }
 
-  INLINE static void note_on(uint8_t note_number, uint8_t /* velocity */) {
+  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_note_on_total_count == 255) {
       return;
     }
 
-//  uint8_t old_note_on_total_count = m_note_on_total_count;
+    int8_t cutoff_offset = 0;
+    if (m_vel_to_cutoff_on) {
+      cutoff_offset = velocity - 100;
+    }
 
     if        (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
@@ -83,6 +88,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[1] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -91,6 +97,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[2] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -99,6 +106,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[3] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -107,6 +115,7 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else {
       uint8_t osc_index = m_note_queue[0];
       m_note_queue[0] = m_note_queue[1];
@@ -122,13 +131,8 @@ public:
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
     }
-
-//  if ((old_note_on_total_count == 0) && (m_note_on_total_count > 0)) {
-//    IOsc<0>::trigger_lfo();
-//    IEnvGen<0>::note_on();
-//    IEnvGen<1>::note_on();
-//  }
   }
 
   INLINE static void note_off(uint8_t note_number) {
@@ -139,7 +143,7 @@ public:
     --m_note_on_total_count;
     --m_note_on_count[note_number];
 
-    if (m_damper_pedal) {
+    if (m_sustain_pedal) {
       return;
     }
 
@@ -175,8 +179,8 @@ public:
     }
   }
 
-  INLINE static void all_note_off() {
-    m_damper_pedal = false;
+  INLINE static void all_sound_off() {
+    m_sustain_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
     m_note_on_number[2] = NOTE_NUMBER_INVALID;
@@ -195,6 +199,13 @@ public:
     IOsc<0>::note_off(3);
     IEnvGen<0>::note_off();
     IEnvGen<1>::note_off();
+  }
+
+  INLINE static void reset_all_controllers() {
+    pitch_bend(0, 0);
+    set_modulation(0);
+    set_expression(127);
+    set_sustain_pedal(0);
   }
 
   INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
@@ -265,49 +276,8 @@ public:
       IFilter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
-    case DAMPER_PEDAL   :
-      if ((m_damper_pedal == false) && (controller_value >= 64)) {
-        m_damper_pedal = true;
-      } else if (m_damper_pedal && (controller_value < 64)) {
-        m_damper_pedal = false;
-
-        if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[0]] == 0) {
-            m_note_on_number[0] = NOTE_NUMBER_INVALID;
-            note_queue_off(0);
-            IOsc<0>::note_off(0);
-          }
-        }
-
-        if (m_note_on_number[1] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[1]] == 0) {
-            m_note_on_number[1] = NOTE_NUMBER_INVALID;
-            note_queue_off(1);
-            IOsc<0>::note_off(1);
-          }
-        }
-
-        if (m_note_on_number[2] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[2]] == 0) {
-            m_note_on_number[2] = NOTE_NUMBER_INVALID;
-            note_queue_off(2);
-            IOsc<0>::note_off(2);
-          }
-        }
-
-        if (m_note_on_number[3] != NOTE_NUMBER_INVALID) {
-          if (m_note_on_count[m_note_on_number[3]] == 0) {
-            m_note_on_number[3] = NOTE_NUMBER_INVALID;
-            note_queue_off(3);
-            IOsc<0>::note_off(3);
-          }
-        }
-
-        if (m_note_on_total_count == 0) {
-          IEnvGen<0>::note_off();
-          IEnvGen<1>::note_off();
-        }
-      }
+    case SUSTAIN_PEDAL   :
+      set_sustain_pedal(controller_value);
       break;
 
     case CHORUS_DEPTH   :
@@ -365,12 +335,29 @@ public:
       IOsc<0>::set_pitch_bend_range(controller_value);
       break;
 
+    case V_TO_CUTOFF     :
+      if (controller_value < 64) {
+        m_vel_to_cutoff_on = false;
+      }
+      else {
+        m_vel_to_cutoff_on = true;
+      }
+      break;
+
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
     case OMNI_MODE_ON   :
     case MONO_MODE_ON   :
     case POLY_MODE_ON   :
-      all_note_off();
+      all_sound_off();  // Strictly speaking, this is a violation of MIDI 1.0 Specification...
+      break;
+
+    case ALL_SOUND_OFF  :
+      all_sound_off();
+      break;
+
+    case RESET_ALL_CTRLS:
+      reset_all_controllers();
       break;
 
 #if defined(ENABLE_SPECIAL_PROGRAM_CHANGE)
@@ -437,6 +424,7 @@ public:
     control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
 
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
+    control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {
@@ -452,12 +440,11 @@ public:
     // error diffusion
     int16_t output = amp_output + m_output_error;
     m_output_error = low_byte(output);
-
     int8_t dir_sample = high_sbyte(output);
-    IDelayFx<0>::push(dir_sample);
 
     int8_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
     int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
+    IDelayFx<0>::push(dir_sample);
 
     // For Mono Chorus and Stereo Two-phase Chorus
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
@@ -546,6 +533,59 @@ private:
     m_rnd = m_rnd ^ (m_rnd << 8);
     return low_byte(m_rnd) >> 1;
   }
+
+  INLINE static void set_modulation(uint8_t controller_value) {
+    IOsc<0>::set_lfo_depth<1>(controller_value);
+  }
+
+  INLINE static void set_expression(uint8_t controller_value) {
+    IEnvGen<1>::set_expression(controller_value);
+  }
+
+  INLINE static void set_sustain_pedal(uint8_t controller_value) {
+    if ((m_sustain_pedal == false) && (controller_value >= 64)) {
+      m_sustain_pedal = true;
+    } else if (m_sustain_pedal && (controller_value < 64)) {
+      m_sustain_pedal = false;
+
+      if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
+        if (m_note_on_count[m_note_on_number[0]] == 0) {
+          m_note_on_number[0] = NOTE_NUMBER_INVALID;
+          note_queue_off(0);
+          IOsc<0>::note_off(0);
+        }
+      }
+
+      if (m_note_on_number[1] != NOTE_NUMBER_INVALID) {
+        if (m_note_on_count[m_note_on_number[1]] == 0) {
+          m_note_on_number[1] = NOTE_NUMBER_INVALID;
+          note_queue_off(1);
+          IOsc<0>::note_off(1);
+        }
+      }
+
+      if (m_note_on_number[2] != NOTE_NUMBER_INVALID) {
+        if (m_note_on_count[m_note_on_number[2]] == 0) {
+          m_note_on_number[2] = NOTE_NUMBER_INVALID;
+          note_queue_off(2);
+          IOsc<0>::note_off(2);
+        }
+      }
+
+      if (m_note_on_number[3] != NOTE_NUMBER_INVALID) {
+        if (m_note_on_count[m_note_on_number[3]] == 0) {
+          m_note_on_number[3] = NOTE_NUMBER_INVALID;
+          note_queue_off(3);
+          IOsc<0>::note_off(3);
+        }
+      }
+
+      if (m_note_on_total_count == 0) {
+        IEnvGen<0>::note_off();
+        IEnvGen<1>::note_off();
+      }
+    }
+  }
 };
 
 template <uint8_t T> uint8_t  Voice<T>::m_count;
@@ -554,7 +594,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[128];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
-template <uint8_t T> boolean  Voice<T>::m_damper_pedal;
+template <uint8_t T> boolean  Voice<T>::m_sustain_pedal;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
@@ -565,6 +605,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
 
 template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
+template <uint8_t T> boolean  Voice<T>::m_vel_to_cutoff_on;
 
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];
