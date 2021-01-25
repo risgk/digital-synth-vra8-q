@@ -63,6 +63,7 @@ class Osc {
   static uint16_t       m_freq_temp[4];
   static uint16_t       m_phase[4];
   static boolean        m_osc_on[4];
+  static boolean        m_osc_on_temp[4];
   static uint8_t        m_osc_gain[4];
   static uint8_t        m_osc_level;
 
@@ -134,6 +135,10 @@ public:
     m_osc_on[1] = false;
     m_osc_on[2] = false;
     m_osc_on[3] = false;
+    m_osc_on_temp[0] = false;
+    m_osc_on_temp[1] = false;
+    m_osc_on_temp[2] = false;
+    m_osc_on_temp[3] = false;
     m_osc_gain[0] = 0;
     m_osc_gain[1] = 0;
     m_osc_gain[2] = 0;
@@ -405,10 +410,15 @@ private:
 
   template <uint8_t N>
   INLINE static void update_freq_0th() {
-    if (m_osc_on[N]) {
+    m_osc_on_temp[N] = m_osc_on[N];
+
+    if (m_osc_on_temp[N]) {
       m_pitch_current[N] = m_pitch_target[N] - mul_q15_q8(m_pitch_target[N] - m_pitch_current[N], m_portamento_coef);
     }
+  }
 
+  template <uint8_t N>
+  INLINE static void update_freq_1st() {
     m_pitch_real[N] = (64 << 8) + m_pitch_current[N] + m_pitch_bend_normalized;
 
     uint8_t coarse = high_byte(m_pitch_real[N]);
@@ -417,13 +427,10 @@ private:
     } else if (coarse >= (NOTE_NUMBER_MAX + 64)) {
       m_pitch_real[N] = ((NOTE_NUMBER_MAX + 64) << 8);
     }
-  }
 
-  template <uint8_t N>
-  INLINE static void update_freq_1st() {
     m_pitch_real[N] += m_lfo_mod_level;
 
-    uint8_t coarse = high_byte(m_pitch_real[N]);
+    coarse = high_byte(m_pitch_real[N]);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {
       m_pitch_real[N] = NOTE_NUMBER_MIN << 8;
     } else if (coarse >= (NOTE_NUMBER_MAX + 64)) {
@@ -454,7 +461,7 @@ private:
 
   template <uint8_t N>
   INLINE static void update_gate() {
-    if (m_osc_on[N]) {
+    if (m_osc_on_temp[N]) {
       const uint8_t half_level = (m_osc_level >> 1) + 1;
 
       if (m_osc_gain[N] >= (m_osc_level - half_level)) {
@@ -628,6 +635,7 @@ template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
 template <uint8_t T> boolean         Osc<T>::m_osc_on[4];
+template <uint8_t T> boolean         Osc<T>::m_osc_on_temp[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
 
