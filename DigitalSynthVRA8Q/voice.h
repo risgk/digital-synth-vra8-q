@@ -87,6 +87,7 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
+      m_note_on_number[0] = note_number;
       IOsc<0>::note_on(0, note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
@@ -165,7 +166,18 @@ public:
 
     if (m_mono_mode) {
       if (m_note_on_total_count == 0) {
+        m_note_on_number[0] = NOTE_NUMBER_INVALID;
+        m_note_on_number[1] = NOTE_NUMBER_INVALID;
+        m_note_on_number[2] = NOTE_NUMBER_INVALID;
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
+        m_note_queue[0] = 0;
+        m_note_queue[1] = 1;
+        m_note_queue[2] = 2;
+        m_note_queue[3] = 3;
         IOsc<0>::note_off(0);
+        IOsc<0>::note_off(1);
+        IOsc<0>::note_off(2);
+        IOsc<0>::note_off(3);
       }
     } else if (m_note_on_number[0] == note_number) {
       if (m_note_on_count[note_number] == 0) {
@@ -367,13 +379,11 @@ public:
       if (controller_value < 64) {
         if (m_mono_mode) {
           m_mono_mode = false;
-          all_sound_off();
           IOsc<0>::set_mono_mode(m_mono_mode);
         }
       } else {
         if (m_mono_mode == false) {
           m_mono_mode = true;
-          all_sound_off();
           IOsc<0>::set_mono_mode(m_mono_mode);
         }
       }
