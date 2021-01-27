@@ -85,9 +85,7 @@ public:
 
     if (m_mono_mode) {
       ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
 
-      m_note_on_number[0] = note_number;
       IOsc<0>::note_on(0, note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
@@ -153,16 +151,23 @@ public:
       return;
     }
 
-    --m_note_on_total_count;
-    --m_note_on_count[note_number];
+    if (m_mono_mode) {
+      --m_note_on_total_count;
+    } else {
+      if (m_note_on_count[note_number] == 0) {
+        return;
+      }
+
+      --m_note_on_total_count;
+      --m_note_on_count[note_number];
+    }
 
     if (m_sustain_pedal) {
       return;
     }
 
     if (m_mono_mode) {
-      if (m_note_on_count[note_number] == 0) {
-        m_note_on_number[0] = NOTE_NUMBER_INVALID;
+      if (m_note_on_total_count == 0) {
         IOsc<0>::note_off(0);
       }
     } else if (m_note_on_number[0] == note_number) {
@@ -356,8 +361,7 @@ public:
     case V_TO_CUTOFF     :
       if (controller_value < 64) {
         m_vel_to_cutoff_on = false;
-      }
-      else {
+      } else {
         m_vel_to_cutoff_on = true;
       }
       break;
@@ -366,15 +370,14 @@ public:
       if (controller_value < 64) {
         if (m_mono_mode) {
           m_mono_mode = false;
-          IOsc<0>::set_mono_mode(m_mono_mode);
           all_sound_off();
+          IOsc<0>::set_mono_mode(m_mono_mode);
         }
-      }
-      else {
+      } else {
         if (m_mono_mode == false) {
           m_mono_mode = true;
-          IOsc<0>::set_mono_mode(m_mono_mode);
           all_sound_off();
+          IOsc<0>::set_mono_mode(m_mono_mode);
         }
       }
       break;
