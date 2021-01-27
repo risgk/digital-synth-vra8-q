@@ -64,7 +64,9 @@ class Osc {
   static uint16_t       m_phase[4];
   static boolean        m_osc_on[4];
   static boolean        m_osc_on_temp[4];
+  static uint8_t        m_osc_gain_effective[4];
   static uint8_t        m_osc_gain[4];
+  static boolean        m_mono_mode;
   static uint8_t        m_osc_level;
 
   static uint8_t        m_rnd;
@@ -89,6 +91,7 @@ public:
     set_chorus_rate      (32 );
     set_chorus_delay_time(80 );
     set_chorus_mode      (CHORUS_MODE_OFF);
+    set_mono_mode        (false);
 
     m_chorus_depth_control_actual = 64;
     m_chorus_lfo_phase = 0;
@@ -139,6 +142,10 @@ public:
     m_osc_on_temp[1] = false;
     m_osc_on_temp[2] = false;
     m_osc_on_temp[3] = false;
+    m_osc_gain_effective[0] = 0;
+    m_osc_gain_effective[1] = 0;
+    m_osc_gain_effective[2] = 0;
+    m_osc_gain_effective[3] = 0;
     m_osc_gain[0] = 0;
     m_osc_gain[1] = 0;
     m_osc_gain[2] = 0;
@@ -234,6 +241,10 @@ public:
     m_chorus_mode = chorus_mode;
   }
 
+  INLINE static void set_mono_mode(boolean mono_mode) {
+    m_mono_mode = mono_mode;
+  }
+
   INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
     m_pitch_target[osc_index] = note_number << 8;
     m_osc_on[osc_index] = true;
@@ -325,10 +336,10 @@ public:
     int8_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
 
     // amp and mix
-    int16_t level_0 = wave_0 * m_osc_gain[0];
-    int16_t level_1 = wave_1 * m_osc_gain[1];
-    int16_t level_2 = wave_2 * m_osc_gain[2];
-    int16_t level_3 = wave_3 * m_osc_gain[3];
+    int16_t level_0 = wave_0 * m_osc_gain_effective[0];
+    int16_t level_1 = wave_1 * m_osc_gain_effective[1];
+    int16_t level_2 = wave_2 * m_osc_gain_effective[2];
+    int16_t level_3 = wave_3 * m_osc_gain_effective[3];
     int16_t result  = level_0 + level_1 + level_2 + level_3;
 #else
     int16_t result  = 0;
@@ -479,6 +490,18 @@ private:
         m_osc_gain[N] -= one_eighth_level;
       }
     }
+
+    if (m_mono_mode) {
+      m_osc_gain_effective[0] = m_osc_gain[0] << 1;
+      m_osc_gain_effective[1] = 0;
+      m_osc_gain_effective[2] = 0;
+      m_osc_gain_effective[3] = 0;
+    } else {
+      m_osc_gain_effective[0] = m_osc_gain[0];
+      m_osc_gain_effective[1] = m_osc_gain[1];
+      m_osc_gain_effective[2] = m_osc_gain[2];
+      m_osc_gain_effective[3] = m_osc_gain[3];
+    }
   }
 
   INLINE static void update_rnd() {
@@ -517,8 +540,6 @@ private:
   INLINE static void update_lfo_4th() {
     m_lfo_mod_level = -mul_q15_q7(m_lfo_level, m_pitch_lfo_amt);
   }
-
-
 
   INLINE static void update_chorus_lfo_0th() {
     if (m_chorus_delay_time_control < 64) {
@@ -636,7 +657,9 @@ template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
 template <uint8_t T> boolean         Osc<T>::m_osc_on[4];
 template <uint8_t T> boolean         Osc<T>::m_osc_on_temp[4];
+template <uint8_t T> uint8_t         Osc<T>::m_osc_gain_effective[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
+template <uint8_t T> boolean         Osc<T>::m_mono_mode;
 template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
 
 template <uint8_t T> uint8_t         Osc<T>::m_rnd;
