@@ -85,6 +85,7 @@ public:
 
     if (m_mono_mode) {
       ++m_note_on_total_count;
+      ++m_note_on_count[note_number];
 
       IOsc<0>::note_on(0, note_number);
       IOsc<0>::trigger_lfo();
@@ -151,16 +152,12 @@ public:
       return;
     }
 
-    if (m_mono_mode) {
-      --m_note_on_total_count;
-    } else {
-      if (m_note_on_count[note_number] == 0) {
-        return;
-      }
-
-      --m_note_on_total_count;
-      --m_note_on_count[note_number];
+    if (m_note_on_count[note_number] == 0) {
+      return;
     }
+
+    --m_note_on_total_count;
+    --m_note_on_count[note_number];
 
     if (m_sustain_pedal) {
       return;
