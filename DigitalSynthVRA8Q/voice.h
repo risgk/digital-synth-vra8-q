@@ -12,6 +12,7 @@ class Voice {
   static uint8_t  m_note_on_count[128];
   static uint8_t  m_note_on_total_count;
   static boolean  m_sustain_pedal;
+  static boolean  m_mono_mode;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -44,10 +45,12 @@ public:
     }
     m_note_on_total_count = 0;
     m_sustain_pedal = false;
+    m_mono_mode = false;
 
     m_output_error = 0;
     m_portamento = 0;
     IOsc<0>::initialize();
+    IOsc<0>::set_mono_mode(m_mono_mode);
     IFilter<0>::initialize();
     IAmp<0>::initialize();
 
@@ -80,7 +83,17 @@ public:
       cutoff_offset = velocity - 100;
     }
 
-    if        (m_note_on_number[0] == note_number) {
+    if (m_mono_mode) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number];
+
+      m_note_on_number[0] = note_number;
+      IOsc<0>::note_on(0, note_number);
+      IOsc<0>::trigger_lfo();
+      IEnvGen<0>::note_on();
+      IEnvGen<1>::note_on();
+      IFilter<0>::set_cutoff_offset(cutoff_offset);
+    } else if (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
@@ -147,7 +160,12 @@ public:
       return;
     }
 
-    if (m_note_on_number[0] == note_number) {
+    if (m_mono_mode) {
+      if (m_note_on_count[note_number] == 0) {
+        m_note_on_number[0] = NOTE_NUMBER_INVALID;
+        IOsc<0>::note_off(0);
+      }
+    } else if (m_note_on_number[0] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         note_queue_off(0);
@@ -179,7 +197,7 @@ public:
     }
   }
 
-  INLINE static void all_sound_off() {
+  static void all_sound_off() {
     m_sustain_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -341,6 +359,23 @@ public:
       }
       else {
         m_vel_to_cutoff_on = true;
+      }
+      break;
+
+    case OSC_MODE       :
+      if (controller_value < 64) {
+        if (m_mono_mode) {
+          m_mono_mode = false;
+          IOsc<0>::set_mono_mode(m_mono_mode);
+          all_sound_off();
+        }
+      }
+      else {
+        if (m_mono_mode == false) {
+          m_mono_mode = true;
+          IOsc<0>::set_mono_mode(m_mono_mode);
+          all_sound_off();
+        }
       }
       break;
 
@@ -595,6 +630,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[128];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
 template <uint8_t T> boolean  Voice<T>::m_sustain_pedal;
+template <uint8_t T> boolean  Voice<T>::m_mono_mode;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
