@@ -472,7 +472,7 @@ private:
 
   template <uint8_t N>
   INLINE static void update_gate() {
-    if (m_osc_on_temp[N]) {
+    if (m_osc_on_temp[N] && ((N == 0) || (m_mono_mode == false))) {
       const uint8_t half_level = (m_osc_level >> 1) + 1;
 
       if (m_osc_gain[N] >= (m_osc_level - half_level)) {
@@ -491,16 +491,14 @@ private:
       }
     }
 
+    m_osc_gain_effective[0] = m_osc_gain[0];
+    m_osc_gain_effective[1] = m_osc_gain[1];
+    m_osc_gain_effective[2] = m_osc_gain[2];
+    m_osc_gain_effective[3] = m_osc_gain[3];
     if (m_mono_mode) {
-      m_osc_gain_effective[0] = m_osc_gain[0] << 1;
-      m_osc_gain_effective[1] = 0;
-      m_osc_gain_effective[2] = 0;
-      m_osc_gain_effective[3] = 0;
-    } else {
-      m_osc_gain_effective[0] = m_osc_gain[0];
-      m_osc_gain_effective[1] = m_osc_gain[1];
-      m_osc_gain_effective[2] = m_osc_gain[2];
-      m_osc_gain_effective[3] = m_osc_gain[3];
+      if ((m_osc_gain_effective[1] == 0) && (m_osc_gain_effective[2] == 0) && (m_osc_gain_effective[3] == 0)) {
+        m_osc_gain_effective[0] = (m_osc_gain_effective[0] << 1);
+      }
     }
   }
 
