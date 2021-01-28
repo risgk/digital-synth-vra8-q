@@ -23,7 +23,7 @@ class Voice {
   static uint8_t  m_amp_env_gen;
 
   static uint8_t  m_chorus_mode;
-  static boolean  m_vel_to_cutoff_on;
+  static uint8_t  m_velocity_to_cutoff;
 
   static uint16_t m_rnd;
   static uint8_t  m_sp_prog_chg_cc_values[8];
@@ -68,7 +68,7 @@ public:
     update_env_gen();
 
     m_chorus_mode = CHORUS_MODE_OFF;
-    m_vel_to_cutoff_on = false;
+    m_velocity_to_cutoff = 0;
 
     m_rnd = 1;
   }
@@ -79,8 +79,10 @@ public:
     }
 
     int8_t cutoff_offset = 0;
-    if (m_vel_to_cutoff_on) {
-      cutoff_offset = velocity - 100;
+    if (m_velocity_to_cutoff == (127 << 1)) {
+      cutoff_offset = (velocity - 100);
+    } else {
+      cutoff_offset = ((static_cast<int8_t>(velocity - 100) * m_velocity_to_cutoff) >> 8);
     }
 
     if (m_mono_mode) {
@@ -367,12 +369,8 @@ public:
       IOsc<0>::set_pitch_bend_range(controller_value);
       break;
 
-    case V_TO_CUTOFF     :
-      if (controller_value < 64) {
-        m_vel_to_cutoff_on = false;
-      } else {
-        m_vel_to_cutoff_on = true;
-      }
+    case V_TO_CUTOFF    :
+      m_velocity_to_cutoff = (controller_value << 1);
       break;
 
     case OSC_MODE       :
@@ -651,7 +649,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
 
 template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
-template <uint8_t T> boolean  Voice<T>::m_vel_to_cutoff_on;
+template <uint8_t T> uint8_t  Voice<T>::m_velocity_to_cutoff;
 
 template <uint8_t T> uint16_t Voice<T>::m_rnd;
 template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];

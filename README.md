@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.1.0: Add OSC MODE (Paraphonic/Monophonic); Fix the instability of the pitch when a note (Gate) is turned on
+- v3.1.0: Add OSC MODE (Paraphonic/Monophonic); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
@@ -86,9 +86,6 @@
     - Value 64 (48-79): Mono Chorus
     - Value 96 (80-111): Stereo Chorus
     - Value 127 (112-127): Stereo 2-phase Chorus
-- V > CUTOFF (OFF/ON):
-    - Values 0 (0-63): Velocity > CUTOFF Modulation OFF
-    - Values 127 (64-127): Velocity > CUTOFF Modulation ON
 - OSC MODE (P/M)
     - Values 0 (0-63): Paraphonic Mode
     - Values 127 (64-127): Monophonic Mode
@@ -154,7 +151,7 @@
     |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
-    |                            89 | x             | o             | V > CUTOFF (OFF/ON)   |
+    |                            89 | x             | o             | VELOCITY > CUTOFF     |
     |                            87 | x             | o             | OSC MODE (P/M)        |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
