@@ -373,7 +373,7 @@ public:
       m_velocity_to_cutoff = (controller_value << 1);
       break;
 
-    case OSC_MODE       :
+    case VOICE_MODE     :
       if (controller_value < 64) {
         if (m_mono_mode) {
           m_mono_mode = false;
@@ -468,7 +468,7 @@ public:
 
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
     control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
-    control_change(OSC_MODE       , g_preset_table_OSC_MODE       [program_number]);
+    control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {

@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.1.0: Add OSC MODE (Paraphonic/Monophonic); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on
+- v3.1.0: Add VOICE (PARA/MONO) Mode; Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
@@ -81,12 +81,12 @@
     - Value 80: 10.3 ms
     - Value 127: 16.3 ms (max)
 - CHORUS (-/-/M/S/S2):
-    - Value 0 (0-15): Off
-    - Value 32 (16-47): Off
-    - Value 64 (48-79): Mono Chorus
-    - Value 96 (80-111): Stereo Chorus
-    - Value 127 (112-127): Stereo 2-phase Chorus
-- OSC MODE (P/M)
+    - Value 0 (0-15): Chorus Off
+    - Value 32 (16-47): Chorus Off
+    - Value 64 (48-79): Mono Chorus Mode
+    - Value 96 (80-111): Stereo Chorus Mode
+    - Value 127 (112-127): Stereo 2-phase Chorus Mode
+- VOICE (PARA/MONO):
     - Values 0 (0-63): Paraphonic Mode
     - Values 127 (64-127): Monophonic Mode
 
@@ -152,7 +152,7 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | OSC MODE (P/M)        |
+    |                            87 | x             | o             | VOICE (PARA/MODE)     |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+

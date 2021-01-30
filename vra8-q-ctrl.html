@@ -77,7 +77,7 @@ const CHORUS_MODE     = 63;
 
 const P_BEND_RANGE    = 85;
 const V_TO_CUTOFF     = 89;
-const OSC_MODE        = 87;
+const VOICE_MODE      = 87;
 
 const ALL_SOUND_OFF   = 120;
 const RESET_ALL_CTRLS = 121;
@@ -122,7 +122,7 @@ var controlNumberToStringMap = new Map([
 
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
   [ V_TO_CUTOFF    , "V_TO_CUTOFF    " ],
-  [ OSC_MODE       , "OSC_MODE       " ],
+  [ VOICE_MODE     , "VOICE_MODE     " ],
 ]);
 
 var controllersInLocalStorage = [
@@ -150,7 +150,7 @@ var controllersInLocalStorage = [
 
   P_BEND_RANGE   ,
   V_TO_CUTOFF    ,
-  OSC_MODE       ,
+  VOICE_MODE     ,
 ];
 
 var presetControllers = {};
@@ -180,7 +180,7 @@ presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 presetControllers[V_TO_CUTOFF    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[OSC_MODE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 const PRESET_NUMBER_NEUTRAL = 7;
 </script>
@@ -460,7 +460,7 @@ function setRandom() {
        (i != CHORUS_RATE    ) &&
        (i != CHORUS_DELAY_T ) &&
        (i != CHORUS_MODE    ) &&
-       (i != OSC_MODE       )) {
+       (i != VOICE_MODE     )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -631,7 +631,7 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
   str += fileExportOneLine(V_TO_CUTOFF    );
-  str += fileExportOneLine(OSC_MODE       );
+  str += fileExportOneLine(VOICE_MODE     );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -860,13 +860,13 @@ function getStoredCCValueString(index, number) {
 <tr><td>&nbsp;</td></tr>
 <tr><td>PITCH BEND RANGE      </td><td></td>
     <td>VELOCITY > CUTOFF     </td><td></td>
-    <td>OSC MODE (P/M)        </td><td></td>
+    <td>VOICE (PARA/MONO)     </td><td></td>
     <td>                      </td><td></td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span    id="spanCC85">-</span></td>
     <td><input  id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(V_TO_CUTOFF    , value)"></td>
     <td><span    id="spanCC89">-</span></td>
-    <td><input  id="inputCC87" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_MODE       , value)"></td>
+    <td><input  id="inputCC87" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
     <td><span    id="spanCC87">-</span></td>
     <td></td>
     <td></td></tr>
