@@ -236,7 +236,7 @@ public:
   }
 
   INLINE static void reset_all_controllers() {
-    pitch_bend(0, 0);
+    pitch_bend(0, 64);
     set_modulation(0);
     set_expression(127);
     set_sustain_pedal(0);
