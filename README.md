@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v3.0.0
+# Digital Synth VRA8-Q v3.1.0
 
-- 2021-01-24 ISGK Instruments
+- 2021-01-31 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -101,8 +101,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-01-24       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.0.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-01-31       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.1.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
