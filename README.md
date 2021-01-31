@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.1.0: Add VOICE (PARA/MONO) Mode; Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Other changes
+- v3.1.0: Add VOICE (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
@@ -109,7 +109,7 @@
     | Basic        Default          | x             | 1             |                       |
     | Channel      Changed          | x             | x             |                       |
     +-------------------------------+---------------+---------------+-----------------------+
-    | Mode         Default          | x             | 3             |                       |
+    | Mode         Default          | x             | Mode 3        |                       |
     |              Messages         | x             | x             |                       |
     |              Altered          | ************* |               |                       |
     +-------------------------------+---------------+---------------+-----------------------+
