@@ -51,10 +51,10 @@ public:
 
   INLINE static void set_cutoff(uint8_t controller_value) {
     uint8_t value = controller_value;
-    if (value < 16) {
-      value = 16;
-    } else if (112 < value) {
-      value = 112;
+    if (value < 4) {
+      value = 4;
+    } else if (124 < value) {
+      value = 124;
     }
 
     m_cutoff = value;
@@ -67,10 +67,10 @@ public:
 
   INLINE static void set_cutoff_env_amt(uint8_t controller_value) {
     uint8_t value = controller_value;
-    if (value < 16) {
-      value = 16;
-    } else if (112 < value) {
-      value = 112;
+    if (value < 4) {
+      value = 4;
+    } else if (124 < value) {
+      value = 124;
     }
 
     m_cutoff_env_gen_amt = (value - 64) << 1;
@@ -78,10 +78,10 @@ public:
 
   INLINE static void set_cutoff_lfo_amt(uint8_t controller_value) {
     uint8_t value = controller_value;
-    if (value < 16) {
-      value = 16;
-    } else if (112 < value) {
-      value = 112;
+    if (value < 4) {
+      value = 4;
+    } else if (124 < value) {
+      value = 124;
     }
 
     m_cutoff_lfo_amt = (value - 64) << 1;
@@ -139,15 +139,7 @@ private:
   INLINE static void update_coefs_0th(uint8_t env_gen_input) {
     m_cutoff_candidate = m_cutoff;
     m_cutoff_candidate += high_sbyte((m_cutoff_env_gen_amt * env_gen_input) << 1);
-
-    int8_t cutoff_offset = m_cutoff_offset;
-    if (cutoff_offset < -96) {
-      cutoff_offset = -96;
-    }
-    else if (cutoff_offset > +24) {
-      cutoff_offset = +24;
-    }
-    m_cutoff_candidate += cutoff_offset;
+    m_cutoff_candidate += m_cutoff_offset;
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {

@@ -9,7 +9,7 @@ OCTAVES = 5
 def generate_filter_lpf_table(idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
-    f = [[24, i + 8].max, 120].min
+    f = [[0, i - 4].max, 120].min
     f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
                   (2.0 ** (OCTAVES.to_f + 1.0))
     w_0 = 2.0 * Math::PI * f_0_over_fs

@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v3.0.0";
+const APP_NAME_VERSION = "VRA8-Q CTRL v3.1.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -77,6 +77,7 @@ const CHORUS_MODE     = 63;
 
 const P_BEND_RANGE    = 85;
 const V_TO_CUTOFF     = 89;
+const VOICE_MODE      = 87;
 
 const ALL_SOUND_OFF   = 120;
 const RESET_ALL_CTRLS = 121;
@@ -121,6 +122,7 @@ var controlNumberToStringMap = new Map([
 
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
   [ V_TO_CUTOFF    , "V_TO_CUTOFF    " ],
+  [ VOICE_MODE     , "VOICE_MODE     " ],
 ]);
 
 var controllersInLocalStorage = [
@@ -148,6 +150,7 @@ var controllersInLocalStorage = [
 
   P_BEND_RANGE   ,
   V_TO_CUTOFF    ,
+  VOICE_MODE     ,
 ];
 
 var presetControllers = {};
@@ -156,13 +159,13 @@ var presetControllers = {};
 presetControllers[OSC_WAVE       ] = [0  , 0  , 0  , 127, 0  , 0  , 0  , 0  ];
 presetControllers[OSC_LEVEL      ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
 
-presetControllers[CUTOFF         ] = [100, 16 , 112, 64 , 100, 100, 127, 127];
+presetControllers[CUTOFF         ] = [112, 4  , 124, 76 , 112, 112, 127, 127];
 presetControllers[RESONANCE      ] = [64 , 64 , 32 , 64 , 64 , 64 , 0  , 0  ];
-presetControllers[EG_TO_CUTOFF   ] = [64 , 112, 16 , 88 , 64 , 64 , 64 , 64 ];
+presetControllers[EG_TO_CUTOFF   ] = [64 , 124, 4  , 88 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_EG         ] = [127, 0  , 0  , 127, 127, 127, 127, 127];
 
-presetControllers[ATTACK         ] = [0  , 32 , 96 , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[DECAY          ] = [127, 64 , 96 , 96 , 127, 127, 127, 127];
+presetControllers[ATTACK         ] = [0  , 64 , 96 , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[DECAY          ] = [127, 96 , 96 , 96 , 127, 127, 127, 127];
 presetControllers[SUSTAIN        ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 8  , 8  , 8  , 0  ];
@@ -177,6 +180,7 @@ presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 presetControllers[V_TO_CUTOFF    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 const PRESET_NUMBER_NEUTRAL = 7;
 </script>
@@ -455,7 +459,8 @@ function setRandom() {
        (i != CHORUS_DEPTH   ) &&
        (i != CHORUS_RATE    ) &&
        (i != CHORUS_DELAY_T ) &&
-       (i != CHORUS_MODE    )) {
+       (i != CHORUS_MODE    ) &&
+       (i != VOICE_MODE     )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -626,6 +631,7 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
   str += fileExportOneLine(V_TO_CUTOFF    );
+  str += fileExportOneLine(VOICE_MODE     );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -853,15 +859,15 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC63">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td>PITCH BEND RANGE      </td><td></td>
-    <td>V > CUTOFF (OFF/ON)   </td><td></td>
-    <td>                      </td><td></td>
+    <td>VELOCITY > CUTOFF     </td><td></td>
+    <td>VOICE (PARA/MONO)     </td><td></td>
     <td>                      </td><td></td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span    id="spanCC85">-</span></td>
     <td><input  id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(V_TO_CUTOFF    , value)"></td>
     <td><span    id="spanCC89">-</span></td>
-    <td></td>
-    <td></td>
+    <td><input  id="inputCC87" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
+    <td><span    id="spanCC87">-</span></td>
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
