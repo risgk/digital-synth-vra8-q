@@ -9,8 +9,9 @@ static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
 
 static const uint8_t CHORUS_MODE_OFF        = 0;
 static const uint8_t CHORUS_MODE_STEREO     = 1;
-static const uint8_t CHORUS_MODE_MONO       = 2;
-static const uint8_t CHORUS_MODE_STEREO_2   = 3;
+static const uint8_t CHORUS_MODE_P_STEREO   = 2;
+static const uint8_t CHORUS_MODE_MONO       = 3;
+static const uint8_t CHORUS_MODE_STEREO_2   = 4;
 
 template <uint8_t T>
 class Osc {
@@ -574,12 +575,7 @@ private:
       }
       break;
     case CHORUS_MODE_STEREO   :
-      {
-        uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control * 4;
-        m_chorus_delay_time[0] = chorus_delay_time_control_mul_4 + m_chorus_lfo_level;
-        m_chorus_delay_time[1] = m_chorus_delay_time[0];
-      }
-      break;
+    case CHORUS_MODE_P_STEREO :
     case CHORUS_MODE_MONO     :
       {
         uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control * 4;
