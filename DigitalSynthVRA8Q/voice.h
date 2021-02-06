@@ -132,23 +132,32 @@ public:
       IEnvGen<1>::note_on();
       IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else {
-      uint8_t off_note_number = m_note_on_number[m_note_queue[0]];
+      uint8_t note_on_osc_index;
+      if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 0;
+      } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 1;
+      } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 2;
+      } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 3;
+      } else {
+        note_on_osc_index = m_note_queue[0];
+      }
+
+      uint8_t off_note_number = m_note_on_number[note_on_osc_index];
       if (off_note_number != NOTE_NUMBER_INVALID) {
         m_note_on_total_count -= m_note_on_count[off_note_number];
         m_note_on_count[off_note_number] = 0;
       }
 
-      uint8_t osc_index = m_note_queue[0];
-      m_note_queue[0] = m_note_queue[1];
-      m_note_queue[1] = m_note_queue[2];
-      m_note_queue[2] = m_note_queue[3];
-      m_note_queue[3] = osc_index;
+      note_queue_on(note_on_osc_index);
 
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      m_note_on_number[osc_index] = note_number;
-      IOsc<0>::note_on(osc_index, note_number);
+      m_note_on_number[note_on_osc_index] = note_number;
+      IOsc<0>::note_on(note_on_osc_index, note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -519,19 +528,37 @@ public:
 
 private:
 
-  INLINE static void note_queue_off(uint8_t note_off_index) {
-    if        (m_note_queue[1] == note_off_index) {
+  INLINE static void note_queue_on(uint8_t note_on_osc_index) {
+    if        (m_note_queue[3] == note_on_osc_index) {
+      m_note_queue[3] = note_on_osc_index;
+    } else if (m_note_queue[2] == note_on_osc_index) {
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    } else if (m_note_queue[1] == note_on_osc_index) {
+      m_note_queue[1] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    } else {
+      m_note_queue[0] = m_note_queue[1];
+      m_note_queue[1] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    }
+  }
+
+  INLINE static void note_queue_off(uint8_t note_off_osc_index) {
+    if        (m_note_queue[1] == note_off_osc_index) {
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
-    } else if (m_note_queue[2] == note_off_index) {
+      m_note_queue[0] = note_off_osc_index;
+    } else if (m_note_queue[2] == note_off_osc_index) {
       m_note_queue[2] = m_note_queue[1];
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
-    } else if (m_note_queue[3] == note_off_index) {
+      m_note_queue[0] = note_off_osc_index;
+    } else if (m_note_queue[3] == note_off_osc_index) {
       m_note_queue[3] = m_note_queue[2];
       m_note_queue[2] = m_note_queue[1];
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
+      m_note_queue[0] = note_off_osc_index;
     }
   }
 
