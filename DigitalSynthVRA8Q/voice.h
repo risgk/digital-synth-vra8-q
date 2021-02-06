@@ -145,12 +145,6 @@ public:
         note_on_osc_index = m_note_queue[0];
       }
 
-      uint8_t off_note_number = m_note_on_number[note_on_osc_index];
-      if (off_note_number != NOTE_NUMBER_INVALID) {
-        m_note_on_total_count -= m_note_on_count[off_note_number];
-        m_note_on_count[off_note_number] = 0;
-      }
-
       note_queue_on(note_on_osc_index);
 
       ++m_note_on_total_count;
