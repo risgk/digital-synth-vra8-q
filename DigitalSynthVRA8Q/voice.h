@@ -132,6 +132,12 @@ public:
       IEnvGen<1>::note_on();
       IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else {
+      uint8_t off_note_number = m_note_on_number[m_note_queue[0]];
+      if (off_note_number != NOTE_NUMBER_INVALID) {
+        m_note_on_total_count -= m_note_on_count[off_note_number];
+        m_note_on_count[off_note_number] = 0;
+      }
+
       uint8_t osc_index = m_note_queue[0];
       m_note_queue[0] = m_note_queue[1];
       m_note_queue[1] = m_note_queue[2];
