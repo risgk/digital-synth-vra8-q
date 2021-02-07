@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v3.1.0
+# Digital Synth VRA8-Q v3.2.0
 
-- 2021-01-31 ISGK Instruments
+- 2021-02-07 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v3.1.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
+- v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
@@ -102,8 +102,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-01-31       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.1.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-02-07       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.2.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
