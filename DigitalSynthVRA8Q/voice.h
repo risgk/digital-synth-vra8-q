@@ -132,17 +132,26 @@ public:
       IEnvGen<1>::note_on();
       IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else {
-      uint8_t osc_index = m_note_queue[0];
-      m_note_queue[0] = m_note_queue[1];
-      m_note_queue[1] = m_note_queue[2];
-      m_note_queue[2] = m_note_queue[3];
-      m_note_queue[3] = osc_index;
+      uint8_t note_on_osc_index;
+      if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 0;
+      } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 1;
+      } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 2;
+      } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+        note_on_osc_index = 3;
+      } else {
+        note_on_osc_index = m_note_queue[0];
+      }
+
+      note_queue_on(note_on_osc_index);
 
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      m_note_on_number[osc_index] = note_number;
-      IOsc<0>::note_on(osc_index, note_number);
+      m_note_on_number[note_on_osc_index] = note_number;
+      IOsc<0>::note_on(note_on_osc_index, note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -326,10 +335,12 @@ public:
     case CHORUS_MODE    :
       {
         uint8_t new_chorus_mode = CHORUS_MODE_STEREO_2;
-        if        (controller_value < 48) {
+        if        (controller_value < 16) {
           new_chorus_mode = CHORUS_MODE_OFF;
-        } else if (controller_value < 80) {
+        } else if (controller_value < 48) {
           new_chorus_mode = CHORUS_MODE_MONO;
+        } else if (controller_value < 80) {
+          new_chorus_mode = CHORUS_MODE_P_STEREO;
         } else if (controller_value < 112) {
           new_chorus_mode = CHORUS_MODE_STEREO;
         }
@@ -347,6 +358,10 @@ public:
           case CHORUS_MODE_STEREO   :
             IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO);
             IEnvGen<1>::set_gain(90);
+            break;
+          case CHORUS_MODE_P_STEREO   :
+            IOsc<0>::set_chorus_mode(CHORUS_MODE_P_STEREO);
+            IEnvGen<1>::set_gain(64);
             break;
           case CHORUS_MODE_MONO     :
             IOsc<0>::set_chorus_mode(CHORUS_MODE_MONO);
@@ -490,10 +505,14 @@ public:
     int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
     IDelayFx<0>::push(dir_sample);
 
-    // For Mono Chorus and Stereo Two-phase Chorus
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
+      // For Mono Chorus and Stereo 2-phase Chorus
       right_level = dir_sample + eff_sample_0;
       return        dir_sample + eff_sample_1;
+    } else if (m_chorus_mode == CHORUS_MODE_P_STEREO) {
+      // For Pseudo-Stereo Chorus
+      right_level = dir_sample - eff_sample_0;
+      return        dir_sample + eff_sample_0;
     }
 
     // For Off and Stereo Chorus
@@ -503,19 +522,37 @@ public:
 
 private:
 
-  INLINE static void note_queue_off(uint8_t note_off_index) {
-    if        (m_note_queue[1] == note_off_index) {
+  INLINE static void note_queue_on(uint8_t note_on_osc_index) {
+    if        (m_note_queue[3] == note_on_osc_index) {
+      m_note_queue[3] = note_on_osc_index;
+    } else if (m_note_queue[2] == note_on_osc_index) {
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    } else if (m_note_queue[1] == note_on_osc_index) {
+      m_note_queue[1] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    } else {
+      m_note_queue[0] = m_note_queue[1];
+      m_note_queue[1] = m_note_queue[2];
+      m_note_queue[2] = m_note_queue[3];
+      m_note_queue[3] = note_on_osc_index;
+    }
+  }
+
+  INLINE static void note_queue_off(uint8_t note_off_osc_index) {
+    if        (m_note_queue[1] == note_off_osc_index) {
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
-    } else if (m_note_queue[2] == note_off_index) {
+      m_note_queue[0] = note_off_osc_index;
+    } else if (m_note_queue[2] == note_off_osc_index) {
       m_note_queue[2] = m_note_queue[1];
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
-    } else if (m_note_queue[3] == note_off_index) {
+      m_note_queue[0] = note_off_osc_index;
+    } else if (m_note_queue[3] == note_off_osc_index) {
       m_note_queue[3] = m_note_queue[2];
       m_note_queue[2] = m_note_queue[1];
       m_note_queue[1] = m_note_queue[0];
-      m_note_queue[0] = note_off_index;
+      m_note_queue[0] = note_off_osc_index;
     }
   }
 

@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v3.1.0";
+const APP_NAME_VERSION = "VRA8-Q CTRL v3.2.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -848,7 +848,7 @@ function getStoredCCValueString(index, number) {
     <td>CHORUS DEPTH          </td><td></td>
     <td>CHORUS RATE           </td><td></td>
     <td>CHORUS DELAY TIME     </td><td></td>
-    <td>CHORUS (-/-/M/S/S2)   </td><td></td></tr>
+    <td>CHORUS (-/M/P/S/S2)   </td><td></td></tr>
 <tr><td><input  id="inputCC60" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
     <td><span    id="spanCC60">-</span></td>
     <td><input  id="inputCC61" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>

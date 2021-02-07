@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v3.1.0
+# Digital Synth VRA8-Q v3.2.0
 
-- 2021-01-31 ISGK Instruments
+- 2021-02-07 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
@@ -80,10 +81,10 @@
     - Value 64: 8.2 ms
     - Value 80: 10.3 ms
     - Value 127: 16.3 ms (max)
-- CHORUS (-/-/M/S/S2):
+- CHORUS (-/M/P/S/S2):
     - Value 0 (0-15): Chorus Off
-    - Value 32 (16-47): Chorus Off
-    - Value 64 (48-79): Mono Chorus Mode
+    - Value 32 (16-47): Mono Chorus Mode
+    - Value 64 (48-79): Pseudo-Stereo Chorus Mode
     - Value 96 (80-111): Stereo Chorus Mode
     - Value 127 (112-127): Stereo 2-phase Chorus Mode
 - VOICE (PARA/MONO):
@@ -101,8 +102,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-01-31       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.1.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-02-07       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.2.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -148,7 +149,7 @@
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |
     |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (-/-/M/S/S2)   |
+    |                            63 | x             | o             | CHORUS (-/M/P/S/S2)   |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |

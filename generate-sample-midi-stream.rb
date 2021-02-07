@@ -97,4 +97,8 @@ program_change(5)
 play_b(4)
 sound_off
 
+control_change(VOICE_MODE     , 127)
+play_b(2)
+sound_off
+
 $file.close
