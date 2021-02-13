@@ -41,7 +41,7 @@
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
         - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
             - We recommend using film capacitors (K = +-10% or less)
-        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
+        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C = 100 nF) works well
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
