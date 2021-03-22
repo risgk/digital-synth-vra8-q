@@ -113,9 +113,9 @@ public:
 
 #if 1
     int16_t x_0  = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int16_t tmp  = mul_q15_q15(x_0 + (m_x_1 << 1) + m_x_2, m_b_2_over_a_0);
-    tmp         -= mul_q15_q7( m_y_1,                      m_a_1_over_a_0_high);
-    tmp         -= mul_q15_q15(m_y_2,                      m_a_2_over_a_0);
+    int16_t tmp  = mul_q16s_q16s(x_0 + (m_x_1 << 1) + m_x_2, m_b_2_over_a_0);
+    tmp         -= mul_q16s_q8s( m_y_1,                      m_a_1_over_a_0_high);
+    tmp         -= mul_q16s_q16s(m_y_2,                      m_a_2_over_a_0);
     int16_t y_0  = tmp << (16 - FILTER_TABLE_FRACTION_BITS);
 
     m_x_2 = m_x_1;
@@ -143,7 +143,7 @@ private:
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {
-    m_cutoff_candidate -= high_sbyte(mul_q15_q7(lfo_input, m_cutoff_lfo_amt) << 1);
+    m_cutoff_candidate -= high_sbyte(mul_q16s_q8s(lfo_input, m_cutoff_lfo_amt) << 1);
   }
 
   INLINE static void update_coefs_2nd() {

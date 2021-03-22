@@ -10,6 +10,6 @@ public:
   }
 
   INLINE static int16_t clock(int16_t audio_input, uint8_t gain_control) {
-    return mul_q15_q8(audio_input, gain_control);
+    return mul_q16s_q8(audio_input, gain_control);
   }
 };
