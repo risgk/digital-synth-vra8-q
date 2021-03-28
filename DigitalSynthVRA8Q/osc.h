@@ -189,7 +189,7 @@ public:
     }
   }
 
-  INLINE static void set_portamento(uint8_t controller_value) {
+  INLINE static void set_portamento_time(uint8_t controller_value) {
     if (controller_value < 2) {
       m_portamento_coef = 0;
     } else {
