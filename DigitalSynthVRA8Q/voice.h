@@ -488,6 +488,7 @@ public:
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
     control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
     control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
+    control_change(PORTAMENTO_TIME, g_preset_table_PORTAMENTO_TIME[program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {
