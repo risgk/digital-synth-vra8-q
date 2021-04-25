@@ -425,7 +425,11 @@ private:
     m_osc_on_temp[N] = m_osc_on[N];
 
     if (m_osc_on_temp[N]) {
-      m_pitch_current[N] = m_pitch_target[N] - mul_q16s_q8(m_pitch_target[N] - m_pitch_current[N], m_portamento_coef);
+      if (m_pitch_current[N] <= m_pitch_target[N]) {
+        m_pitch_current[N] = m_pitch_target[N] - mul_q16s_q8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef);
+      } else {
+        m_pitch_current[N] = m_pitch_current[N] + mul_q16s_q8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef);
+      }
     }
   }
 
