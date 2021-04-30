@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v3.2.0
+# Digital Synth VRA8-Q v4.0.0
 
-- 2021-02-07 ISGK Instruments
+- 2021-04-30 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
@@ -40,8 +41,7 @@
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
         - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
             - We recommend using film capacitors (K = +-10% or less)
-        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C: 100 nF) works well
-    - We recommend adding AC coupling capacitors (10 uF, electrolytic capacitors) to reduce DC components
+        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C = 100 nF) works well
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
@@ -102,8 +102,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-02-07       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 3.2.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-04-30       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 4.0.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -153,7 +153,8 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | VOICE (PARA/MODE)     |
+    |                            87 | x             | o             | VOICE (PARA/MONO)     |
+    |                            22 | x             | o             | PORTAMENTO TIME       |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+
