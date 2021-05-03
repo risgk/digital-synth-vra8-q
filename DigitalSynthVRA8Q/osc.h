@@ -426,9 +426,9 @@ private:
 
     if (m_osc_on_temp[N]) {
       if ((m_portamento_coef == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
-        m_pitch_current[N] = m_pitch_target[N] - mul_q16s_q8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef);
+        m_pitch_current[N] = m_pitch_target[N] - mul_sq16_uq8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef);
       } else {
-        m_pitch_current[N] = m_pitch_current[N] + mul_q16s_q8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef);
+        m_pitch_current[N] = m_pitch_current[N] + mul_sq16_uq8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef);
       }
     }
   }
@@ -541,7 +541,7 @@ private:
   }
 
   INLINE static void update_lfo_4th() {
-    m_lfo_mod_level = -mul_q16s_q8s(m_lfo_level, m_pitch_lfo_amt);
+    m_lfo_mod_level = -mul_sq16_sq8(m_lfo_level, m_pitch_lfo_amt);
   }
 
   INLINE static void update_chorus_lfo_0th() {
@@ -567,7 +567,7 @@ private:
   }
 
   INLINE static void update_chorus_lfo_2nd() {
-    m_chorus_lfo_level = mul_q16s_q8(m_chorus_lfo_wave_level, m_chorus_depth_control_actual);
+    m_chorus_lfo_level = mul_sq16_uq8(m_chorus_lfo_wave_level, m_chorus_depth_control_actual);
   }
 
   INLINE static void update_chorus_lfo_3rd() {
