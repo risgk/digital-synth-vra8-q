@@ -147,21 +147,12 @@ private:
   }
 
   INLINE static void update_coefs_2nd() {
-    uint8_t cutoff_target;
     if (m_cutoff_candidate > 127) {
-      cutoff_target = 127;
+      m_cutoff_current = 127;
     } else if (m_cutoff_candidate < 0) {
-      cutoff_target = 0;
+      m_cutoff_current = 0;
     } else {
-      cutoff_target = m_cutoff_candidate;
-    }
-
-    if (m_cutoff_current + FILTER_CUTOFF_THROUGH_RATE < cutoff_target) {
-      m_cutoff_current += FILTER_CUTOFF_THROUGH_RATE;
-    } else if (m_cutoff_current > cutoff_target + FILTER_CUTOFF_THROUGH_RATE) {
-      m_cutoff_current -= FILTER_CUTOFF_THROUGH_RATE;
-    } else {
-      m_cutoff_current = cutoff_target;
+      m_cutoff_current = m_cutoff_candidate;
     }
   }
 
