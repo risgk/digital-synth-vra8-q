@@ -1,3 +1,7 @@
+// refs https://www.g200kg.com/archives/2012/10/adsr.html
+// refs https://www.g200kg.com/archives/2012/10/adsr2.html
+// refs https://www.g200kg.com/archives/2020/07/adsr-1.html
+
 #pragma once
 
 #include "common.h"
@@ -130,6 +134,7 @@ public:
         break;
 
       case STATE_IDLE:
+        // For simplicity, m_decay_update_coef is not considered here
         --m_rest;
         if (m_rest == 0) {
           m_rest = m_release_update_coef;
