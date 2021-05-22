@@ -6,21 +6,24 @@ $file.printf("#pragma once\n\n")
 
 OCTAVES = 5
 
-def generate_filter_lpf_table(idx, name, q)
+def generate_filter_lpf_table(res_idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
-    f = [[0, i - 4].max, 120].min
-    f_0_over_fs = (2.0 ** (f / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0 / (SAMPLING_RATE / 2.0)) /
-                  (2.0 ** (OCTAVES.to_f + 1.0))
+    f_idx = [[-4, i - 4].max, 122].min
+    f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
+    f_0_over_fs = f_0 / SAMPLING_RATE
+
     w_0 = 2.0 * Math::PI * f_0_over_fs
     alpha = Math.sin(w_0) / (2.0 * q)
+
+    printf("f_0_over_fs: %f, f_0: %f, q: %f\n", f_0_over_fs, f_0, q)
 
     b_2 = (1.0 - Math.cos(w_0)) / 2.0
     a_0 = 1.0 + alpha
     a_1 = (-2.0) * Math.cos(w_0)
 
     b_2_over_a_0 = ((b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
-    input_gain = 1.0 / (2.0 ** (idx / 12.0))
+    input_gain = 1.0 / (2.0 ** (res_idx / 12.0))
     b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     b_2_over_a_0 += 0x10000 if b_2_over_a_0 < 0
     a_1_over_a_0_orig = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
@@ -42,17 +45,17 @@ def generate_filter_lpf_table(idx, name, q)
   $file.printf("};\n\n")
 end
 
-(0..7).each do |idx|
-  generate_filter_lpf_table(idx, idx.to_s, Math.sqrt(2.0) ** (idx - 1.0))
+(0..7).each do |res_idx|
+  generate_filter_lpf_table(res_idx, res_idx.to_s, Math.sqrt(2.0) ** (res_idx - 1.0))
 end
 
 $file.printf("const uint8_t* g_filter_lpf_tables[] = {\n  ")
-(0..8).each do |idx|
-  i = [[idx - 1, 0].max, 7].min
+(0..8).each do |res_idx|
+  i = [[res_idx - 1, 0].max, 7].min
   $file.printf("g_filter_lpf_table_%-2d,", i)
-  if idx == DATA_BYTE_MAX
+  if res_idx == DATA_BYTE_MAX
     $file.printf("\n")
-  elsif idx % 4 == 3
+  elsif res_idx % 4 == 3
     $file.printf("\n  ")
   else
     $file.printf(" ")
