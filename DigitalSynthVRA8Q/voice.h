@@ -19,7 +19,6 @@ class Voice {
   static uint8_t  m_attack;
   static uint8_t  m_decay;
   static uint8_t  m_sustain;
-  static uint8_t  m_release;
   static uint8_t  m_amp_env_gen;
 
   static uint8_t  m_chorus_mode;
@@ -63,7 +62,6 @@ public:
     m_attack = 0;
     m_decay = 0;
     m_sustain = 127;
-    m_release = 0;
     m_amp_env_gen = 127;
     update_env_gen();
 
@@ -565,20 +563,8 @@ private:
     if (m_amp_env_gen >= 64) {
       IEnvGen<0>::set_decay(m_decay);
       IEnvGen<1>::set_decay(m_decay);
-      if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-        IEnvGen<1>::set_release(m_decay);
-      } else {
-        IEnvGen<0>::set_release(0);
-        IEnvGen<1>::set_release(0);
-      }
     } else {
       IEnvGen<0>::set_decay(m_decay);
-      if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-      } else {
-        IEnvGen<0>::set_release(0);
-      }
     }
   }
 
@@ -590,13 +576,6 @@ private:
       IEnvGen<1>::set_decay(m_decay);
       IEnvGen<0>::set_sustain(m_sustain);
       IEnvGen<1>::set_sustain(m_sustain);
-      if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-        IEnvGen<1>::set_release(m_decay);
-      } else {
-        IEnvGen<0>::set_release(0);
-        IEnvGen<1>::set_release(0);
-      }
     } else {
       IEnvGen<0>::set_attack(m_attack);
       IEnvGen<1>::set_attack(0);
@@ -604,12 +583,6 @@ private:
       IEnvGen<1>::set_decay(0);
       IEnvGen<0>::set_sustain(m_sustain);
       IEnvGen<1>::set_sustain(127);
-      if (m_release >= 64) {
-        IEnvGen<0>::set_release(m_decay);
-      } else {
-        IEnvGen<0>::set_release(0);
-      }
-      IEnvGen<1>::set_release(0);
     }
   }
 
@@ -688,7 +661,6 @@ template <uint8_t T> uint8_t  Voice<T>::m_portamento;
 template <uint8_t T> uint8_t  Voice<T>::m_attack;
 template <uint8_t T> uint8_t  Voice<T>::m_decay;
 template <uint8_t T> uint8_t  Voice<T>::m_sustain;
-template <uint8_t T> uint8_t  Voice<T>::m_release;
 template <uint8_t T> uint8_t  Voice<T>::m_amp_env_gen;
 
 template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
