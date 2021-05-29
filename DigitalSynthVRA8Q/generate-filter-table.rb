@@ -9,14 +9,14 @@ OCTAVES = 5
 def generate_filter_lpf_table(res_idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
-    f_idx = [[-6, i - 6].max, 121].min
+    f_idx = [[2, i - 4].max, 121].min
     f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((A4_PITCH * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
     f_0_over_f_s = f_0 / SAMPLING_RATE
 
     w_0 = 2.0 * Math::PI * f_0_over_f_s
     alpha = Math.sin(w_0) / (2.0 * q)
 
-    printf("f_idx: %d, f_0_over_f_s: %f, f_0: %f, q: %f\n", f_idx, f_0_over_f_s, f_0, q)
+    printf("i: %d, f_idx: %d, f_0_over_f_s: %f, f_0: %f, q: %f\n", i, f_idx, f_0_over_f_s, f_0, q)
 
     b_2 = (1.0 - Math.cos(w_0)) / 2.0
     a_0 = 1.0 + alpha
@@ -33,7 +33,7 @@ def generate_filter_lpf_table(res_idx, name, q)
     a_2_over_a_0 = (b_2_over_a_0 << 2) - ((a_1_over_a_0_orig >> 8) << 8) - (1 << FILTER_TABLE_FRACTION_BITS);
     a_2_over_a_0 += 0x10000 if a_2_over_a_0 < 0
 
-    $file.printf("0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x,", b_2_over_a_0_gain & 0xFF, b_2_over_a_0_gain >> 8, a_1_over_a_0 >> 8, a_2_over_a_0 & 0xFF, a_2_over_a_0 >> 8)
+    $file.printf("0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, ", b_2_over_a_0_gain & 0xFF, b_2_over_a_0_gain >> 8, a_1_over_a_0 >> 8, a_2_over_a_0 & 0xFF, a_2_over_a_0 >> 8)
     if i == DATA_BYTE_MAX
       $file.printf("\n")
     elsif i % 4 == (4 - 1)
