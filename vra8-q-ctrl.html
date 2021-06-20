@@ -186,7 +186,7 @@ presetControllers[V_TO_CUTOFF    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[PORTAMENTO_TIME] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
-const PRESET_NUMBER_NEUTRAL = 7;
+const PRESET_NUMBER_INITIAL = 7;
 </script>
 <script>
 var transpose = 0;
@@ -251,7 +251,7 @@ function restoreControllers() {
   controllersInLocalStorage.forEach(function(i) {
     value = localStorage.getItem("keyCC" + String(i));
     if (!value) {
-      value = presetControllers[i][PRESET_NUMBER_NEUTRAL];
+      value = presetControllers[i][PRESET_NUMBER_INITIAL];
     }
     onChangeControlChange(i, value);
   });
@@ -490,7 +490,7 @@ function loadControllers(number) {
   controllersInLocalStorage.forEach(function(i) {
     value = localStorage.getItem("keyMemory" + String(number) + "CC" + String(i));
     if (!value) {
-      value = presetControllers[i][PRESET_NUMBER_NEUTRAL];
+      value = presetControllers[i][PRESET_NUMBER_INITIAL];
     }
     onChangeControlChange(i, value);
   });
@@ -672,7 +672,7 @@ function getCCValueString(number) {
 function getStoredCCValueString(index, number) {
   var value = localStorage.getItem("keyMemory" + String(index) + "CC" + String(number));
   if (!value) {
-    value = presetControllers[number][PRESET_NUMBER_NEUTRAL];
+    value = presetControllers[number][PRESET_NUMBER_INITIAL];
   }
   var str = (value + "   ").slice(0, 3);
   return str;
@@ -727,7 +727,7 @@ function getStoredCCValueString(index, number) {
     <td>&nbsp;</td>
     <td><input type="button" value="#6 SAW"         onclick="preset(6)"></td>
     <td>&nbsp;</td>
-    <td><input type="button" value="#7 NEUTRAL"     onclick="preset(7)"></td>
+    <td><input type="button" value="#7 INITIAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>MISC</td>
     <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td>
