@@ -52,7 +52,7 @@
 
 ## VRA8-Q CTRL
 
-- MIDI Controller (Editor) for VRA8-Q, HTML5 App (Web App)
+- MIDI Controller (Editor) for VRA8-Q, HTML App (Web App)
 - VRA8-Q CTRL converts Program Changes (#0-7 for PRESET) into Control Changes
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend using Google Chrome, which implements Web MIDI API
