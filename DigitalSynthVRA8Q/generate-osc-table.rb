@@ -6,7 +6,7 @@ $file.printf("#pragma once\n\n")
 
 def freq_from_note_number(note_number, pr = false)
   cent = (note_number * 100.0) - 6900.0
-  hz = A4_PITCH * (2.0 ** (cent / 1200.0))
+  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
   bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
   hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
   if note_number < NOTE_NUMBER_MIN + 12

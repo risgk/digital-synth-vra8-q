@@ -1,6 +1,6 @@
 #pragma once
 
-const double    A4_PITCH = 440.0;
+const double    A4_FREQ = 440.0;
 
 const uint8_t   MIDI_CH             = 0;
 const uint16_t  SAMPLING_RATE       = 31250;

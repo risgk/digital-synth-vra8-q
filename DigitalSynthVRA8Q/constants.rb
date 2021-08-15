@@ -1,6 +1,6 @@
 
 
-A4_PITCH = 440.0
+A4_FREQ = 440.0
 
 MIDI_CH             = 0
 SAMPLING_RATE       = 31250
