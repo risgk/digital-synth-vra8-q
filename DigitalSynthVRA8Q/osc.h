@@ -29,7 +29,7 @@ class Osc {
 
   static const uint8_t LFO_FADE_LEVEL_MAX     = 128;
 
-  static uint8_t        m_portamento_coef;
+  static uint8_t        m_portamento_coef[4];
   static int16_t        m_lfo_mod_level;
   static uint16_t       m_lfo_phase;
   static int8_t         m_lfo_wave_level;
@@ -73,7 +73,10 @@ class Osc {
 
 public:
   INLINE static void initialize() {
-    m_portamento_coef = 0;
+    m_portamento_coef[0] = 0;
+    m_portamento_coef[1] = 0;
+    m_portamento_coef[2] = 0;
+    m_portamento_coef[3] = 0;
 
     m_lfo_mod_level = 0;
     m_lfo_phase = 0;
@@ -187,11 +190,11 @@ public:
     }
   }
 
-  INLINE static void set_portamento_time(uint8_t controller_value) {
-    if (controller_value < 2) {
-      m_portamento_coef = 0;
+  INLINE static void set_portamento(uint8_t osc_index, uint8_t controller_value) {
+    if (controller_value == 0) {
+      m_portamento_coef[osc_index] = 0;
     } else {
-      m_portamento_coef = (controller_value >> 1) + 191;
+      m_portamento_coef[osc_index] = ((controller_value + 1) >> 1) + 190;
     }
   }
 
@@ -423,10 +426,10 @@ private:
     m_osc_on_temp[N] = m_osc_on[N];
 
     if (m_osc_on_temp[N]) {
-      if ((m_portamento_coef == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
-        m_pitch_current[N] = m_pitch_target[N] - mul_sq16_uq8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef);
+      if ((m_portamento_coef[N] == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
+        m_pitch_current[N] = m_pitch_target[N] - mul_sq16_uq8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef[N]);
       } else {
-        m_pitch_current[N] = m_pitch_current[N] + mul_sq16_uq8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef);
+        m_pitch_current[N] = m_pitch_current[N] + mul_sq16_uq8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef[N]);
       }
     }
   }
@@ -609,7 +612,7 @@ private:
   }
 };
 
-template <uint8_t T> uint8_t         Osc<T>::m_portamento_coef;
+template <uint8_t T> uint8_t         Osc<T>::m_portamento_coef[4];
 template <uint8_t T> int16_t         Osc<T>::m_lfo_mod_level;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_phase;
 template <uint8_t T> int8_t          Osc<T>::m_lfo_wave_level;

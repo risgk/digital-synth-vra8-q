@@ -78,7 +78,7 @@ const uint8_t   CHORUS_MODE     = 63;
 const uint8_t   P_BEND_RANGE    = 85;
 const uint8_t   V_TO_CUTOFF     = 89;
 const uint8_t   VOICE_MODE      = 87;
-const uint8_t   PORTAMENTO_TIME = 22;
+const uint8_t   PORTAMENTO      = 22;
 
 const uint8_t   ALL_SOUND_OFF   = 120;
 const uint8_t   RESET_ALL_CTRLS = 121;
@@ -107,6 +107,11 @@ const uint8_t   LFO_WAVE_RANDOM    = 96;
 const uint8_t   LFO_WAVE_SQ        = 127;
 
 const uint8_t   CHORUS_OFF         = 0;
-const uint8_t   CHORUS_MONO        = 64;
+const uint8_t   CHORUS_MONO        = 32;
+const uint8_t   CHORUS_P_STEREO    = 64;
 const uint8_t   CHORUS_STEREO      = 96;
 const uint8_t   CHORUS_STEREO_2    = 127;
+
+const uint8_t   VOICE_PARAPHONIC   = 0;
+const uint8_t   VOICE_MONOPHONIC   = 64;
+const uint8_t   VOICE_LEGATO       = 127;

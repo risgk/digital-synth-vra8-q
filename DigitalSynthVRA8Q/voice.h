@@ -12,7 +12,7 @@ class Voice {
   static uint8_t  m_note_on_count[128];
   static uint8_t  m_note_on_total_count;
   static boolean  m_sustain_pedal;
-  static boolean  m_mono_mode;
+  static uint8_t  m_voice_mode;
 
   static uint8_t  m_output_error;
   static uint8_t  m_portamento;
@@ -44,12 +44,12 @@ public:
     }
     m_note_on_total_count = 0;
     m_sustain_pedal = false;
-    m_mono_mode = false;
+    m_voice_mode = VOICE_PARAPHONIC;
 
     m_output_error = 0;
     m_portamento = 0;
     IOsc<0>::initialize();
-    IOsc<0>::set_mono_mode(m_mono_mode);
+    IOsc<0>::set_mono_mode(m_voice_mode);
     IFilter<0>::initialize();
     IAmp<0>::initialize();
 
@@ -83,12 +83,33 @@ public:
       cutoff_offset = high_sbyte(static_cast<int8_t>(velocity - 100) * (m_velocity_to_cutoff << 1));
     }
 
-    if (m_mono_mode) {
+    if (m_voice_mode == VOICE_LEGATO) {
+      ++m_note_on_total_count;
+      ++m_note_on_count[note_number];
+
+      if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+        m_note_on_number[0] = note_number;
+
+        IOsc<0>::note_on(0, note_number);
+        IOsc<0>::set_portamento(0, 0);
+        IOsc<0>::trigger_lfo();
+        IEnvGen<0>::note_on();
+        IEnvGen<1>::note_on();
+        IFilter<0>::set_cutoff_offset(cutoff_offset);
+      } else {
+        m_note_on_number[0] = note_number;
+
+        IOsc<0>::note_on(0, note_number);
+        IOsc<0>::set_portamento(0, m_portamento);
+      }
+    } else if (m_voice_mode == VOICE_MONOPHONIC) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
       m_note_on_number[0] = note_number;
+
       IOsc<0>::note_on(0, note_number);
+      IOsc<0>::set_portamento(0, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -98,6 +119,7 @@ public:
       ++m_note_on_count[note_number];
 
       IOsc<0>::note_on(0, note_number);
+      IOsc<0>::set_portamento(0, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -107,6 +129,7 @@ public:
       ++m_note_on_count[note_number];
 
       IOsc<0>::note_on(1, note_number);
+      IOsc<0>::set_portamento(1, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -116,6 +139,7 @@ public:
       ++m_note_on_count[note_number];
 
       IOsc<0>::note_on(2, note_number);
+      IOsc<0>::set_portamento(2, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -125,6 +149,7 @@ public:
       ++m_note_on_count[note_number];
 
       IOsc<0>::note_on(3, note_number);
+      IOsc<0>::set_portamento(3, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -149,7 +174,9 @@ public:
       ++m_note_on_count[note_number];
 
       m_note_on_number[note_on_osc_index] = note_number;
+
       IOsc<0>::note_on(note_on_osc_index, note_number);
+      IOsc<0>::set_portamento(note_on_osc_index, m_portamento);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -173,7 +200,7 @@ public:
       return;
     }
 
-    if (m_mono_mode) {
+    if (m_voice_mode != VOICE_PARAPHONIC) {
       if (m_note_on_total_count == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -378,8 +405,8 @@ public:
       IOsc<0>::set_osc_level(controller_value);
       break;
 
-    case PORTAMENTO_TIME:
-      IOsc<0>::set_portamento_time(controller_value);
+    case PORTAMENTO     :
+      m_portamento = controller_value;
       break;
 
     case P_BEND_RANGE   :
@@ -391,15 +418,18 @@ public:
       break;
 
     case VOICE_MODE     :
-      if (controller_value < 64) {
-        if (m_mono_mode) {
-          m_mono_mode = false;
-          IOsc<0>::set_mono_mode(m_mono_mode);
+      {
+        uint8_t new_voice_mode = VOICE_PARAPHONIC;
+        if (controller_value > 96) {
+          new_voice_mode = VOICE_LEGATO;
+        } else if (controller_value > 32) {
+          new_voice_mode = VOICE_MONOPHONIC;
         }
-      } else {
-        if (m_mono_mode == false) {
-          m_mono_mode = true;
-          IOsc<0>::set_mono_mode(m_mono_mode);
+
+        if (m_voice_mode != new_voice_mode) {
+          m_voice_mode = new_voice_mode;
+          boolean mono_mode = (m_voice_mode != VOICE_PARAPHONIC);
+          IOsc<0>::set_mono_mode(mono_mode);
         }
       }
       break;
@@ -486,7 +516,7 @@ public:
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
     control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
     control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
-    control_change(PORTAMENTO_TIME, g_preset_table_PORTAMENTO_TIME[program_number]);
+    control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {
@@ -654,7 +684,7 @@ template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[128];
 template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
 template <uint8_t T> boolean  Voice<T>::m_sustain_pedal;
-template <uint8_t T> boolean  Voice<T>::m_mono_mode;
+template <uint8_t T> uint8_t  Voice<T>::m_voice_mode;
 
 template <uint8_t T> uint8_t  Voice<T>::m_output_error;
 template <uint8_t T> uint8_t  Voice<T>::m_portamento;
