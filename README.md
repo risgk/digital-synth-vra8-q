@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes

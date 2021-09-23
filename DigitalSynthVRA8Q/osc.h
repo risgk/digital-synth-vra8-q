@@ -34,8 +34,7 @@ class Osc {
   static uint16_t       m_lfo_phase;
   static int8_t         m_lfo_wave_level;
   static int16_t        m_lfo_level;
-  static uint16_t       m_lfo_rate_actual;
-  static uint8_t        m_lfo_rate;
+  static uint16_t       m_lfo_rate;
   static uint8_t        m_lfo_depth[2];
   static int8_t         m_pitch_lfo_amt;
   static uint8_t        m_lfo_waveform;
@@ -80,7 +79,6 @@ public:
     m_lfo_phase = 0;
     m_lfo_wave_level = 0;
     m_lfo_level = 0;
-    m_lfo_rate_actual = 0;
     m_lfo_rate = 0;
     m_lfo_depth[0] = 0;
     m_lfo_depth[1] = 0;
@@ -198,7 +196,7 @@ public:
   }
 
   INLINE static void set_lfo_rate(uint8_t controller_value) {
-    m_lfo_rate = controller_value;
+    m_lfo_rate = g_lfo_rate_table[(controller_value + 1) >> 1];
   }
 
   template <uint8_t N>
@@ -514,16 +512,11 @@ private:
   }
 
   INLINE static void update_lfo_1st() {
-    if (m_lfo_rate >= 32) {
-      m_lfo_rate_actual = (high_byte((m_lfo_rate << 1) *
-                                     (m_lfo_rate << 1)) + 2) * 12;
-    } else {
-      m_lfo_rate_actual = ((m_lfo_rate >> 1) + 2) * 12;
-    }
+    ;
   }
 
   INLINE static void update_lfo_2nd() {
-    m_lfo_phase += m_lfo_rate_actual;
+    m_lfo_phase += m_lfo_rate;
     m_lfo_wave_level = get_lfo_wave_level(m_lfo_phase);
   }
 
@@ -621,8 +614,7 @@ template <uint8_t T> int16_t         Osc<T>::m_lfo_mod_level;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_phase;
 template <uint8_t T> int8_t          Osc<T>::m_lfo_wave_level;
 template <uint8_t T> int16_t         Osc<T>::m_lfo_level;
-template <uint8_t T> uint16_t        Osc<T>::m_lfo_rate_actual;
-template <uint8_t T> uint8_t         Osc<T>::m_lfo_rate;
+template <uint8_t T> uint16_t        Osc<T>::m_lfo_rate;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
 
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control;
