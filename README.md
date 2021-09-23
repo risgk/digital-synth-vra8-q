@@ -15,11 +15,11 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
-- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (min: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
