@@ -16,7 +16,7 @@ const uint8_t g_preset_table_DECAY          [] = {127, 96 , 96 , 96 , 127, 127, 
 const uint8_t g_preset_table_SUSTAIN        [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
 const uint8_t g_preset_table_LFO_DEPTH      [] = {8  , 8  , 8  , 8  , 8  , 8  , 8  , 0  };
-const uint8_t g_preset_table_LFO_RATE       [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
+const uint8_t g_preset_table_LFO_RATE       [] = {96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 };
 const uint8_t g_preset_table_LFO_TO_PITCH   [] = {65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 };
 const uint8_t g_preset_table_LFO_TO_CUTOFF  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 
