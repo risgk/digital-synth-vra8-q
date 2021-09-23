@@ -106,10 +106,10 @@ public:
 
     m_waveform = WAVEFORM_SAW;
     m_pitch_bend_normalized = 0;
-    m_pitch_target[0] = NOTE_NUMBER_MIN << 8;
-    m_pitch_target[1] = NOTE_NUMBER_MIN << 8;
-    m_pitch_target[2] = NOTE_NUMBER_MIN << 8;
-    m_pitch_target[3] = NOTE_NUMBER_MIN << 8;
+    m_pitch_target[0] = 60 << 8;
+    m_pitch_target[1] = 60 << 8;
+    m_pitch_target[2] = 60 << 8;
+    m_pitch_target[3] = 60 << 8;
     m_pitch_current[0] = m_pitch_target[0];
     m_pitch_current[1] = m_pitch_target[1];
     m_pitch_current[2] = m_pitch_target[2];
