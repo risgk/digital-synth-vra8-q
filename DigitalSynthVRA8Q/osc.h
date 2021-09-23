@@ -203,7 +203,7 @@ public:
 
   template <uint8_t N>
   INLINE static void set_lfo_depth(uint8_t controller_value) {
-    m_lfo_depth[N] = controller_value;
+    m_lfo_depth[N] = (controller_value + 1) >> 1;
   }
 
   template <uint8_t N>
@@ -529,13 +529,10 @@ private:
 
   INLINE static void update_lfo_3rd() {
     uint8_t lfo_depth = m_lfo_depth[0] + m_lfo_depth[1];
-    if (lfo_depth > 127) {
-      lfo_depth = 127;
+    if (lfo_depth > 64) {
+      lfo_depth = 64;
     }
-
-    if (lfo_depth == 127) {
-      lfo_depth = 128;
-    }
+    lfo_depth <<= 1;
 
     m_lfo_level = (lfo_depth * m_lfo_wave_level) << 1;
   }

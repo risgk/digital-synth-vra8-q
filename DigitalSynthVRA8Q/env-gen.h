@@ -54,13 +54,7 @@ public:
   }
 
   INLINE static void set_sustain(uint8_t controller_value) {
-    if (controller_value == 127) {
-      m_sustain = 128 << 8;
-    } else if (controller_value < 4) {
-      m_sustain = 0 << 8;
-    } else {
-      m_sustain = controller_value << 8;
-    }
+    m_sustain = (((controller_value + 1) >> 1) << 1) << 8;
   }
 
   INLINE static void set_gain(uint8_t controller_value) {
