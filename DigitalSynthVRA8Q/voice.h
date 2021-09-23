@@ -77,10 +77,10 @@ public:
     }
 
     int8_t cutoff_offset = 0;
-    if (m_velocity_to_cutoff == (127 << 1)) {
-      cutoff_offset = (velocity - 100);
+    if (m_velocity_to_cutoff == 128) {
+      cutoff_offset = velocity - 100;
     } else {
-      cutoff_offset = ((static_cast<int8_t>(velocity - 100) * m_velocity_to_cutoff) >> 8);
+      cutoff_offset = high_sbyte(static_cast<int8_t>(velocity - 100) * (m_velocity_to_cutoff << 1));
     }
 
     if (m_mono_mode) {
@@ -387,7 +387,7 @@ public:
       break;
 
     case V_TO_CUTOFF    :
-      m_velocity_to_cutoff = (controller_value << 1);
+      m_velocity_to_cutoff = ((controller_value + 1) >> 1) << 1;
       break;
 
     case VOICE_MODE     :
