@@ -90,8 +90,8 @@ public:
       if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
         m_note_on_number[0] = note_number;
 
-        IOsc<0>::note_on(0, note_number);
-        IOsc<0>::set_portamento(0, 0);
+        IOsc<0>::set_portamento<0>(0);
+        IOsc<0>::note_on<0>(note_number);
         IOsc<0>::trigger_lfo();
         IEnvGen<0>::note_on();
         IEnvGen<1>::note_on();
@@ -99,8 +99,8 @@ public:
       } else {
         m_note_on_number[0] = note_number;
 
-        IOsc<0>::note_on(0, note_number);
-        IOsc<0>::set_portamento(0, m_portamento);
+        IOsc<0>::set_portamento<0>(m_portamento);
+        IOsc<0>::note_on<0>(note_number);
       }
     } else if (m_voice_mode == VOICE_MONOPHONIC) {
       ++m_note_on_total_count;
@@ -108,8 +108,8 @@ public:
 
       m_note_on_number[0] = note_number;
 
-      IOsc<0>::note_on(0, note_number);
-      IOsc<0>::set_portamento(0, m_portamento);
+      IOsc<0>::set_portamento<0>(m_portamento);
+      IOsc<0>::note_on<0>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -118,8 +118,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::note_on(0, note_number);
-      IOsc<0>::set_portamento(0, m_portamento);
+      IOsc<0>::set_portamento<0>(m_portamento);
+      IOsc<0>::note_on<0>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -128,8 +128,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::note_on(1, note_number);
-      IOsc<0>::set_portamento(1, m_portamento);
+      IOsc<0>::set_portamento<1>(m_portamento);
+      IOsc<0>::note_on<1>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -138,8 +138,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::note_on(2, note_number);
-      IOsc<0>::set_portamento(2, m_portamento);
+      IOsc<0>::set_portamento<2>(m_portamento);
+      IOsc<0>::note_on<2>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -148,8 +148,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::note_on(3, note_number);
-      IOsc<0>::set_portamento(3, m_portamento);
+      IOsc<0>::set_portamento<3>(m_portamento);
+      IOsc<0>::note_on<3>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -175,8 +175,25 @@ public:
 
       m_note_on_number[note_on_osc_index] = note_number;
 
-      IOsc<0>::note_on(note_on_osc_index, note_number);
-      IOsc<0>::set_portamento(note_on_osc_index, m_portamento);
+      switch (note_on_osc_index) {
+      default:
+        IOsc<0>::set_portamento<0>(m_portamento);
+        IOsc<0>::note_on<0>(note_number);
+        break;
+      case 1:
+        IOsc<0>::set_portamento<1>(m_portamento);
+        IOsc<0>::note_on<1>(note_number);
+        break;
+      case 2:
+        IOsc<0>::set_portamento<2>(m_portamento);
+        IOsc<0>::note_on<2>(note_number);
+        break;
+      case 3:
+        IOsc<0>::set_portamento<3>(m_portamento);
+        IOsc<0>::note_on<3>(note_number);
+        break;
+      }
+
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -210,34 +227,34 @@ public:
         m_note_queue[1] = 1;
         m_note_queue[2] = 2;
         m_note_queue[3] = 3;
-        IOsc<0>::note_off(0);
-        IOsc<0>::note_off(1);
-        IOsc<0>::note_off(2);
-        IOsc<0>::note_off(3);
+        IOsc<0>::note_off<0>();
+        IOsc<0>::note_off<1>();
+        IOsc<0>::note_off<2>();
+        IOsc<0>::note_off<3>();
       }
     } else if (m_note_on_number[0] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         note_queue_off(0);
-        IOsc<0>::note_off(0);
+        IOsc<0>::note_off<0>();
       }
     } else if (m_note_on_number[1] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[1] = NOTE_NUMBER_INVALID;
         note_queue_off(1);
-        IOsc<0>::note_off(1);
+        IOsc<0>::note_off<1>();
       }
     } else if (m_note_on_number[2] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[2] = NOTE_NUMBER_INVALID;
         note_queue_off(2);
-        IOsc<0>::note_off(2);
+        IOsc<0>::note_off<2>();
       }
     } else if (m_note_on_number[3] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[3] = NOTE_NUMBER_INVALID;
         note_queue_off(3);
-        IOsc<0>::note_off(3);
+        IOsc<0>::note_off<3>();
       }
     }
 
@@ -261,10 +278,10 @@ public:
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
     m_note_queue[3] = 3;
-    IOsc<0>::note_off(0);
-    IOsc<0>::note_off(1);
-    IOsc<0>::note_off(2);
-    IOsc<0>::note_off(3);
+    IOsc<0>::note_off<0>();
+    IOsc<0>::note_off<1>();
+    IOsc<0>::note_off<2>();
+    IOsc<0>::note_off<3>();
     IEnvGen<0>::note_off();
     IEnvGen<1>::note_off();
   }
@@ -641,7 +658,7 @@ private:
         if (m_note_on_count[m_note_on_number[0]] == 0) {
           m_note_on_number[0] = NOTE_NUMBER_INVALID;
           note_queue_off(0);
-          IOsc<0>::note_off(0);
+          IOsc<0>::note_off<0>();
         }
       }
 
@@ -649,7 +666,7 @@ private:
         if (m_note_on_count[m_note_on_number[1]] == 0) {
           m_note_on_number[1] = NOTE_NUMBER_INVALID;
           note_queue_off(1);
-          IOsc<0>::note_off(1);
+          IOsc<0>::note_off<1>();
         }
       }
 
@@ -657,7 +674,7 @@ private:
         if (m_note_on_count[m_note_on_number[2]] == 0) {
           m_note_on_number[2] = NOTE_NUMBER_INVALID;
           note_queue_off(2);
-          IOsc<0>::note_off(2);
+          IOsc<0>::note_off<2>();
         }
       }
 
@@ -665,7 +682,7 @@ private:
         if (m_note_on_count[m_note_on_number[3]] == 0) {
           m_note_on_number[3] = NOTE_NUMBER_INVALID;
           note_queue_off(3);
-          IOsc<0>::note_off(3);
+          IOsc<0>::note_off<3>();
         }
       }
 

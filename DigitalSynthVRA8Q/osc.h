@@ -13,6 +13,8 @@ static const uint8_t CHORUS_MODE_P_STEREO   = 2;
 static const uint8_t CHORUS_MODE_MONO       = 3;
 static const uint8_t CHORUS_MODE_STEREO_2   = 4;
 
+static const uint8_t PORTAMENTO_COEF_OFF    = 190;
+
 template <uint8_t T>
 class Osc {
   static const uint8_t WAVEFORM_SAW           = 0;
@@ -73,10 +75,10 @@ class Osc {
 
 public:
   INLINE static void initialize() {
-    m_portamento_coef[0] = 0;
-    m_portamento_coef[1] = 0;
-    m_portamento_coef[2] = 0;
-    m_portamento_coef[3] = 0;
+    m_portamento_coef[0] = PORTAMENTO_COEF_OFF;
+    m_portamento_coef[1] = PORTAMENTO_COEF_OFF;
+    m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
+    m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
 
     m_lfo_mod_level = 0;
     m_lfo_phase = 0;
@@ -190,14 +192,6 @@ public:
     }
   }
 
-  INLINE static void set_portamento(uint8_t osc_index, uint8_t controller_value) {
-    if (controller_value == 0) {
-      m_portamento_coef[osc_index] = 0;
-    } else {
-      m_portamento_coef[osc_index] = ((controller_value + 1) >> 1) + 190;
-    }
-  }
-
   INLINE static void set_lfo_rate(uint8_t controller_value) {
     m_lfo_rate = g_lfo_rate_table[(controller_value + 1) >> 1];
   }
@@ -247,13 +241,20 @@ public:
     m_mono_mode = mono_mode;
   }
 
-  INLINE static void note_on(uint8_t osc_index, uint8_t note_number) {
-    m_pitch_target[osc_index] = note_number << 8;
-    m_osc_on[osc_index] = true;
+  template <uint8_t N>
+  INLINE static void set_portamento(uint8_t controller_value) {
+    m_portamento_coef[N] = ((controller_value + 1) >> 1) + PORTAMENTO_COEF_OFF;
   }
 
-  INLINE static void note_off(uint8_t osc_index) {
-    m_osc_on[osc_index] = false;
+  template <uint8_t N>
+  INLINE static void note_on(uint8_t note_number) {
+    m_pitch_target[N] = note_number << 8;
+    m_osc_on[N] = true;
+  }
+
+  template <uint8_t N>
+  INLINE static void note_off() {
+    m_osc_on[N] = false;
   }
 
   INLINE static void trigger_lfo() {
@@ -426,7 +427,7 @@ private:
     m_osc_on_temp[N] = m_osc_on[N];
 
     if (m_osc_on_temp[N]) {
-      if ((m_portamento_coef[N] == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
+      if ((m_portamento_coef[N] == PORTAMENTO_COEF_OFF) || (m_pitch_current[N] <= m_pitch_target[N])) {
         m_pitch_current[N] = m_pitch_target[N] - mul_sq16_uq8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef[N]);
       } else {
         m_pitch_current[N] = m_pitch_current[N] + mul_sq16_uq8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef[N]);
