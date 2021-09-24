@@ -426,6 +426,14 @@ public:
       m_portamento = controller_value;
       break;
 
+    case LFO_WAVE       :
+      IOsc<0>::set_lfo_waveform(controller_value);
+      break;
+
+    case LFO_FADE_TIME  :
+      IOsc<0>::set_lfo_fade_time(controller_value);
+      break;
+
     case P_BEND_RANGE   :
       IOsc<0>::set_pitch_bend_range(controller_value);
       break;
@@ -524,6 +532,9 @@ public:
     control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
     control_change(LFO_TO_PITCH   , g_preset_table_LFO_TO_PITCH   [program_number]);
     control_change(LFO_TO_CUTOFF  , g_preset_table_LFO_TO_CUTOFF  [program_number]);
+
+    control_change(LFO_WAVE       , g_preset_table_LFO_WAVE       [program_number]);
+    control_change(LFO_FADE_TIME  , g_preset_table_LFO_FADE_TIME  [program_number]);
 
     control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);

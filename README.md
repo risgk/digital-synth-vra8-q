@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add LFO WAVE (T/2/S/R/P) and LFO FADE TIME controllers; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
@@ -66,6 +66,12 @@
 - DECAY:
     - Values 0-126: Decay Time
     - Values 127: No Decay
+- "LFO WAVE (T/2/S/R/P)":
+    - Values 0-15: Triangle Wave
+    - Values 16-47: Triangle Wave 2 (Key Sync)
+    - Values 48-79: Saw Wave (Key Sync)
+    - Values 80-111: Random Wave (Key Sync)
+    - Values 112-127: Pulse Wave (Square Wave, Key Sync)
 - CHORUS DEPTH:
     - Value 0: Delay Time +/- 0.0 ms (min)
     - Value 32: Delay Time +/- 2.0 ms
@@ -89,7 +95,7 @@
     - Value 127 (112-127): Stereo 2-phase Chorus Mode
 - VOICE (PA/MO/LEG):
     - Values 0 (0-31): Paraphonic Mode
-    - Values 64 (32-95): Monophonic Mode
+    - Values 64 (32-95): Monophonic Mode (Multi Trigger)
     - Values 127 (96-127): Legato Mode (Monophonic, Single Trigger, Auto Portamento)
 
 ## Sample Chorus Settings
@@ -146,6 +152,9 @@
     |                            80 | x             | o             | LFO RATE              |
     |                            82 | x             | o             | LFO > PITCH (-/+)     |
     |                            83 | x             | o             | LFO > CUTOFF (-/+)    |
+    |                               |               |               |                       |
+    |                            14 | x             | o             | LFO WAVE (T/2/S/R/P)  |
+    |                            15 | x             | o             | LFO FADE TIME         |
     |                               |               |               |                       |
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |

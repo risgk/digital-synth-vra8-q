@@ -70,6 +70,9 @@ const LFO_RATE        = 80;
 const LFO_TO_PITCH    = 82;
 const LFO_TO_CUTOFF   = 83;
 
+const LFO_WAVE        = 14;
+const LFO_FADE_TIME   = 15;
+
 const CHORUS_DEPTH    = 60;
 const CHORUS_RATE     = 61;
 const CHORUS_DELAY_T  = 62;
@@ -116,6 +119,9 @@ var controlNumberToStringMap = new Map([
   [ LFO_TO_PITCH   , "LFO_TO_PITCH   " ],
   [ LFO_TO_CUTOFF  , "LFO_TO_CUTOFF  " ],
 
+  [ LFO_WAVE       , "LFO_WAVE       " ],
+  [ LFO_FADE_TIME  , "LFO_FADE_TIME  " ],
+
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DELAY_T , "CHORUS_DELAY_T " ],
@@ -144,6 +150,9 @@ var controllersInLocalStorage = [
   LFO_RATE       ,
   LFO_TO_PITCH   ,
   LFO_TO_CUTOFF  ,
+
+  LFO_WAVE       ,
+  LFO_FADE_TIME  ,
 
   CHORUS_DEPTH   ,
   CHORUS_RATE    ,
@@ -175,6 +184,9 @@ presetControllers[LFO_DEPTH      ] = [8  , 8  , 8  , 8  , 8  , 8  , 8  , 0  ];
 presetControllers[LFO_RATE       ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
 presetControllers[LFO_TO_PITCH   ] = [65 , 65 , 65 , 65 , 65 , 65 , 65 , 64 ];
 presetControllers[LFO_TO_CUTOFF  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+
+presetControllers[LFO_WAVE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[LFO_FADE_TIME  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
 presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 16 , 48 , 32 , 32 ];
@@ -628,6 +640,9 @@ function fileExport() {
   str += fileExportOneLine(LFO_TO_PITCH   );
   str += fileExportOneLine(LFO_TO_CUTOFF  );
   str += "\n";
+  str += fileExportOneLine(LFO_WAVE       );
+  str += fileExportOneLine(LFO_FADE_TIME  );
+  str += "\n";
   str += fileExportOneLine(CHORUS_DEPTH   );
   str += fileExportOneLine(CHORUS_RATE    );
   str += fileExportOneLine(CHORUS_DELAY_T );
@@ -835,7 +850,7 @@ function getStoredCCValueString(index, number) {
     <td><input  id="inputCC27" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(SUSTAIN        , value)"></td>
     <td><span    id="spanCC27">-</span></td>
     <td></td>
-    <td> </td></tr>
+    <td></td></tr>
 <tr><td>&nbsp;</td></tr>
     <td>LFO DEPTH             </td><td></td>
     <td>LFO RATE              </td><td></td>
@@ -849,6 +864,19 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC82">-</span></td>
     <td><input  id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_CUTOFF  , value)"></td>
     <td><span    id="spanCC83">-</span></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>LFO WAVE (T/2/S/R/P)  </td><td></td>
+    <td>LFO FADE TIME         </td><td></td>
+    <td>                      </td><td></td>
+    <td>                      </td><td></td></tr>
+<tr><td><input  id="inputCC14" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
+    <td><span    id="spanCC14">-</span></td>
+    <td><input  id="inputCC15" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
+    <td><span    id="spanCC15">-</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td></tr>
 <tr><td>&nbsp;</td></tr>
     <td>CHORUS DEPTH          </td><td></td>
     <td>CHORUS RATE           </td><td></td>

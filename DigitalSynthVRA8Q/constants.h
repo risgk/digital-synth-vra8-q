@@ -70,6 +70,9 @@ const uint8_t   LFO_RATE        = 80;
 const uint8_t   LFO_TO_PITCH    = 82;
 const uint8_t   LFO_TO_CUTOFF   = 83;
 
+const uint8_t   LFO_WAVE        = 14;
+const uint8_t   LFO_FADE_TIME   = 15;
+
 const uint8_t   CHORUS_DEPTH    = 60;
 const uint8_t   CHORUS_RATE     = 61;
 const uint8_t   CHORUS_DELAY_T  = 62;
@@ -104,7 +107,7 @@ const uint8_t   LFO_WAVE_TRI_ASYNC = 0;
 const uint8_t   LFO_WAVE_TRI_SYNC  = 32;
 const uint8_t   LFO_WAVE_SAW_DOWN  = 64;
 const uint8_t   LFO_WAVE_RANDOM    = 96;
-const uint8_t   LFO_WAVE_SQ        = 127;
+const uint8_t   LFO_WAVE_PULSE     = 127;
 
 const uint8_t   CHORUS_OFF         = 0;
 const uint8_t   CHORUS_MONO        = 32;

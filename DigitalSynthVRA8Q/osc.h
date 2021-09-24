@@ -24,7 +24,7 @@ class Osc {
   static const uint8_t LFO_WAVEFORM_TRI_SYNC  = 1;
   static const uint8_t LFO_WAVEFORM_SAW_DOWN  = 2;
   static const uint8_t LFO_WAVEFORM_RANDOM    = 3;
-  static const uint8_t LFO_WAVEFORM_SQ        = 4;
+  static const uint8_t LFO_WAVEFORM_PULSE     = 4;
 
   static const uint8_t LFO_FADE_COEF_OFF      = 1;
   static const uint8_t LFO_FADE_COEF_ON_MIN   = 2;
@@ -41,6 +41,9 @@ class Osc {
   static int8_t         m_pitch_lfo_amt;
   static uint8_t        m_lfo_waveform;
   static uint8_t        m_lfo_sampled;
+  static uint8_t        m_lfo_fade_coef;
+  static uint8_t        m_lfo_fade_cnt;
+  static uint8_t        m_lfo_fade_level;
 
   static uint8_t        m_chorus_depth_control;
   static uint8_t        m_chorus_rate_control;
@@ -90,6 +93,9 @@ public:
     m_pitch_lfo_amt = 0;
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_sampled = 64;
+    m_lfo_fade_coef = LFO_FADE_COEF_OFF;
+    m_lfo_fade_cnt = m_lfo_fade_coef;
+    m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
 
     set_chorus_depth     (32 );
     set_chorus_rate      (32 );
@@ -188,7 +194,7 @@ public:
     } else if (controller_value < 112) {
       m_lfo_waveform = LFO_WAVEFORM_RANDOM;
     } else {
-      m_lfo_waveform = LFO_WAVEFORM_SQ;
+      m_lfo_waveform = LFO_WAVEFORM_PULSE;
     }
   }
 
@@ -212,6 +218,9 @@ public:
     }
   }
 
+  INLINE static void set_lfo_fade_time(uint8_t controller_value) {
+    m_lfo_fade_coef = high_byte(controller_value * controller_value) + LFO_FADE_COEF_OFF;
+  }
 
   INLINE static void set_chorus_depth(uint8_t controller_value) {
     if (controller_value < 126) {
@@ -260,6 +269,10 @@ public:
   INLINE static void trigger_lfo() {
     if (m_lfo_waveform != LFO_WAVEFORM_TRI_ASYNC) {
       m_lfo_phase = 0xFFFF;
+    }
+
+    if (m_lfo_fade_coef >= LFO_FADE_COEF_ON_MIN) {
+      m_lfo_fade_level = 0;
     }
   }
 
@@ -407,14 +420,17 @@ private:
       }
       break;
     case LFO_WAVEFORM_RANDOM:
+      if (phase < m_lfo_rate) {
+        m_lfo_sampled = (m_rnd >> 1);
+      }
       level = m_lfo_sampled - 64;
       break;
-    case LFO_WAVEFORM_SQ:
+    case LFO_WAVEFORM_PULSE:
       level = high_sbyte(phase);
       if (level >= 0) {
-        level = 0;
-      } else {
         level = -128;
+      } else {
+        level = 0;
       }
       break;
     }
@@ -520,12 +536,20 @@ private:
   }
 
   INLINE static void update_lfo_2nd() {
+    --m_lfo_fade_cnt;
+    if (m_lfo_fade_cnt == 0) {
+      m_lfo_fade_cnt = m_lfo_fade_coef;
+      if (m_lfo_fade_level < LFO_FADE_LEVEL_MAX) {
+        m_lfo_fade_level += 2;
+      }
+    }
+
     m_lfo_phase += m_lfo_rate;
     m_lfo_wave_level = get_lfo_wave_level(m_lfo_phase);
   }
 
   INLINE static void update_lfo_3rd() {
-    uint8_t lfo_depth = m_lfo_depth[0] + m_lfo_depth[1];
+    uint8_t lfo_depth = high_byte((m_lfo_depth[0] << 1) * m_lfo_fade_level) + m_lfo_depth[1];
     if (lfo_depth > 64) {
       lfo_depth = 64;
     }
@@ -620,6 +644,12 @@ template <uint8_t T> int8_t          Osc<T>::m_lfo_wave_level;
 template <uint8_t T> int16_t         Osc<T>::m_lfo_level;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_rate;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
+template <uint8_t T> int8_t          Osc<T>::m_pitch_lfo_amt;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo_waveform;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo_sampled;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_coef;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_cnt;
+template <uint8_t T> uint8_t         Osc<T>::m_lfo_fade_level;
 
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_depth_control;
 template <uint8_t T> uint8_t         Osc<T>::m_chorus_rate_control;
@@ -631,9 +661,6 @@ template <uint8_t T> int16_t         Osc<T>::m_chorus_lfo_wave_level;
 template <uint8_t T> int16_t         Osc<T>::m_chorus_lfo_level;
 template <uint8_t T> uint16_t        Osc<T>::m_chorus_delay_time[2];
 
-template <uint8_t T> int8_t          Osc<T>::m_pitch_lfo_amt;
-template <uint8_t T> uint8_t         Osc<T>::m_lfo_waveform;
-template <uint8_t T> uint8_t         Osc<T>::m_lfo_sampled;
 template <uint8_t T> uint8_t         Osc<T>::m_waveform;
 template <uint8_t T> int16_t         Osc<T>::m_pitch_bend;
 template <uint8_t T> uint8_t         Osc<T>::m_pitch_bend_range;
