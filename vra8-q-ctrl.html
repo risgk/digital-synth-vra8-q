@@ -254,6 +254,7 @@ function panic() {
   document.getElementById("spanPB").innerHTML = "+0";
   document.getElementById("spanCC1").innerHTML = "0";
   document.getElementById("spanCC11").innerHTML = "127";
+  document.getElementById("spanVelocity").innerHTML = "0";
   document.getElementById("spanCC64").innerHTML = "0";
 }
 
@@ -345,6 +346,11 @@ function onMIDIMessage(event) {
       document.getElementById("spanPB").innerHTML = "+" + String(value);
     } else {
       document.getElementById("spanPB").innerHTML = value;
+    }
+  } else if (event.data[0] == (NOTE_ON | MIDI_CH)) {
+    var velocity = event.data[2];
+    if (velocity > 0) {
+      document.getElementById("spanVelocity").innerHTML = velocity;
     }
   }
 
@@ -523,6 +529,7 @@ function saveControllers(number) {
 function noteOn(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
+    document.getElementById("spanVelocity").innerHTML = 100;
     sleep(2);
   }
 }
@@ -703,7 +710,7 @@ function getStoredCCValueString(index, number) {
 
 <table>
 <tr><td>MIDI IN 1</td>
-    <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
+    <td colspan="2"><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>&nbsp;</td>
     <td>PITCH BEND</td>
@@ -711,14 +718,14 @@ function getStoredCCValueString(index, number) {
     <td><span id="spanPB">-</span></td>
     </tr>
 <tr><td>MIDI IN 2</td>
-    <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
+    <td colspan="2"><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
     <td></td>
     <td>&nbsp;</td>
     <td>MODULATION</td>
     <td>&nbsp;</td>
     <td><span id="spanCC1">-</span></td></tr>
 <tr><td>MIDI OUT</td>
-    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
+    <td colspan="2"><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td></td>
     <td>&nbsp;</td>
     <td>EXPRESSION</td>
@@ -727,10 +734,15 @@ function getStoredCCValueString(index, number) {
 <tr><td>KBD TRANSPOSE</td>
     <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td>
+    <td></td>
     <td>&nbsp;</td>
     <td>SUSTAIN PEDAL</td>
     <td>&nbsp;</td>
-    <td><span id="spanCC64">-</span></td></tr>
+    <td><span id="spanCC64">-</span></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>VELOCITY</td>
+    <td>&nbsp;</td>
+    <td><span id="spanVelocity">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
