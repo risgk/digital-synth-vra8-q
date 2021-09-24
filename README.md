@@ -60,43 +60,50 @@
 
 ## Details of Control Change
 
-- OSC WAVE (SAW/PUL):
-    - Values 0 (0-63): Saw Wave
-    - Values 127 (64-127): Pulse Wave (Square Wave)
-- DECAY:
-    - Values 0-126: Decay Time
-    - Values 127: No Decay
-- "LFO WAVE (T/2/S/R/P)":
-    - Values 0-15: Triangle Wave
-    - Values 16-47: Triangle Wave 2 (Key Sync)
-    - Values 48-79: Saw Wave (Key Sync)
-    - Values 80-111: Random Wave (Key Sync)
-    - Values 112-127: Pulse Wave (Square Wave, Key Sync)
-- CHORUS DEPTH:
-    - Value 0: Delay Time +/- 0.0 ms (min)
-    - Value 32: Delay Time +/- 2.0 ms
-    - Value 64: Delay Time +/- 4.1 ms
-    - Value 126: Delay Time +/- 8.1 ms (max)
-- CHORUS RATE:
-    - Value 4: LFO Frequency 0.06 Hz (min)
-    - Value 32: LFO Frequency 0.48 Hz
-    - Value 64: LFO Frequency 0.95 Hz
-    - Value 127: LFO Frequency 1.9 Hz (max)
-- CHORUS DELAY TIME:
-    - Value 0: 0.03 ms (min)
-    - Value 64: 8.2 ms
-    - Value 80: 10.3 ms
-    - Value 127: 16.3 ms (max)
-- CHORUS (-/M/P/S/2):
-    - Value 0 (0-15): Chorus Off
-    - Value 32 (16-47): Mono Chorus Mode
-    - Value 64 (48-79): Pseudo-Stereo Chorus Mode
-    - Value 96 (80-111): Stereo Chorus Mode
-    - Value 127 (112-127): Stereo 2-phase Chorus Mode
-- VOICE (PA/MO/LEG):
-    - Values 0 (0-31): Paraphonic Mode
-    - Values 64 (32-95): Monophonic Mode (Multi Trigger)
-    - Values 127 (96-127): Legato Mode (Monophonic, Single Trigger, Auto Portamento)
+- OSC WAVE (SAW/PUL)
+    - 0 (0-63): Saw Wave
+    - 127 (64-127): Pulse Wave (Square Wave)
+- CUTOFF = Filter Cutoff Frequency
+- RESONANCE = Filter Resonance
+- AMP EG (OFF/ON)
+    - 0 (0-63): Off (Gate)
+    - 127 (64-127): On (EG)
+- ATTACK = EG Attack Time
+- DECAY = EG Decay Time
+    - 127: No Decay
+- SUSTAIN: EG Sustain Level
+- "LFO WAVE (T/2/S/R/P)"
+    - 0-15: Triangle Wave
+    - 16-47: Triangle Wave 2 (Key Sync)
+    - 48-79: Saw Wave (Key Sync)
+    - 80-111: Random Wave (Key Sync)
+    - 112-127: Pulse Wave (Square Wave, Key Sync)
+- CHORUS DEPTH
+    - 0: Delay Time +/- 0.0 ms (min)
+    - 32: Delay Time +/- 2.0 ms
+    - 64: Delay Time +/- 4.1 ms
+    - 126: Delay Time +/- 8.1 ms (max)
+- CHORUS RATE
+    - 4: LFO Frequency 0.06 Hz (min)
+    - 32: LFO Frequency 0.48 Hz
+    - 64: LFO Frequency 0.95 Hz
+    - 127: LFO Frequency 1.9 Hz (max)
+- CHORUS DELAY TIME
+    - 0: 0.03 ms (min)
+    - 64: 8.2 ms
+    - 80: 10.3 ms
+    - 127: 16.3 ms (max)
+- CHORUS (-/M/P/S/2) = Chorus Mode
+    - 0 (0-15): Chorus Off
+    - 32 (16-47): Mono Chorus Mode
+    - 64 (48-79): Pseudo-Stereo Chorus Mode
+    - 96 (80-111): Stereo Chorus Mode
+    - 127 (112-127): Stereo 2-phase Chorus Mode
+- VOICE (PA/MO/LEG) = Voice Mode
+    - 0 (0-31): Paraphonic Mode
+    - 64 (32-95): Monophonic Mode (Multi Trigger)
+    - 127 (96-127): Legato Mode (Monophonic, Single Trigger, Auto Portamento)
+- PORTAMENTO = Portament Time
 
 ## Sample Chorus Settings
 
