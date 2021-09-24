@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add LFO WAVE (T/2/S/R/P) and LFO FADE TIME controllers; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add LFO WAVE and LFO FADE TIME controllers; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
@@ -87,7 +87,7 @@
     - Value 64: 8.2 ms
     - Value 80: 10.3 ms
     - Value 127: 16.3 ms (max)
-- CHORUS (-/M/P/S/S2):
+- CHORUS (-/M/P/S/2):
     - Value 0 (0-15): Chorus Off
     - Value 32 (16-47): Mono Chorus Mode
     - Value 64 (48-79): Pseudo-Stereo Chorus Mode
@@ -159,7 +159,7 @@
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |
     |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (-/M/P/S/S2)   |
+    |                            63 | x             | o             | CHORUS (-/M/P/S/2)    |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
