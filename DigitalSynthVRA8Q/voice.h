@@ -426,6 +426,10 @@ public:
       m_portamento = controller_value;
       break;
 
+    case EG_TO_PITCH    :
+      IOsc<0>::set_pitch_env_amt(controller_value);
+      break;
+
     case LFO_WAVE       :
       IOsc<0>::set_lfo_waveform(controller_value);
       break;
@@ -517,7 +521,7 @@ public:
 #endif
 
     control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
-    control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
+    control_change(EG_TO_PITCH    , g_preset_table_EG_TO_PITCH    [program_number]);
 
     control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);
     control_change(RESONANCE      , g_preset_table_RESONANCE      [program_number]);
@@ -550,8 +554,8 @@ public:
   INLINE static int8_t clock(int8_t& right_level) {
     ++m_count;
 
-    int16_t osc_output = IOsc<0>::clock(m_count);
     uint8_t env_gen_output_0 = IEnvGen<0>::clock(m_count);
+    int16_t osc_output = IOsc<0>::clock(m_count, env_gen_output_0);
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::clock(m_count, osc_output, env_gen_output_0, lfo_output);
     uint8_t env_gen_output_1 = IEnvGen<1>::clock(m_count);

@@ -55,6 +55,7 @@ SUSTAIN_PEDAL   = 64
 
 OSC_WAVE        = 24
 OSC_LEVEL       = 108
+EG_TO_PITCH     = 104
 
 CUTOFF          = 16
 RESONANCE       = 17

@@ -15,8 +15,8 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add LFO WAVE and LFO FADE TIME controllers; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
-- v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Narrow the Q range of RESONANCE (min: 0.7, max: 4.0); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, and LFO FADE TIME; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
 - v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (min: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
@@ -72,12 +72,12 @@
 - DECAY = EG Decay Time
     - 127: No Decay
 - SUSTAIN: EG Sustain Level
-- "LFO WAVE (T/2/S/R/P)"
-    - 0-15: Triangle Wave
-    - 16-47: Triangle Wave 2 (Key Sync)
-    - 48-79: Saw Wave (Key Sync)
-    - 80-111: Random Wave (Key Sync)
-    - 112-127: Pulse Wave (Square Wave, Key Sync)
+- LFO WAVE (T/2/S/R/P)
+    - 0 (0-15): Triangle Wave
+    - 32 (16-47): Triangle Wave 2 (Key Sync)
+    - 64 (48-79): Saw Wave (Key Sync)
+    - 96 (80-111): Random Wave (Key Sync)
+    - 127 (112-127): Pulse Wave (Square Wave, Key Sync)
 - CHORUS DEPTH
     - 0: Delay Time +/- 0.0 ms (min)
     - 32: Delay Time +/- 2.0 ms
@@ -95,14 +95,14 @@
     - 127: 16.3 ms (max)
 - CHORUS (-/M/P/S/2) = Chorus Mode
     - 0 (0-15): Chorus Off
-    - 32 (16-47): Mono Chorus Mode
-    - 64 (48-79): Pseudo-Stereo Chorus Mode
-    - 96 (80-111): Stereo Chorus Mode
-    - 127 (112-127): Stereo 2-phase Chorus Mode
+    - 32 (16-47): Mono Chorus
+    - 64 (48-79): Pseudo-Stereo Chorus
+    - 96 (80-111): Stereo Chorus
+    - 127 (112-127): Stereo 2-phase Chorus
 - VOICE (PA/MO/LEG) = Voice Mode
-    - 0 (0-31): Paraphonic Mode
-    - 64 (32-95): Monophonic Mode (Multi Trigger)
-    - 127 (96-127): Legato Mode (Monophonic, Single Trigger, Auto Portamento)
+    - 0 (0-31): Paraphonic
+    - 64 (32-95): Monophonic (Multi Trigger)
+    - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
 
 ## Sample Chorus Settings
@@ -145,6 +145,7 @@
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
     |                           108 | x             | o             | OSC LEVEL             |
+    |                           104 | x             | o             | EG > PITCH (-/+)      |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
     |                            17 | x             | o             | RESONANCE             |
