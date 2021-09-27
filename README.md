@@ -108,9 +108,6 @@
     - 0 (0-63): 0% (Oscillator 1: 200%)
     - 127 (64-127): 150% (Oscillator 1: 150%)
 - MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
-    - 0: +0.48Hz
-    - 64: +3.8Hz
-    - 127: +7.6Hz
 
 ## Sample Chorus Settings
 

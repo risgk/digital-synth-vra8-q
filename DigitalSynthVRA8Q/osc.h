@@ -272,11 +272,7 @@ public:
   }
 
   INLINE static void set_mono_osc2_detune(uint8_t controller_value) {
-    if (controller_value < 4) {
-      m_mono_osc2_detune = 1;
-    } else {
-      m_mono_osc2_detune = (controller_value + 4) >> 3;
-    }
+    m_mono_osc2_detune = ((controller_value + 1) >> 1);
   }
 
   template <uint8_t N>
@@ -493,6 +489,12 @@ private:
 
     m_pitch_real[N] += m_lfo_mod_level;
 
+    if (N == 1) {
+      if (m_mono_mode) {
+        m_pitch_real[N] += m_mono_osc2_detune;
+      }
+    }
+
     coarse = high_byte(m_pitch_real[N]);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {
       m_pitch_real[N] = NOTE_NUMBER_MIN << 8;
@@ -519,7 +521,7 @@ private:
     uint8_t bit = (m_rnd >= 0xF0);
     uint8_t mono_offset = 0;
     if (N == 1) {
-      mono_offset += (m_mono_mode ? m_mono_osc2_detune : 0);
+      mono_offset += m_mono_mode;
     }
     int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit + mono_offset;
     m_freq[N] = m_freq_temp[N] + freq_offset;
