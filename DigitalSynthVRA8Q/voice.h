@@ -470,13 +470,9 @@ public:
 
         if (m_voice_mode != new_voice_mode) {
           m_voice_mode = new_voice_mode;
+          all_sound_off();
           boolean mono_mode = (m_voice_mode != VOICE_PARAPHONIC);
           IOsc<0>::set_mono_mode(mono_mode);
-          if (mono_mode) {
-            IOsc<0>::note_off<1>();
-            IOsc<0>::note_off<2>();
-            IOsc<0>::note_off<3>();
-          }
         }
       }
       break;
