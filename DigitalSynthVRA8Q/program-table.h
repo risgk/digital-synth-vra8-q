@@ -33,3 +33,6 @@ const uint8_t g_preset_table_P_BEND_RANGE   [] = {2  , 2  , 2  , 2  , 2  , 2  , 
 const uint8_t g_preset_table_V_TO_CUTOFF    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_VOICE_MODE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+
+const uint8_t g_preset_table_MONO_O2_MIX    [] = {127, 127, 127, 127, 127, 127, 127, 0  };
+const uint8_t g_preset_table_MONO_O2_DETUNE [] = {32 , 32 , 32 , 32 , 32 , 32 , 0  , 0  };

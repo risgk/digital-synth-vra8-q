@@ -84,6 +84,9 @@ const V_TO_CUTOFF     = 89;
 const VOICE_MODE      = 87;
 const PORTAMENTO      = 22;
 
+const MONO_O2_MIX     = 25;
+const MONO_O2_DETUNE  = 21;
+
 const ALL_SOUND_OFF   = 120;
 const RESET_ALL_CTRLS = 121;
 const ALL_NOTES_OFF   = 123;
@@ -133,6 +136,9 @@ var controlNumberToStringMap = new Map([
   [ V_TO_CUTOFF    , "V_TO_CUTOFF    " ],
   [ VOICE_MODE     , "VOICE_MODE     " ],
   [ PORTAMENTO     , "PORTAMENTO     " ],
+
+  [ MONO_O2_MIX    , "MONO_O2_MIX    " ],
+  [ MONO_O2_DETUNE , "MONO_O2_DETUNE " ],
 ]);
 
 var controllersInLocalStorage = [
@@ -166,6 +172,9 @@ var controllersInLocalStorage = [
   V_TO_CUTOFF    ,
   VOICE_MODE     ,
   PORTAMENTO     ,
+
+  MONO_O2_MIX    ,
+  MONO_O2_DETUNE ,
 ];
 
 var presetControllers = {};
@@ -201,6 +210,9 @@ presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 presetControllers[V_TO_CUTOFF    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+presetControllers[MONO_O2_MIX    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
+presetControllers[MONO_O2_DETUNE ] = [32 , 32 , 32 , 32 , 32 , 32 , 0  , 0  ];
 
 const PRESET_NUMBER_INITIAL = 7;
 </script>
@@ -666,6 +678,9 @@ function fileExport() {
   str += fileExportOneLine(VOICE_MODE     );
   str += fileExportOneLine(PORTAMENTO     );
   str += "\n";
+  str += fileExportOneLine(MONO_O2_MIX    );
+  str += fileExportOneLine(MONO_O2_DETUNE );
+  str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
 
@@ -918,6 +933,19 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC87">-</span></td>
     <td><input  id="inputCC22" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
     <td><span    id="spanCC22">-</span></td></tr>
+<tr><td>&nbsp;</td></tr>
+<tr><td>MONO OSC2 MIX         </td><td></td>
+    <td>MONO OSC2 DETUNE      </td><td></td>
+    <td>    </td><td></td>
+    <td>             </td><td></td></tr>
+<tr><td><input  id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_MIX    , value)"></td>
+    <td><span    id="spanCC25">-</span></td>
+    <td><input  id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_DETUNE , value)"></td>
+    <td><span    id="spanCC21">-</span></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 

@@ -91,7 +91,9 @@ public:
         m_note_on_number[0] = note_number;
 
         IOsc<0>::set_portamento<0>(0);
+        IOsc<0>::set_portamento<1>(0);
         IOsc<0>::note_on<0>(note_number);
+        IOsc<0>::note_on<1>(note_number);
         IOsc<0>::trigger_lfo();
         IEnvGen<0>::note_on();
         IEnvGen<1>::note_on();
@@ -100,7 +102,9 @@ public:
         m_note_on_number[0] = note_number;
 
         IOsc<0>::set_portamento<0>(m_portamento);
+        IOsc<0>::set_portamento<1>(m_portamento);
         IOsc<0>::note_on<0>(note_number);
+        IOsc<0>::note_on<1>(note_number);
       }
     } else if (m_voice_mode == VOICE_MONOPHONIC) {
       ++m_note_on_total_count;
@@ -110,6 +114,7 @@ public:
 
       IOsc<0>::set_portamento<0>(m_portamento);
       IOsc<0>::note_on<0>(note_number);
+      IOsc<0>::note_on<1>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();
@@ -426,6 +431,14 @@ public:
       m_portamento = controller_value;
       break;
 
+    case MONO_O2_MIX    :
+      IOsc<0>::set_mono_osc2_mix(controller_value);
+      break;
+
+    case MONO_O2_DETUNE :
+      IOsc<0>::set_mono_osc2_detune(controller_value);
+      break;
+
     case EG_TO_PITCH    :
       IOsc<0>::set_pitch_env_amt(controller_value);
       break;
@@ -459,6 +472,11 @@ public:
           m_voice_mode = new_voice_mode;
           boolean mono_mode = (m_voice_mode != VOICE_PARAPHONIC);
           IOsc<0>::set_mono_mode(mono_mode);
+          if (mono_mode) {
+            IOsc<0>::note_off<1>();
+            IOsc<0>::note_off<2>();
+            IOsc<0>::note_off<3>();
+          }
         }
       }
       break;
@@ -549,6 +567,9 @@ public:
     control_change(V_TO_CUTOFF    , g_preset_table_V_TO_CUTOFF    [program_number]);
     control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
     control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
+
+    control_change(MONO_O2_MIX    , g_preset_table_MONO_O2_MIX    [program_number]);
+    control_change(MONO_O2_DETUNE , g_preset_table_MONO_O2_DETUNE [program_number]);
   }
 
   INLINE static int8_t clock(int8_t& right_level) {

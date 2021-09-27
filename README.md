@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, and LFO FADE TIME; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v5.0.0: Fix wave tables (Reduce noise); Narrow the range of CUTOFF frequency (min: 905.8 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
@@ -60,7 +60,7 @@
 
 ## Details of Control Change
 
-- OSC WAVE (SAW/PUL)
+- OSC WAVE (SAW/PUL) = Oscillator Waveform
     - 0 (0-63): Saw Wave
     - 127 (64-127): Pulse Wave (Square Wave)
 - CUTOFF = Filter Cutoff Frequency
@@ -72,7 +72,7 @@
 - DECAY = EG Decay Time
     - 127: No Decay
 - SUSTAIN: EG Sustain Level
-- LFO WAVE (T/2/S/R/P)
+- LFO WAVE (T/2/S/R/P) = LFO Waveform
     - 0 (0-15): Triangle Wave
     - 32 (16-47): Triangle Wave 2 (Key Sync)
     - 64 (48-79): Saw Wave (Key Sync)
@@ -104,6 +104,13 @@
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
+- MONO OSC2 MIX = Oscillator 2 Mixing level in Monophonic (or Legato) Mode
+    - 0 (0-63): 0% (Oscillator 1: 200%)
+    - 127 (64-127): 150% (Oscillator 1: 150%)
+- MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
+    - 0: +0.48Hz
+    - 64: +3.8Hz
+    - 127: +7.6Hz
 
 ## Sample Chorus Settings
 
@@ -173,6 +180,9 @@
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
     |                            87 | x             | o             | VOICE (PA/MO/LEG)     |
     |                            22 | x             | o             | PORTAMENTO            |
+    |                               |               |               |                       |
+    |                            25 | x             | o             | MONO OSC2 MIX         |
+    |                            21 | x             | o             | MONO OSC2 DETUNE      |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+

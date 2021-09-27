@@ -20,7 +20,7 @@ const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 9;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 109;
 const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 8;
 const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = 16;
 const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
@@ -83,6 +83,9 @@ const uint8_t   P_BEND_RANGE    = 85;
 const uint8_t   V_TO_CUTOFF     = 89;
 const uint8_t   VOICE_MODE      = 87;
 const uint8_t   PORTAMENTO      = 22;
+
+const uint8_t   MONO_O2_MIX     = 25;
+const uint8_t   MONO_O2_DETUNE  = 21;
 
 const uint8_t   ALL_SOUND_OFF   = 120;
 const uint8_t   RESET_ALL_CTRLS = 121;

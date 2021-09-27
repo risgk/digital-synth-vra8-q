@@ -72,8 +72,11 @@ class Osc {
   static boolean        m_osc_on_temp[4];
   static uint8_t        m_osc_gain_effective[4];
   static uint8_t        m_osc_gain[4];
-  static boolean        m_mono_mode;
   static uint8_t        m_osc_level;
+
+  static boolean        m_mono_mode;
+  static uint8_t        m_mono_osc2_mix;
+  static uint8_t        m_mono_osc2_detune;
 
   static uint8_t        m_rnd;
 
@@ -104,6 +107,8 @@ public:
     set_chorus_delay_time(80 );
     set_chorus_mode      (CHORUS_MODE_OFF);
     set_mono_mode        (false);
+    set_mono_osc2_mix    (0);
+    set_mono_osc2_detune (0);
 
     m_chorus_depth_control_actual = 64;
     m_chorus_lfo_phase = 0;
@@ -260,6 +265,18 @@ public:
 
   INLINE static void set_mono_mode(boolean mono_mode) {
     m_mono_mode = mono_mode;
+  }
+
+  INLINE static void set_mono_osc2_mix(uint8_t controller_value) {
+    m_mono_osc2_mix = controller_value;
+  }
+
+  INLINE static void set_mono_osc2_detune(uint8_t controller_value) {
+    if (controller_value < 4) {
+      m_mono_osc2_detune = 1;
+    } else {
+      m_mono_osc2_detune = (controller_value + 4) >> 3;
+    }
   }
 
   template <uint8_t N>
@@ -500,7 +517,11 @@ private:
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
     uint8_t bit = (m_rnd >= 0xF0);
-    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit;
+    uint8_t mono_offset = 0;
+    if (N == 1) {
+      mono_offset += (m_mono_mode ? m_mono_osc2_detune : 0);
+    }
+    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit + mono_offset;
     m_freq[N] = m_freq_temp[N] + freq_offset;
     m_wave_table[N] = m_wave_table_temp[N];
   }
@@ -532,7 +553,12 @@ private:
     m_osc_gain_effective[3] = m_osc_gain[3];
     if (m_mono_mode) {
       if ((m_osc_gain_effective[1] == 0) && (m_osc_gain_effective[2] == 0) && (m_osc_gain_effective[3] == 0)) {
-        m_osc_gain_effective[0] = (m_osc_gain_effective[0] << 1);
+        if (m_mono_osc2_mix < 64) {
+          m_osc_gain_effective[0] = (m_osc_gain_effective[0] << 1);
+        } else {
+          m_osc_gain_effective[0] = m_osc_gain_effective[0] + (m_osc_gain_effective[0] >> 1);
+          m_osc_gain_effective[1] = m_osc_gain_effective[0];
+        }
       }
     }
   }
@@ -690,7 +716,10 @@ template <uint8_t T> boolean         Osc<T>::m_osc_on[4];
 template <uint8_t T> boolean         Osc<T>::m_osc_on_temp[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain_effective[4];
 template <uint8_t T> uint8_t         Osc<T>::m_osc_gain[4];
-template <uint8_t T> boolean         Osc<T>::m_mono_mode;
 template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
+
+template <uint8_t T> boolean         Osc<T>::m_mono_mode;
+template <uint8_t T> uint8_t         Osc<T>::m_mono_osc2_mix;
+template <uint8_t T> uint8_t         Osc<T>::m_mono_osc2_detune;
 
 template <uint8_t T> uint8_t         Osc<T>::m_rnd;
