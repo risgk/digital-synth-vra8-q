@@ -555,10 +555,15 @@ private:
     m_osc_gain_effective[3] = m_osc_gain[3];
     if (m_mono_mode) {
       if ((m_osc_gain_effective[1] == 0) && (m_osc_gain_effective[2] == 0) && (m_osc_gain_effective[3] == 0)) {
-        if (m_mono_osc2_mix < 64) {
-          m_osc_gain_effective[0] = (m_osc_gain_effective[0] << 1);
+        uint8_t base_gain = m_osc_gain_effective[0];
+        if (m_mono_osc2_mix < 32) {
+          m_osc_gain_effective[0] = (base_gain << 1);
+        } else if (m_mono_osc2_mix < 96) {
+          m_osc_gain_effective[0] = (base_gain << 1) - (base_gain >> 2);
+          m_osc_gain_effective[1] = base_gain;
         } else {
-          m_osc_gain_effective[0] = m_osc_gain_effective[0] + (m_osc_gain_effective[0] >> 1);
+          uint8_t base_gain = m_osc_gain_effective[0];
+          m_osc_gain_effective[0] = base_gain + (base_gain >> 1);
           m_osc_gain_effective[1] = m_osc_gain_effective[0];
         }
       }

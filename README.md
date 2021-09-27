@@ -105,8 +105,9 @@
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
 - MONO OSC2 MIX = Oscillator 2 Mixing level in Monophonic (or Legato) Mode
-    - 0 (0-63): 0% (Oscillator 1: 200%)
-    - 127 (64-127): 150% (Oscillator 1: 150%)
+    - 0 (0-31): 0% (Oscillator 1: 200%)
+    - 64 (32-95): 100% (Oscillator 1: 175%)
+    - 127 (96-127): 150% (Oscillator 1: 150%)
 - MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
 
 ## Sample Chorus Settings

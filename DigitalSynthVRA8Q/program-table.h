@@ -34,5 +34,5 @@ const uint8_t g_preset_table_V_TO_CUTOFF    [] = {0  , 0  , 0  , 0  , 0  , 0  , 
 const uint8_t g_preset_table_VOICE_MODE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
-const uint8_t g_preset_table_MONO_O2_MIX    [] = {127, 127, 127, 127, 127, 127, 127, 0  };
+const uint8_t g_preset_table_MONO_O2_MIX    [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  };
 const uint8_t g_preset_table_MONO_O2_DETUNE [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
