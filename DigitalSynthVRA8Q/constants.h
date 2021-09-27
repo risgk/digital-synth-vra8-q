@@ -1,6 +1,6 @@
 #pragma once
 
-const double    A4_PITCH = 440.0;
+const double    A4_FREQ = 440.0;
 
 const uint8_t   MIDI_CH             = 0;
 const uint16_t  SAMPLING_RATE       = 31250;
@@ -20,7 +20,7 @@ const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 9;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 109;
 const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 8;
 const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 0;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = 1;
 const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
@@ -55,6 +55,7 @@ const uint8_t   SUSTAIN_PEDAL   = 64;
 
 const uint8_t   OSC_WAVE        = 24;
 const uint8_t   OSC_LEVEL       = 108;
+const uint8_t   EG_TO_PITCH     = 104;
 
 const uint8_t   CUTOFF          = 16;
 const uint8_t   RESONANCE       = 17;
@@ -70,6 +71,9 @@ const uint8_t   LFO_RATE        = 80;
 const uint8_t   LFO_TO_PITCH    = 82;
 const uint8_t   LFO_TO_CUTOFF   = 83;
 
+const uint8_t   LFO_WAVE        = 14;
+const uint8_t   LFO_FADE_TIME   = 15;
+
 const uint8_t   CHORUS_DEPTH    = 60;
 const uint8_t   CHORUS_RATE     = 61;
 const uint8_t   CHORUS_DELAY_T  = 62;
@@ -78,7 +82,10 @@ const uint8_t   CHORUS_MODE     = 63;
 const uint8_t   P_BEND_RANGE    = 85;
 const uint8_t   V_TO_CUTOFF     = 89;
 const uint8_t   VOICE_MODE      = 87;
-const uint8_t   PORTAMENTO_TIME = 22;
+const uint8_t   PORTAMENTO      = 22;
+
+const uint8_t   MONO_O2_MIX     = 25;
+const uint8_t   MONO_O2_DETUNE  = 21;
 
 const uint8_t   ALL_SOUND_OFF   = 120;
 const uint8_t   RESET_ALL_CTRLS = 121;
@@ -104,9 +111,14 @@ const uint8_t   LFO_WAVE_TRI_ASYNC = 0;
 const uint8_t   LFO_WAVE_TRI_SYNC  = 32;
 const uint8_t   LFO_WAVE_SAW_DOWN  = 64;
 const uint8_t   LFO_WAVE_RANDOM    = 96;
-const uint8_t   LFO_WAVE_SQ        = 127;
+const uint8_t   LFO_WAVE_PULSE     = 127;
 
 const uint8_t   CHORUS_OFF         = 0;
-const uint8_t   CHORUS_MONO        = 64;
+const uint8_t   CHORUS_MONO        = 32;
+const uint8_t   CHORUS_P_STEREO    = 64;
 const uint8_t   CHORUS_STEREO      = 96;
 const uint8_t   CHORUS_STEREO_2    = 127;
+
+const uint8_t   VOICE_PARAPHONIC   = 0;
+const uint8_t   VOICE_MONOPHONIC   = 64;
+const uint8_t   VOICE_LEGATO       = 127;

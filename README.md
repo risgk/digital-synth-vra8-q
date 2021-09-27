@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v4.0.0
+# Digital Synth VRA8-Q v5.0.0
 
-- 2021-04-30 ISGK Instruments
+- 2021-09-27 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,10 +15,11 @@
 
 ## Change History
 
-- v4.0.0: Add PORTAMENTO TIME; Remove AC coupling capacitors from the recommended circuit
+- v5.0.0: Fix wave tables (Reduce noise); Change the range of CUTOFF frequency (min: 452.9 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
+- v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
 - v3.1.0: Fix the problem pitch bend is minimized by Reset All Controllers; Add VOICE Mode (PARA/MONO); Expand the range of CUTOFF frequency (min: 440 Hz, max: 14.08 kHz); Improve VELOCITY > CUTOFF; Fix the instability of the pitch when a note (Gate) is turned on; Change PRESET; Other changes
-- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (mix: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
+- v3.0.0: Improve sound quality; Fix Oscillator pitch; Increase the CUTOFF frequency slightly (min: 880 Hz, max: 14.08 kHz); Change the Q range of RESONANCE (min: 0.7, max: 8.0); Increasing RESONANCE decreases the filter gain; Support Velocity > CUTOFF (OFF/ON); Reduce pop noise when turning notes ON and OFF; Enable Short Delay FX; Change PRESET programs; Support All Sound OFF and Reset All Controllers; Other changes
 - v2.2.0: Change PRESET; Other changes
 - v2.1.0: Improve sound quality; Change PRESET; Other changes
 - v2.0.0: Add Mono and Stereo 2-phase Chorus modes; Improve the pitch; Introduce No Decay (DECAY = 127); Improve the recommended circuit; Other changes
@@ -39,9 +40,8 @@
 - PWM Audio Out (Unipolar, Line Level) **L/Mono**: **Pin D5** (or D6), **R**: **Pin D11**
     - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
     - We recommend adding a RC filter (post LPF) circuit to reduce PWM ripples
-        - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works *very* well
-            - We recommend using film capacitors (K = +-10% or less)
-        - A 1st-order LPF with a cutoff frequency 15.9 kHz (R = 100 ohm, C = 100 nF) works well
+        - A 1st-order LPF with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
+        - A 2nd-order LPF with a cutoff frequency 33.9 kHz (R1 = R2 = 47 ohm, C1 = C2 = 100 nF) works well, too
 - Files
     - `"DigitalSynthVRA8Q.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
     - `"make-sample-wav-file.cc"` is for Debugging on PC
@@ -52,7 +52,7 @@
 
 ## VRA8-Q CTRL
 
-- MIDI Controller (Editor) for VRA8-Q, HTML5 App (Web App)
+- MIDI Controller (Editor) for VRA8-Q, HTML App (Web App)
 - VRA8-Q CTRL converts Program Changes (#0-7 for PRESET) into Control Changes
 - VRA8-Q CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
 - We recommend using Google Chrome, which implements Web MIDI API
@@ -60,36 +60,55 @@
 
 ## Details of Control Change
 
-- OSC WAVE (SAW/PUL):
-    - Values 0 (0-63): Saw Wave
-    - Values 127 (64-127): Pulse Wave (Square Wave)
-- DECAY:
-    - Values 0-126: Decay Time
-    - Values 127: No Decay
-- CHORUS DEPTH:
-    - Value 0: Delay Time +/- 0.0 ms (min)
-    - Value 32: Delay Time +/- 2.0 ms
-    - Value 64: Delay Time +/- 4.1 ms
-    - Value 126: Delay Time +/- 8.1 ms (max)
-- CHORUS RATE:
-    - Value 4: LFO Frequency 0.06 Hz (min)
-    - Value 32: LFO Frequency 0.48 Hz
-    - Value 64: LFO Frequency 0.95 Hz
-    - Value 127: LFO Frequency 1.9 Hz (max)
-- CHORUS DELAY TIME:
-    - Value 0: 0.03 ms (min)
-    - Value 64: 8.2 ms
-    - Value 80: 10.3 ms
-    - Value 127: 16.3 ms (max)
-- CHORUS (-/M/P/S/S2):
-    - Value 0 (0-15): Chorus Off
-    - Value 32 (16-47): Mono Chorus Mode
-    - Value 64 (48-79): Pseudo-Stereo Chorus Mode
-    - Value 96 (80-111): Stereo Chorus Mode
-    - Value 127 (112-127): Stereo 2-phase Chorus Mode
-- VOICE (PARA/MONO):
-    - Values 0 (0-63): Paraphonic Mode
-    - Values 127 (64-127): Monophonic Mode
+- OSC WAVE (SAW/PUL) = Oscillator Waveform
+    - 0 (0-63): Saw Wave
+    - 127 (64-127): Pulse Wave (Square Wave)
+- CUTOFF = Filter Cutoff Frequency
+- RESONANCE = Filter Resonance
+- AMP EG (OFF/ON)
+    - 0 (0-63): Off (Gate)
+    - 127 (64-127): On (EG)
+- ATTACK = EG Attack Time
+- DECAY = EG Decay Time
+    - 127: No Decay
+- SUSTAIN: EG Sustain Level
+- LFO WAVE (T/2/S/R/P) = LFO Waveform
+    - 0 (0-15): Triangle Wave
+    - 32 (16-47): Triangle Wave 2 (Key Sync)
+    - 64 (48-79): Saw Wave (Key Sync)
+    - 96 (80-111): Random Wave (Key Sync)
+    - 127 (112-127): Pulse Wave (Square Wave, Key Sync)
+- CHORUS DEPTH
+    - 0: Delay Time +/- 0.0 ms (min)
+    - 32: Delay Time +/- 2.0 ms
+    - 64: Delay Time +/- 4.1 ms
+    - 126: Delay Time +/- 8.1 ms (max)
+- CHORUS RATE
+    - 4: LFO Frequency 0.06 Hz (min)
+    - 32: LFO Frequency 0.48 Hz
+    - 64: LFO Frequency 0.95 Hz
+    - 127: LFO Frequency 1.9 Hz (max)
+- CHORUS DELAY TIME
+    - 0: 0.03 ms (min)
+    - 64: 8.2 ms
+    - 80: 10.3 ms
+    - 127: 16.3 ms (max)
+- CHORUS (-/M/P/S/2) = Chorus Mode
+    - 0 (0-15): Chorus Off
+    - 32 (16-47): Mono Chorus
+    - 64 (48-79): Pseudo-Stereo Chorus
+    - 96 (80-111): Stereo Chorus
+    - 127 (112-127): Stereo 2-phase Chorus
+- VOICE (PA/MO/LEG) = Voice Mode
+    - 0 (0-31): Paraphonic
+    - 64 (32-95): Monophonic (Multi Trigger)
+    - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
+- PORTAMENTO = Portament Time
+- MONO OSC2 MIX = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
+    - 0 (0-31): 0% (Oscillator 1: 200%)
+    - 64 (32-95): 100% (Oscillator 1: 175%)
+    - 127 (96-127): 150% (Oscillator 1: 150%)
+- MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
 
 ## Sample Chorus Settings
 
@@ -102,8 +121,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-04-30       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 4.0.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-09-27       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 5.0.0         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
@@ -131,6 +150,7 @@
     |                               |               |               |                       |
     |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
     |                           108 | x             | o             | OSC LEVEL             |
+    |                           104 | x             | o             | EG > PITCH (-/+)      |
     |                               |               |               |                       |
     |                            16 | x             | o             | CUTOFF                |
     |                            17 | x             | o             | RESONANCE             |
@@ -146,15 +166,21 @@
     |                            82 | x             | o             | LFO > PITCH (-/+)     |
     |                            83 | x             | o             | LFO > CUTOFF (-/+)    |
     |                               |               |               |                       |
+    |                            14 | x             | o             | LFO WAVE (T/2/S/R/P)  |
+    |                            15 | x             | o             | LFO FADE TIME         |
+    |                               |               |               |                       |
     |                            60 | x             | o             | CHORUS DEPTH          |
     |                            61 | x             | o             | CHORUS RATE           |
     |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (-/M/P/S/S2)   |
+    |                            63 | x             | o             | CHORUS (-/M/P/S/2)    |
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | VOICE (PARA/MONO)     |
-    |                            22 | x             | o             | PORTAMENTO TIME       |
+    |                            87 | x             | o             | VOICE (PA/MO/LEG)     |
+    |                            22 | x             | o             | PORTAMENTO            |
+    |                               |               |               |                       |
+    |                            25 | x             | o             | MONO OSC2 MIX         |
+    |                            21 | x             | o             | MONO OSC2 DETUNE      |
     |                               |               |               |                       |
     |                   90, 112-119 | x             | x             | (RESERVED)            |
     +-------------------------------+---------------+---------------+-----------------------+

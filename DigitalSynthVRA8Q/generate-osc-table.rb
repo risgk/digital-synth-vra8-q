@@ -6,7 +6,7 @@ $file.printf("#pragma once\n\n")
 
 def freq_from_note_number(note_number, pr = false)
   cent = (note_number * 100.0) - 6900.0
-  hz = A4_PITCH * (2.0 ** (cent / 1200.0))
+  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
   bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
   hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
   if note_number < NOTE_NUMBER_MIN + 12
@@ -60,9 +60,11 @@ def generate_osc_wave_table(name, last, amp, organ = false)
   $file.printf("const uint8_t g_osc_#{name}_wave_table_h%d[] PROGMEM = {\n  ", last)
   (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
     level = 0
+    nn = n
+    nn = 0 if n == (1 << OSC_WAVE_TABLE_SAMPLES_BITS)
     max = organ ? last * 2 : last
     (1..max).each do |k|
-      level += yield(n, k)
+      level += yield(nn, k)
     end
     level *= amp
     level = (level * OSC_WAVE_TABLE_AMPLITUDE).floor.to_i
@@ -134,7 +136,7 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
       $file.printf("\n")
-    elsif (idx + 6) % 6 == (6 - 1)
+    elsif (idx + 4) % 4 == (4 - 1)
       $file.printf("\n  ")
     else
       $file.printf(" ")
@@ -145,5 +147,20 @@ end
 
 generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("pulse")
+
+$file.printf("const uint16_t g_lfo_rate_table[] = {\n  ")
+(0..64).each do |i|
+  lfo_rate = (10.0 ** ((i - 32) / 32.0)) * (2.0 * (1 << 16) * 64 / SAMPLING_RATE)
+
+  $file.printf("%4d,", lfo_rate.floor)
+  if i == DATA_BYTE_MAX
+    $file.printf("\n")
+  elsif i % 16 == (16 - 1)
+    $file.printf("\n  ")
+  else
+    $file.printf(" ")
+  end
+end
+$file.printf("};\n\n")
 
 $file.close

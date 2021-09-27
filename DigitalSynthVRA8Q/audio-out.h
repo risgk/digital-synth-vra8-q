@@ -8,7 +8,7 @@ template <uint8_t T>
 class AudioOut {
   static uint8_t m_count;
   static uint8_t m_busy;
-  static uint8_t m_busyContinuousCont;
+  static uint8_t m_busyContinuousCount;
 
 public:
   INLINE static void open() {
@@ -39,7 +39,7 @@ public:
 
     m_count = 0;
     m_busy = 0;
-    m_busyContinuousCont = 0;
+    m_busyContinuousCount = 0;
   }
 
   INLINE static void write(int8_t left, int8_t right) {
@@ -61,12 +61,12 @@ public:
     if (TIFR1 & _BV(TOV1)) {
       // CPU BUSY
       if (m_busy) {
-        ++m_busyContinuousCont;
+        ++m_busyContinuousCount;
       }
       m_busy = 1;
     } else {
       m_busy = 0;
-      m_busyContinuousCont = 0;
+      m_busyContinuousCount = 0;
       while ((TIFR1 & _BV(TOV1)) == 0);
     }
     TIFR1 = _BV(TOV1);
@@ -79,7 +79,7 @@ public:
     OCR2A = r;
 #endif
 
-    if (m_busyContinuousCont >= 15) {
+    if (m_busyContinuousCount >= 18) {
       PORTB = _BV(5);    // Turn on CPU Busy LED
     } else {
       PORTB = 0x00;      // Turn off CPU Busy LED
@@ -90,4 +90,4 @@ public:
 
 template <uint8_t T> uint8_t AudioOut<T>::m_count;
 template <uint8_t T> uint8_t AudioOut<T>::m_busy;
-template <uint8_t T> uint8_t AudioOut<T>::m_busyContinuousCont;
+template <uint8_t T> uint8_t AudioOut<T>::m_busyContinuousCount;
