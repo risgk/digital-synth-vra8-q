@@ -104,7 +104,7 @@
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
-- MONO OSC2 MIX = Oscillator 2 Mixing level in Monophonic (or Legato) Mode
+- MONO OSC2 MIX = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
     - 0 (0-31): 0% (Oscillator 1: 200%)
     - 64 (32-95): 100% (Oscillator 1: 175%)
     - 127 (96-127): 150% (Oscillator 1: 150%)
