@@ -535,6 +535,7 @@ public:
 #endif
 
     control_change(OSC_WAVE       , g_preset_table_OSC_WAVE       [program_number]);
+    control_change(OSC_LEVEL      , g_preset_table_OSC_LEVEL      [program_number]);
     control_change(EG_TO_PITCH    , g_preset_table_EG_TO_PITCH    [program_number]);
 
     control_change(CUTOFF         , g_preset_table_CUTOFF         [program_number]);

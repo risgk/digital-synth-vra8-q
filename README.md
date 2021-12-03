@@ -1,6 +1,6 @@
-# Digital Synth VRA8-Q v5.0.0
+# Digital Synth VRA8-Q v5.0.1
 
-- 2021-09-27 ISGK Instruments
+- 2021-12-03 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
 ## Concept
@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v5.0.1: Fix a bug that OSC LEVEL is not updated in program change
 - v5.0.0: Fix wave tables (Reduce noise); Change the range of CUTOFF frequency (min: 452.9 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
 - v3.2.0: Add Pseudo-Stereo Chorus Mode; Assign free voices in Oscillator index order; Change CPU Busy LED lighting condition; Other changes
@@ -121,8 +122,8 @@
 
 ## MIDI Implementation Chart
 
-      [Quadraphonic Synthesizer]                                      Date: 2021-09-27       
-      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 5.0.0         
+      [Quadraphonic Synthesizer]                                      Date: 2021-12-03       
+      Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 5.0.1         
     +-------------------------------+---------------+---------------+-----------------------+
     | Function...                   | Transmitted   | Recognized    | Remarks               |
     +-------------------------------+---------------+---------------+-----------------------+
