@@ -42,14 +42,18 @@ public:
   }
 
   INLINE static void set_attack(uint8_t controller_value) {
-    m_attack_update_coef = (controller_value + 6) >> 2;
+    if (controller_value == 127) {
+      m_attack_update_coef = 64;
+    } else {
+      m_attack_update_coef = (controller_value + 3) >> 1;
+    }
   }
 
   INLINE static void set_decay(uint8_t controller_value) {
     if (controller_value == 127) {
       m_decay_update_coef = NO_DECAY_UPDATE_COEF;
     } else {
-      m_decay_update_coef = (controller_value + 6) >> 2;
+      m_decay_update_coef = (controller_value + 3) >> 1;
     }
   }
 
@@ -94,7 +98,7 @@ public:
           m_rest = m_attack_update_coef;
 
           uint8_t coef;
-          coef = 222 + m_attack_update_coef;
+          coef = 188 + m_attack_update_coef;
 
           m_level = ENV_GEN_LEVEL_MAX_X_1_5 - mul_uq16_uq8(ENV_GEN_LEVEL_MAX_X_1_5 - m_level, coef);
           if (m_level >= ENV_GEN_LEVEL_MAX) {
@@ -112,7 +116,7 @@ public:
 
           if ((m_level > m_sustain) && (m_decay_update_coef != NO_DECAY_UPDATE_COEF)) {
             uint8_t coef;
-            coef = 222 + m_decay_update_coef;
+            coef = 188 + m_decay_update_coef;
 
             m_level = m_sustain + mul_uq16_uq8(m_level - m_sustain, coef);
             if (m_level < m_sustain) {
@@ -123,14 +127,13 @@ public:
         break;
 
       case STATE_IDLE:
-        // For simplicity, m_decay_update_coef is not considered here
         --m_rest;
         if (m_rest == 0) {
           m_rest = RELEASE_UPDATE_COEF;
 
           if (m_level > 0) {
             uint8_t coef;
-            coef = 222 + RELEASE_UPDATE_COEF;
+            coef = 188 + RELEASE_UPDATE_COEF;
 
             m_level = mul_uq16_uq8(m_level, coef);
             if (m_level < 0x0100) {
