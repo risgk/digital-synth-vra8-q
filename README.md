@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.1.0: Improve EG
+- v5.1.0: Make envelopes smoother (Improve EG)
 - v5.0.1: Fix a bug that OSC LEVEL is not updated in program change
 - v5.0.0: Fix wave tables (Reduce noise); Change the range of CUTOFF frequency (min: 452.9 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
