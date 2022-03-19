@@ -91,9 +91,9 @@ public:
         m_note_on_number[0] = note_number;
 
         IOsc<0>::set_portamento<0>(0);
-        IOsc<0>::set_portamento<1>(0);
+        IOsc<0>::set_portamento<2>(0);
         IOsc<0>::note_on<0>(note_number);
-        IOsc<0>::note_on<1>(note_number);
+        IOsc<0>::note_on<2>(note_number);
         IOsc<0>::trigger_lfo();
         IEnvGen<0>::note_on();
         IEnvGen<1>::note_on();
@@ -102,9 +102,9 @@ public:
         m_note_on_number[0] = note_number;
 
         IOsc<0>::set_portamento<0>(m_portamento);
-        IOsc<0>::set_portamento<1>(m_portamento);
+        IOsc<0>::set_portamento<2>(m_portamento);
         IOsc<0>::note_on<0>(note_number);
-        IOsc<0>::note_on<1>(note_number);
+        IOsc<0>::note_on<2>(note_number);
       }
     } else if (m_voice_mode == VOICE_MONOPHONIC) {
       ++m_note_on_total_count;
@@ -114,7 +114,7 @@ public:
 
       IOsc<0>::set_portamento<0>(m_portamento);
       IOsc<0>::note_on<0>(note_number);
-      IOsc<0>::note_on<1>(note_number);
+      IOsc<0>::note_on<2>(note_number);
       IOsc<0>::trigger_lfo();
       IEnvGen<0>::note_on();
       IEnvGen<1>::note_on();

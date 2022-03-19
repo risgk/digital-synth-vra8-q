@@ -489,7 +489,7 @@ private:
 
     m_pitch_real[N] += m_lfo_mod_level;
 
-    if (N == 1) {
+    if (N == 2) {
       if (m_mono_mode) {
         m_pitch_real[N] += m_mono_osc2_detune;
       }
@@ -520,7 +520,7 @@ private:
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
     uint8_t bit = (m_rnd >= 0xF0);
     uint8_t mono_offset = 0;
-    if (N == 1) {
+    if (N == 2) {
       mono_offset += m_mono_mode;
     }
     int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) + bit + mono_offset;
@@ -540,12 +540,12 @@ private:
       }
     }
     else {
-      const uint8_t one_eighth_level = (m_osc_level >> 3) + 1;
+      const uint8_t one_fourth_level = (m_osc_level >> 2) + 1;
 
-      if (m_osc_gain[N] <= one_eighth_level) {
+      if (m_osc_gain[N] <= one_fourth_level) {
         m_osc_gain[N] = 0;
       } else {
-        m_osc_gain[N] -= one_eighth_level;
+        m_osc_gain[N] -= one_fourth_level;
       }
     }
 
@@ -560,11 +560,11 @@ private:
           m_osc_gain_effective[0] = (base_gain << 1);
         } else if (m_mono_osc2_mix < 96) {
           m_osc_gain_effective[0] = (base_gain << 1) - (base_gain >> 2);
-          m_osc_gain_effective[1] = base_gain;
+          m_osc_gain_effective[2] = base_gain;
         } else {
           uint8_t base_gain = m_osc_gain_effective[0];
           m_osc_gain_effective[0] = base_gain + (base_gain >> 1);
-          m_osc_gain_effective[1] = m_osc_gain_effective[0];
+          m_osc_gain_effective[2] = m_osc_gain_effective[0];
         }
       }
     }
