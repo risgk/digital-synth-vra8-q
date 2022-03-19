@@ -229,7 +229,7 @@ document.addEventListener("touchstart", function(event) {
 });
 
 window.onload = function() {
-  document.getElementById("spanAppNameVersion").innerHTML = "<b>" + APP_NAME_VERSION + "</b>";
+  document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
 
   if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess({sysex: false}).then(onMIDISuccess, onMIDIFailure);
