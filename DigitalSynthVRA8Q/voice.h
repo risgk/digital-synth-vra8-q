@@ -113,6 +113,7 @@ public:
       m_note_on_number[0] = note_number;
 
       IOsc<0>::set_portamento<0>(m_portamento);
+      IOsc<0>::set_portamento<2>(m_portamento);
       IOsc<0>::note_on<0>(note_number);
       IOsc<0>::note_on<2>(note_number);
       IOsc<0>::trigger_lfo();
