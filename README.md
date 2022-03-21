@@ -62,7 +62,7 @@
 
 ## Details of Control Change
 
-- OSC WAVE (SAW/PUL) = Oscillator Waveform
+- OSC WAVE (SAW/PLS) = Oscillator Waveform
     - 0 (0-63): Saw Wave
     - 127 (64-127): Pulse Wave (Square Wave)
 - CUTOFF = Filter Cutoff Frequency
@@ -101,13 +101,13 @@
     - 64 (48-79): Pseudo-Stereo Chorus
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
-- VOICE (PARA/MONO/LEG) = Voice Mode
+- VOICE (PARA/MONO/LGT) = Voice Mode
     - 0 (0-31): Paraphonic
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
 - MONO OSC2 MIX (-/H/F) = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
-    - 0 (0-31): Zero, 0% (Oscillator 1: 200%)
+    - 0 (0-31): Off, 0% (Oscillator 1: 200%)
     - 64 (32-95): Half, 100% (Oscillator 1: 175%)
     - 127 (96-127): Full, 150% (Oscillator 1: 150%)
 - MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
@@ -150,7 +150,7 @@
     | Change                     11 | x             | o             | EXPRESSION            |
     |                            64 | x             | o             | SUSTAIN PEDAL         |
     |                               |               |               |                       |
-    |                            24 | x             | o             | OSC WAVE (SAW/PUL)    |
+    |                            24 | x             | o             | OSC WAVE (SAW/PLS)    |
     |                           108 | x             | o             | OSC LEVEL             |
     |                           104 | x             | o             | EG > PITCH (-/+)      |
     |                               |               |               |                       |
@@ -178,7 +178,7 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | VOICE (PARA/MONO/LEG) |
+    |                            87 | x             | o             | VOICE (PARA/MONO/LGT) |
     |                            22 | x             | o             | PORTAMENTO            |
     |                               |               |               |                       |
     |                            25 | x             | o             | MONO OSC2 MIX (-/H/F) |
