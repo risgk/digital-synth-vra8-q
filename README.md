@@ -101,7 +101,7 @@
     - 64 (48-79): Pseudo-Stereo Chorus
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
-- VOICE (PA/MO/LEGATO) = Voice Mode
+- VOICE (PARA/MONO/LEG) = Voice Mode
     - 0 (0-31): Paraphonic
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
@@ -178,7 +178,7 @@
     |                               |               |               |                       |
     |                            85 | x             | o             | PITCH BEND RANGE      |
     |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | VOICE (PA/MO/LEGATO)  |
+    |                            87 | x             | o             | VOICE (PARA/MONO/LEG) |
     |                            22 | x             | o             | PORTAMENTO            |
     |                               |               |               |                       |
     |                            25 | x             | o             | MONO OSC2 MIX (-/H/F) |
