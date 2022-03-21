@@ -861,10 +861,10 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td colspan="2">OSC WAVE (SAW/PUL)    </td>
-    <td colspan="2">OSC LEVEL             </td>
-    <td colspan="2">EG > PITCH (-/+)      </td>
-    <td colspan="2">                      </td></tr>
+<tr><td colspan="2">OSC WAVE (SAW/PUL)   </td>
+    <td colspan="2">OSC LEVEL            </td>
+    <td colspan="2">EG > PITCH (-/+)     </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_WAVE       , value)"></td>
     <td><span    id="spanCC24">-</span></td>
     <td><input id="inputCC108" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_LEVEL      , value)"></td>
@@ -876,10 +876,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td colspan="2">CUTOFF                </td>
-    <td colspan="2">RESONANCE             </td>
-    <td colspan="2">EG > CUTOFF (-/+)     </td>
-    <td colspan="2">AMP EG (OFF/ON)       </td></tr>
+<tr><td colspan="2">CUTOFF               </td>
+    <td colspan="2">RESONANCE            </td>
+    <td colspan="2">EG > CUTOFF (-/+)    </td>
+    <td colspan="2">AMP EG (OFF/ON)      </td></tr>
 <tr><td><input  id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF         , value)"></td>
     <td><span    id="spanCC16">-</span></td>
     <td><input  id="inputCC17" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RESONANCE      , value)"></td>
@@ -888,10 +888,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC18">-</span></td>
     <td><input  id="inputCC31" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EG         , value)"></td>
     <td><span    id="spanCC31">-</span></td></tr>
-<tr><td colspan="2">ATTACK                </td>
-    <td colspan="2">DECAY                 </td>
-    <td colspan="2">SUSTAIN               </td>
-    <td colspan="2">                      </td></tr>
+<tr><td colspan="2">ATTACK               </td>
+    <td colspan="2">DECAY                </td>
+    <td colspan="2">SUSTAIN              </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC23" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(ATTACK         , value)"></td>
     <td><span    id="spanCC23">-</span></td>
     <td><input  id="inputCC19" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DECAY          , value)"></td>
@@ -901,10 +901,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td colspan="2">LFO DEPTH             </td>
-    <td colspan="2">LFO RATE              </td>
-    <td colspan="2">LFO > PITCH (-/+)     </td>
-    <td colspan="2">LFO > CUTOFF (-/+)    </td></tr>
+<tr><td colspan="2">LFO DEPTH            </td>
+    <td colspan="2">LFO RATE             </td>
+    <td colspan="2">LFO > PITCH (-/+)    </td>
+    <td colspan="2">LFO > CUTOFF (-/+)   </td></tr>
 <tr><td><input  id="inputCC81" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
     <td><span    id="spanCC81">-</span></td>
     <td><input  id="inputCC80" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
@@ -913,10 +913,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC82">-</span></td>
     <td><input  id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_CUTOFF  , value)"></td>
     <td><span    id="spanCC83">-</span></td></tr>
-<tr><td>LFO WAVE (T/2/S/R/P)  </td><td></td>
-    <td>LFO FADE TIME         </td><td></td>
-    <td>                      </td><td></td>
-    <td>                      </td><td></td></tr>
+<tr><td colspan="2">LFO WAVE (T/2/S/R/P) </td>
+    <td colspan="2">LFO FADE TIME        </td>
+    <td colspan="2">                     </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC14" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
     <td><span    id="spanCC14">-</span></td>
     <td><input  id="inputCC15" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
@@ -926,10 +926,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td colspan="2">CHORUS DEPTH          </td>
-    <td colspan="2">CHORUS RATE           </td>
-    <td colspan="2">CHORUS DELAY TIME     </td>
-    <td colspan="2">CHORUS (-/M/P/S/2)    </td></tr>
+<tr><td colspan="2">CHORUS DEPTH         </td>
+    <td colspan="2">CHORUS RATE          </td>
+    <td colspan="2">CHORUS DELAY TIME    </td>
+    <td colspan="2">CHORUS (-/M/P/S/2)   </td></tr>
 <tr><td><input  id="inputCC60" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
     <td><span    id="spanCC60">-</span></td>
     <td><input  id="inputCC61" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
@@ -938,10 +938,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC62">-</span></td>
     <td><input  id="inputCC63" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
     <td><span    id="spanCC63">-</span></td></tr>
-<tr><td colspan="2">PITCH BEND RANGE      </td>
-    <td colspan="2">VELOCITY > CUTOFF     </td>
-    <td colspan="2">VOICE (PARA/MONO/LEG) </td>
-    <td colspan="2">PORTAMENTO            </td></tr>
+<tr><td colspan="2">PITCH BEND RANGE     </td>
+    <td colspan="2">VELOCITY > CUTOFF    </td>
+    <td colspan="2">VOICE (PARA/MONO/LEG)</td>
+    <td colspan="2">PORTAMENTO           </td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span    id="spanCC85">-</span></td>
     <td><input  id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(V_TO_CUTOFF    , value)"></td>
@@ -951,10 +951,10 @@ function getStoredCCValueString(index, number) {
     <td><input  id="inputCC22" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
     <td><span    id="spanCC22">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td colspan="2">MONO OSC2 MIX (-/H/F) </td>
-    <td colspan="2">MONO OSC2 DETUNE      </td>
-    <td colspan="2">                      </td>
-    <td colspan="2">SW KBD TRANSPOSE      </td></tr>
+<tr><td colspan="2">MONO OSC2 MIX (-/H/F)</td>
+    <td colspan="2">MONO OSC2 DETUNE     </td>
+    <td colspan="2">                     </td>
+    <td colspan="2">SW KBD TRANSPOSE     </td></tr>
 <tr><td><input  id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_MIX    , value)"></td>
     <td><span    id="spanCC25">-</span></td>
     <td><input  id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_DETUNE , value)"></td>
