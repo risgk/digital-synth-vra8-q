@@ -74,7 +74,7 @@
 - DECAY = EG Decay Time
     - 127: No Decay
 - SUSTAIN: EG Sustain Level
-- LFO WAVE (T/2/S/R/P) = LFO Waveform
+- LFO WAVE (T/T2/S/RND/P) = LFO Waveform
     - 0 (0-15): Triangle Wave
     - 32 (16-47): Triangle Wave 2 (Key Sync)
     - 64 (48-79): Saw Wave (Key Sync)
@@ -95,7 +95,7 @@
     - 64: 8.2 ms
     - 80: 10.3 ms
     - 127: 16.3 ms (max)
-- CHORUS (-/M/P/S/2) = Chorus Mode
+- CHORUS (-/M/PS/S/S2) = Chorus Mode
     - 0 (0-15): Chorus Off
     - 32 (16-47): Mono Chorus
     - 64 (48-79): Pseudo-Stereo Chorus
@@ -106,7 +106,7 @@
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
-- MONO OSC2 MIX (-/H/F) = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
+- MONO OSC2 MIX (-/HF/FL) = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
     - 0 (0-31): Off, 0% (Oscillator 1: 200%)
     - 64 (32-95): Half, 100% (Oscillator 1: 175%)
     - 127 (96-127): Full, 150% (Oscillator 1: 150%)
@@ -125,89 +125,89 @@
 
       [Quadraphonic Synthesizer]                                      Date: 2021-12-03       
       Model: Digital Synth VRA8-Q     MIDI Implementation Chart       Version: 5.0.1         
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Function...                   | Transmitted   | Recognized    | Remarks               |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Basic        Default          | x             | 1             |                       |
-    | Channel      Changed          | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Mode         Default          | x             | Mode 3        |                       |
-    |              Messages         | x             | x             |                       |
-    |              Altered          | ************* |               |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Note                          | x             | 0-127         |                       |
-    | Number       : True Voice     | ************* | 24-96         |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Velocity     Note ON          | x             | x             |                       |
-    |              Note OFF         | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | After        Key's            | x             | x             |                       |
-    | Touch        Ch's             | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Pitch Bend                    | x             | o             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Control                     1 | x             | o             | MODULATION            |
-    | Change                     11 | x             | o             | EXPRESSION            |
-    |                            64 | x             | o             | SUSTAIN PEDAL         |
-    |                               |               |               |                       |
-    |                            24 | x             | o             | OSC WAVE (SAW/PLS)    |
-    |                           108 | x             | o             | OSC LEVEL             |
-    |                           104 | x             | o             | EG > PITCH (-/+)      |
-    |                               |               |               |                       |
-    |                            16 | x             | o             | CUTOFF                |
-    |                            17 | x             | o             | RESONANCE             |
-    |                            18 | x             | o             | EG > CUTOFF (-/+)     |
-    |                            31 | x             | o             | AMP EG (OFF/ON)       |
-    |                               |               |               |                       |
-    |                            23 | x             | o             | ATTACK                |
-    |                            19 | x             | o             | DECAY                 |
-    |                            27 | x             | o             | SUSTAIN               |
-    |                               |               |               |                       |
-    |                            81 | x             | o             | LFO DEPTH             |
-    |                            80 | x             | o             | LFO RATE              |
-    |                            82 | x             | o             | LFO > PITCH (-/+)     |
-    |                            83 | x             | o             | LFO > CUTOFF (-/+)    |
-    |                               |               |               |                       |
-    |                            14 | x             | o             | LFO WAVE (T/2/S/R/P)  |
-    |                            15 | x             | o             | LFO FADE TIME         |
-    |                               |               |               |                       |
-    |                            60 | x             | o             | CHORUS DEPTH          |
-    |                            61 | x             | o             | CHORUS RATE           |
-    |                            62 | x             | o             | CHORUS DELAY TIME     |
-    |                            63 | x             | o             | CHORUS (-/M/P/S/2)    |
-    |                               |               |               |                       |
-    |                            85 | x             | o             | PITCH BEND RANGE      |
-    |                            89 | x             | o             | VELOCITY > CUTOFF     |
-    |                            87 | x             | o             | VOICE (PARA/MONO/LGT) |
-    |                            22 | x             | o             | PORTAMENTO            |
-    |                               |               |               |                       |
-    |                            25 | x             | o             | MONO OSC2 MIX (-/H/F) |
-    |                            21 | x             | o             | MONO OSC2 DETUNE      |
-    |                               |               |               |                       |
-    |                   90, 112-119 | x             | x             | (RESERVED)            |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Program                       | x             | o             |                       |
-    | Change       : True #         | ************* | 0-7           |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | System Exclusive              | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | System       : Song Pos       | x             | x             |                       |
-    | Common       : Song Sel       | x             | x             |                       |
-    |              : Tune           | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | System       : Clock          | x             | x             |                       |
-    | Real Time    : Commands       | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Aux          : All Sound OFF  | x             | o 120         |                       |
-    | Messages     : Reset All      | x             | o 121         |                       |
-    |                Controllers    |               |               |                       |
-    |              : Local ON/OFF   | x             | x             |                       |
-    |              : All Notes OFF  | x             | o 123-127     |                       |
-    |              : Active Sense   | x             | x             |                       |
-    |              : Reset          | x             | x             |                       |
-    +-------------------------------+---------------+---------------+-----------------------+
-    | Notes                         |                                                       |
-    |                               |                                                       |
-    +-------------------------------+-------------------------------------------------------+
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Function...                   | Transmitted   | Recognized    | Remarks                 |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Basic        Default          | x             | 1             |                         |
+    | Channel      Changed          | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Mode         Default          | x             | Mode 3        |                         |
+    |              Messages         | x             | x             |                         |
+    |              Altered          | ************* |               |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Note                          | x             | 0-127         |                         |
+    | Number       : True Voice     | ************* | 24-96         |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Velocity     Note ON          | x             | x             |                         |
+    |              Note OFF         | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | After        Key's            | x             | x             |                         |
+    | Touch        Ch's             | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Pitch Bend                    | x             | o             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Control                     1 | x             | o             | MODULATION              |
+    | Change                     11 | x             | o             | EXPRESSION              |
+    |                            64 | x             | o             | SUSTAIN PEDAL           |
+    |                               |               |               |                         |
+    |                            24 | x             | o             | OSC WAVE (SAW/PLS)      |
+    |                           108 | x             | o             | OSC LEVEL               |
+    |                           104 | x             | o             | EG > PITCH (-/+)        |
+    |                               |               |               |                         |
+    |                            16 | x             | o             | CUTOFF                  |
+    |                            17 | x             | o             | RESONANCE               |
+    |                            18 | x             | o             | EG > CUTOFF (-/+)       |
+    |                            31 | x             | o             | AMP EG (OFF/ON)         |
+    |                               |               |               |                         |
+    |                            23 | x             | o             | ATTACK                  |
+    |                            19 | x             | o             | DECAY                   |
+    |                            27 | x             | o             | SUSTAIN                 |
+    |                               |               |               |                         |
+    |                            81 | x             | o             | LFO DEPTH               |
+    |                            80 | x             | o             | LFO RATE                |
+    |                            82 | x             | o             | LFO > PITCH (-/+)       |
+    |                            83 | x             | o             | LFO > CUTOFF (-/+)      |
+    |                               |               |               |                         |
+    |                            14 | x             | o             | LFO WAVE (T/T2/S/RND/P) |
+    |                            15 | x             | o             | LFO FADE TIME           |
+    |                               |               |               |                         |
+    |                            60 | x             | o             | CHORUS DEPTH            |
+    |                            61 | x             | o             | CHORUS RATE             |
+    |                            62 | x             | o             | CHORUS DELAY TIME       |
+    |                            63 | x             | o             | CHORUS (-/M/PS/S/S2)    |
+    |                               |               |               |                         |
+    |                            85 | x             | o             | PITCH BEND RANGE        |
+    |                            89 | x             | o             | VELOCITY > CUTOFF       |
+    |                            87 | x             | o             | VOICE (PARA/MONO/LGT)   |
+    |                            22 | x             | o             | PORTAMENTO              |
+    |                               |               |               |                         |
+    |                            25 | x             | o             | MONO OSC2 MIX (-/HF/FL) |
+    |                            21 | x             | o             | MONO OSC2 DETUNE        |
+    |                               |               |               |                         |
+    |                   90, 112-119 | x             | x             | (RESERVED)              |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Program                       | x             | o             |                         |
+    | Change       : True #         | ************* | 0-7           |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | System Exclusive              | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | System       : Song Pos       | x             | x             |                         |
+    | Common       : Song Sel       | x             | x             |                         |
+    |              : Tune           | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | System       : Clock          | x             | x             |                         |
+    | Real Time    : Commands       | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Aux          : All Sound OFF  | x             | o 120         |                         |
+    | Messages     : Reset All      | x             | o 121         |                         |
+    |                Controllers    |               |               |                         |
+    |              : Local ON/OFF   | x             | x             |                         |
+    |              : All Notes OFF  | x             | o 123-127     |                         |
+    |              : Active Sense   | x             | x             |                         |
+    |              : Reset          | x             | x             |                         |
+    +-------------------------------+---------------+---------------+-------------------------+
+    | Notes                         |                                                         |
+    |                               |                                                         |
+    +-------------------------------+---------------------------------------------------------+
       Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                 
       Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                  
