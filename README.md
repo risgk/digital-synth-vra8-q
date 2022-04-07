@@ -148,7 +148,7 @@
     +-------------------------------+---------------+---------------+-------------------------+
     | Control                     1 | x             | o             | MODULATION              |
     | Change                     11 | x             | o             | EXPRESSION              |
-    |                            64 | x             | o             | SUSTAIN PEDAL           |
+    |                            64 | x             | o             | SUSTAIN PEDAL (OFF/ON)  |
     |                               |               |               |                         |
     |                            24 | x             | o             | OSC WAVE (SAW/PLS)      |
     |                           108 | x             | o             | OSC LEVEL               |
