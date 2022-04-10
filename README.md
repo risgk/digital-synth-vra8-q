@@ -7,6 +7,17 @@ Digital Synth VRA8-Q 
 
 </h1>
 
+---
+
+<div align = 'center'>
+
+**⸢ [Design] ⸥**  
+**⸢ [Changelog] ⸥**
+  
+</div>
+
+---
+
 - 2022-06-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
@@ -54,5 +65,8 @@ Digital Synth VRA8-Q 
 
 [Badge License]: https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg
 [Badge Version]: https://badge.fury.io/gh/risgk%2Fdigital-synth-vra8-q.svg
+
+[Changelog]: Documentation/Changelog
+[Design]: Documentation/Changelog
 
 [License]: LICENSE
