@@ -22,9 +22,12 @@ Digital Synth VRA8-Q 
 
 ---
 
+<br>
+
 - 2022-06-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
+<br>
 
 ## Caution about Arduino
 
@@ -32,6 +35,7 @@ Digital Synth VRA8-Q 
     - If you use other than AVR Boards core 1.8.3 (or modified this sketch), the sketch *may not work well*
         - CPU Busy LED (LED L) *may almost always lit*, rather than flashing occasionally
 
+<br>
 
 ## Features
 
@@ -52,6 +56,8 @@ Digital Synth VRA8-Q 
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
     - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
+
+<br>
 
 ## VRA8-Q CTRL
 
