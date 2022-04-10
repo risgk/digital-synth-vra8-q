@@ -83,42 +83,53 @@ public:
       cutoff_offset = high_sbyte(static_cast<int8_t>(velocity - 100) * (m_velocity_to_cutoff << 1));
     }
 
-    if (m_voice_mode == VOICE_LEGATO) {
-      ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
+    if (m_voice_mode != VOICE_PARAPHONIC) {
 
-      if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+      if (m_voice_mode == VOICE_LEGATO) {
+        ++m_note_on_total_count;
+        ++m_note_on_count[note_number];
+
+        if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+          m_note_on_number[0] = note_number;
+
+          IOsc<0>::set_portamento<0>(0);
+          IOsc<0>::set_portamento<2>(0);
+          IOsc<0>::note_on<0>(note_number);
+          IOsc<0>::note_on<2>(note_number);
+          IOsc<0>::trigger_lfo();
+          IEnvGen<0>::note_on();
+          IEnvGen<1>::note_on();
+          IFilter<0>::set_cutoff_offset(cutoff_offset);
+        } else {
+          m_note_on_number[3] = m_note_on_number[2];
+          m_note_on_number[2] = m_note_on_number[1];
+          m_note_on_number[1] = m_note_on_number[0];
+          m_note_on_number[0] = note_number;
+
+          IOsc<0>::set_portamento<0>(m_portamento);
+          IOsc<0>::set_portamento<2>(m_portamento);
+          IOsc<0>::note_on<0>(note_number);
+          IOsc<0>::note_on<2>(note_number);
+        }
+      } else {
+        ++m_note_on_total_count;
+        ++m_note_on_count[note_number];
+
+        m_note_on_number[3] = m_note_on_number[2];
+        m_note_on_number[2] = m_note_on_number[1];
+        m_note_on_number[1] = m_note_on_number[0];
         m_note_on_number[0] = note_number;
 
-        IOsc<0>::set_portamento<0>(0);
-        IOsc<0>::set_portamento<1>(0);
+        IOsc<0>::set_portamento<0>(m_portamento);
+        IOsc<0>::set_portamento<2>(m_portamento);
         IOsc<0>::note_on<0>(note_number);
-        IOsc<0>::note_on<1>(note_number);
+        IOsc<0>::note_on<2>(note_number);
         IOsc<0>::trigger_lfo();
         IEnvGen<0>::note_on();
         IEnvGen<1>::note_on();
         IFilter<0>::set_cutoff_offset(cutoff_offset);
-      } else {
-        m_note_on_number[0] = note_number;
-
-        IOsc<0>::set_portamento<0>(m_portamento);
-        IOsc<0>::set_portamento<1>(m_portamento);
-        IOsc<0>::note_on<0>(note_number);
-        IOsc<0>::note_on<1>(note_number);
       }
-    } else if (m_voice_mode == VOICE_MONOPHONIC) {
-      ++m_note_on_total_count;
-      ++m_note_on_count[note_number];
 
-      m_note_on_number[0] = note_number;
-
-      IOsc<0>::set_portamento<0>(m_portamento);
-      IOsc<0>::note_on<0>(note_number);
-      IOsc<0>::note_on<1>(note_number);
-      IOsc<0>::trigger_lfo();
-      IEnvGen<0>::note_on();
-      IEnvGen<1>::note_on();
-      IFilter<0>::set_cutoff_offset(cutoff_offset);
     } else if (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -223,6 +234,7 @@ public:
     }
 
     if (m_voice_mode != VOICE_PARAPHONIC) {
+
       if (m_note_on_total_count == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -236,7 +248,35 @@ public:
         IOsc<0>::note_off<1>();
         IOsc<0>::note_off<2>();
         IOsc<0>::note_off<3>();
+      } else if (m_note_on_number[0] == note_number) {
+        m_note_on_number[0] = m_note_on_number[1];
+        m_note_on_number[1] = m_note_on_number[2];
+        m_note_on_number[2] = m_note_on_number[3];
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
+
+        if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
+          IOsc<0>::set_portamento<0>(m_portamento);
+          IOsc<0>::set_portamento<2>(m_portamento);
+          IOsc<0>::note_on<0>(m_note_on_number[0]);
+          IOsc<0>::note_on<2>(m_note_on_number[0]);
+
+          if (m_voice_mode == VOICE_MONOPHONIC) {
+            IOsc<0>::trigger_lfo();
+            IEnvGen<0>::note_on();
+            IEnvGen<1>::note_on();
+          }
+        }
+      } else if (m_note_on_number[1] == note_number) {
+        m_note_on_number[1] = m_note_on_number[2];
+        m_note_on_number[2] = m_note_on_number[3];
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
+      } else if (m_note_on_number[2] == note_number) {
+        m_note_on_number[2] = m_note_on_number[3];
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
+      } else if (m_note_on_number[3] == note_number) {
+        m_note_on_number[3] = NOTE_NUMBER_INVALID;
       }
+
     } else if (m_note_on_number[0] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
@@ -435,6 +475,10 @@ public:
       IOsc<0>::set_mono_osc2_mix(controller_value);
       break;
 
+    case MONO_O2_PITCH :
+      IOsc<0>::set_mono_osc2_pitch(controller_value);
+      break;
+
     case MONO_O2_DETUNE :
       IOsc<0>::set_mono_osc2_detune(controller_value);
       break;
@@ -566,6 +610,7 @@ public:
     control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
 
     control_change(MONO_O2_MIX    , g_preset_table_MONO_O2_MIX    [program_number]);
+    control_change(MONO_O2_PITCH  , g_preset_table_MONO_O2_PITCH  [program_number]);
     control_change(MONO_O2_DETUNE , g_preset_table_MONO_O2_DETUNE [program_number]);
   }
 

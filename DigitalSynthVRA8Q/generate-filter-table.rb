@@ -1,5 +1,7 @@
 require_relative 'constants'
 
+FILTER_A4_FREQ = 440.0
+
 $file = File.open("filter-table.h", "w")
 
 $file.printf("#pragma once\n\n")
@@ -10,7 +12,7 @@ def generate_filter_lpf_table(res_idx, name, q)
   $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
     f_idx = [[1, i - 3].max, 121].min
-    f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((A4_FREQ * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
+    f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((FILTER_A4_FREQ * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
     f_0_over_f_s = f_0 / SAMPLING_RATE
 
     w_0 = 2.0 * Math::PI * f_0_over_f_s

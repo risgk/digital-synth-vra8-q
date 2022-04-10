@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "VRA8-Q CTRL v5.0.1";
+const APP_NAME_VERSION = "VRA8-Q CTRL v5.1.0";
 
 const MIDI_CH        = 0;       // Basic Channel 1
 const NOTE_OFF       = 0x80;
@@ -85,6 +85,7 @@ const VOICE_MODE      = 87;
 const PORTAMENTO      = 22;
 
 const MONO_O2_MIX     = 25;
+const MONO_O2_PITCH   = 20;
 const MONO_O2_DETUNE  = 21;
 
 const ALL_SOUND_OFF   = 120;
@@ -138,6 +139,7 @@ var controlNumberToStringMap = new Map([
   [ PORTAMENTO     , "PORTAMENTO     " ],
 
   [ MONO_O2_MIX    , "MONO_O2_MIX    " ],
+  [ MONO_O2_PITCH  , "MONO_O2_PITCH  " ],
   [ MONO_O2_DETUNE , "MONO_O2_DETUNE " ],
 ]);
 
@@ -174,6 +176,7 @@ var controllersInLocalStorage = [
   PORTAMENTO     ,
 
   MONO_O2_MIX    ,
+  MONO_O2_PITCH  ,
   MONO_O2_DETUNE ,
 ];
 
@@ -212,6 +215,7 @@ presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[MONO_O2_MIX    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
+presetControllers[MONO_O2_PITCH  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[MONO_O2_DETUNE ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -679,6 +683,7 @@ function fileExport() {
   str += fileExportOneLine(PORTAMENTO     );
   str += "\n";
   str += fileExportOneLine(MONO_O2_MIX    );
+  str += fileExportOneLine(MONO_O2_PITCH  );
   str += fileExportOneLine(MONO_O2_DETUNE );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
@@ -725,129 +730,146 @@ function getStoredCCValueString(index, number) {
 <body>
 
 <table>
-<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth VRA8-Q Controller (<a href="https://github.com/risgk/digital-synth-vra8-q">View on GitHub</a>) (We recommend using Google Chrome)</td></tr>
+<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth VRA8-Q Controller Application (<a href="https://github.com/risgk/digital-synth-vra8-q">View on GitHub</a>)</td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>MIDI IN 1</td>
-    <td colspan="2"><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>&nbsp;</td>
+    <td></td>
+    <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
+    <td></td>
     <td>PITCH BEND</td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><span id="spanPB">-</span></td>
+    <td></td>
+    <td>SUSTAIN PEDAL</td>
+    <td></td>
+    <td><span id="spanCC64">-</span></td>
     </tr>
 <tr><td>MIDI IN 2</td>
-    <td colspan="2"><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
     <td></td>
-    <td>&nbsp;</td>
+    <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
+    <td></td>
     <td>MODULATION</td>
-    <td>&nbsp;</td>
-    <td><span id="spanCC1">-</span></td></tr>
-<tr><td>MIDI OUT</td>
-    <td colspan="2"><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td></td>
-    <td>&nbsp;</td>
-    <td>EXPRESSION</td>
-    <td>&nbsp;</td>
-    <td><span id="spanCC11">-</span></td></tr>
-<tr><td>KBD TRANSPOSE</td>
-    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
-    <td><span id="spanTranspose" >-</span></td>
+    <td><span id="spanCC1">-</span></td>
     <td></td>
-    <td>&nbsp;</td>
-    <td>SUSTAIN PEDAL</td>
-    <td>&nbsp;</td>
-    <td><span id="spanCC64">-</span></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>VELOCITY</td>
+    <td></td>
+    <td><span id="spanVelocity">-</span></td>
+    </tr>
+<tr><td>MIDI OUT</td>
+    <td></td>
+    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
+    <td></td>
+    <td>EXPRESSION</td>
+    <td></td>
+    <td><span id="spanCC11">-</span></td>
+    </tr>
+<tr><td></td>
+    <td></td>
+    <td></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
     <td>&nbsp;</td>
-    <td><span id="spanVelocity">-</span></td></tr>
-<tr><td>&nbsp;</td></tr>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td>&nbsp;</td>
+    </tr>
 </table>
 
 <table>
 <tr><td>PRESET</td>
+    <td></td>
     <td><input type="button" value="#4 PARA D1"     onclick="preset(4)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#5 PARA U2"     onclick="preset(5)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#6 SAW"         onclick="preset(6)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#7 INITIAL"     onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>MISC</td>
+    <td></td>
     <td><input type="button" value="RANDOM CTRL"    onclick="setRandom()"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="RANDOM FX"      onclick="setRandomChorus()"></td></tr>
 <tr><td></td>
+    <td></td>
     <td><input type="button" value="#0 PARA"        onclick="preset(0)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#1 PLUS"        onclick="preset(1)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#2 MINUS"       onclick="preset(2)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#3 DECAY"       onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>&nbsp;</td>
+    <td></td>
+    <td></td>
     <td><input type="button" value="RESET"          onclick="panic()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
 <tr><td>RECALL</td>
+    <td></td>
     <td><input type="button" value="#12"            onclick="loadControllers(12)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#13"            onclick="loadControllers(13)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#14"            onclick="loadControllers(14)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#15"            onclick="loadControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>STORE</td>
+    <td></td>
     <td><input type="button" value="#12"            onclick="saveControllers(12)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#13"            onclick="saveControllers(13)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#14"            onclick="saveControllers(14)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#15"            onclick="saveControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>IMPORT</td>
+    <td></td>
     <td><input type="file" id="fileImportAll" style="display:none" accept=".json"/>
         <input type="button" value="ALL"            onclick="fileImportAll()"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
         <input type="button" value="CURRENT"        onclick="fileImportCurrent()"></td></tr>
-<tr><td>&nbsp;</td>
+<tr><td></td>
+    <td></td>
     <td><input type="button" value="#8 "            onclick="loadControllers(8)" ></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#9 "            onclick="loadControllers(9)" ></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#10"            onclick="loadControllers(10)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#11"            onclick="loadControllers(11)"></td>
-    <td>&nbsp;&nbsp;</td>
-    <td>&nbsp;</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td></td>
     <td><input type="button" value="#8 "            onclick="saveControllers(8)" ></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#9 "            onclick="saveControllers(9)" ></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#10"            onclick="saveControllers(10)"></td>
-    <td>&nbsp;</td>
+    <td></td>
     <td><input type="button" value="#11"            onclick="saveControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>EXPORT</td>
+    <td></td>
     <td><input type="button" value="ALL"            onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
 <table>
-<tr><td>OSC WAVE (SAW/PUL)    </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>OSC LEVEL             </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>EG > PITCH (-/+)      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>                      </td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr><td colspan="2">OSC WAVE (SAW/PLS)   </td>
+    <td colspan="2">OSC LEVEL            </td>
+    <td colspan="2">EG > PITCH (-/+)     </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC24" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_WAVE       , value)"></td>
     <td><span    id="spanCC24">-</span></td>
     <td><input id="inputCC108" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_LEVEL      , value)"></td>
@@ -859,10 +881,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>CUTOFF                </td><td></td>
-    <td>RESONANCE             </td><td></td>
-    <td>EG > CUTOFF (-/+)     </td><td></td>
-    <td>AMP EG (OFF/ON)       </td><td></td></tr>
+<tr><td colspan="2">CUTOFF               </td>
+    <td colspan="2">RESONANCE            </td>
+    <td colspan="2">EG > CUTOFF (-/+)    </td>
+    <td colspan="2">AMP EG (OFF/ON)      </td></tr>
 <tr><td><input  id="inputCC16" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CUTOFF         , value)"></td>
     <td><span    id="spanCC16">-</span></td>
     <td><input  id="inputCC17" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(RESONANCE      , value)"></td>
@@ -871,10 +893,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC18">-</span></td>
     <td><input  id="inputCC31" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_EG         , value)"></td>
     <td><span    id="spanCC31">-</span></td></tr>
-<tr><td>ATTACK                </td><td></td>
-    <td>DECAY                 </td><td></td>
-    <td>SUSTAIN               </td><td></td>
-    <td>                      </td><td></td></tr>
+<tr><td colspan="2">ATTACK               </td>
+    <td colspan="2">DECAY                </td>
+    <td colspan="2">SUSTAIN              </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC23" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(ATTACK         , value)"></td>
     <td><span    id="spanCC23">-</span></td>
     <td><input  id="inputCC19" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DECAY          , value)"></td>
@@ -884,10 +906,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>LFO DEPTH             </td><td></td>
-    <td>LFO RATE              </td><td></td>
-    <td>LFO > PITCH (-/+)     </td><td></td>
-    <td>LFO > CUTOFF (-/+)    </td><td></td></tr>
+<tr><td colspan="2">LFO DEPTH            </td>
+    <td colspan="2">LFO RATE             </td>
+    <td colspan="2">LFO > PITCH (-/+)    </td>
+    <td colspan="2">LFO > CUTOFF (-/+)   </td></tr>
 <tr><td><input  id="inputCC81" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
     <td><span    id="spanCC81">-</span></td>
     <td><input  id="inputCC80" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
@@ -896,10 +918,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC82">-</span></td>
     <td><input  id="inputCC83" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_TO_CUTOFF  , value)"></td>
     <td><span    id="spanCC83">-</span></td></tr>
-<tr><td>LFO WAVE (T/2/S/R/P)  </td><td></td>
-    <td>LFO FADE TIME         </td><td></td>
-    <td>                      </td><td></td>
-    <td>                      </td><td></td></tr>
+<tr><td colspan="2">LFO WAVE (T/T2/S/RND/P)</td>
+    <td colspan="2">LFO FADE TIME        </td>
+    <td colspan="2">                     </td>
+    <td colspan="2">                     </td></tr>
 <tr><td><input  id="inputCC14" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
     <td><span    id="spanCC14">-</span></td>
     <td><input  id="inputCC15" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
@@ -909,10 +931,10 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>CHORUS DEPTH          </td><td></td>
-    <td>CHORUS RATE           </td><td></td>
-    <td>CHORUS DELAY TIME     </td><td></td>
-    <td>CHORUS (-/M/P/S/2)    </td><td></td></tr>
+<tr><td colspan="2">CHORUS DEPTH         </td>
+    <td colspan="2">CHORUS RATE          </td>
+    <td colspan="2">CHORUS DELAY TIME    </td>
+    <td colspan="2">CHORUS (-/M/PS/S/S2) </td></tr>
 <tr><td><input  id="inputCC60" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
     <td><span    id="spanCC60">-</span></td>
     <td><input  id="inputCC61" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
@@ -921,10 +943,10 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC62">-</span></td>
     <td><input  id="inputCC63" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
     <td><span    id="spanCC63">-</span></td></tr>
-<tr><td>PITCH BEND RANGE      </td><td></td>
-    <td>VELOCITY > CUTOFF     </td><td></td>
-    <td>VOICE (PA/MO/LEG)     </td><td></td>
-    <td>PORTAMENTO            </td><td></td></tr>
+<tr><td colspan="2">PITCH BEND RANGE     </td>
+    <td colspan="2">VELOCITY > CUTOFF    </td>
+    <td colspan="2">VOICE (PARA/MONO/LGT)</td>
+    <td colspan="2">PORTAMENTO           </td></tr>
 <tr><td><input  id="inputCC85" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
     <td><span    id="spanCC85">-</span></td>
     <td><input  id="inputCC89" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(V_TO_CUTOFF    , value)"></td>
@@ -934,19 +956,22 @@ function getStoredCCValueString(index, number) {
     <td><input  id="inputCC22" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
     <td><span    id="spanCC22">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
-<tr><td>MONO OSC2 MIX         </td><td></td>
-    <td>MONO OSC2 DETUNE      </td><td></td>
-    <td>    </td><td></td>
-    <td>             </td><td></td></tr>
+<tr><td colspan="2">MONO OSC2 MIX (-/HF/FL)</td>
+    <td colspan="2">MONO OSC2 PITCH      </td>
+    <td colspan="2">MONO OSC2 DETUNE     </td>
+    <td colspan="2">APP KBD TRANSPOSE    </td></tr>
 <tr><td><input  id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_MIX    , value)"></td>
     <td><span    id="spanCC25">-</span></td>
+    <td><input  id="inputCC20" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_PITCH  , value)"></td>
+    <td><span    id="spanCC20">-</span></td>
     <td><input  id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_DETUNE , value)"></td>
     <td><span    id="spanCC21">-</span></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td></tr>
-<tr><td>&nbsp;</td></tr>
+    <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
+    <td><span id="spanTranspose" >-</span></td></tr>
+<tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
 </table>
 
 <table>
