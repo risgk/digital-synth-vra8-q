@@ -1,4 +1,11 @@
-# Digital Synth VRA8-Q v5.2.0
+
+<h1>
+
+Digital Synth VRA8-Q  
+[![Badge License]][License]
+![Badge Version]
+
+</h1>
 
 - 2022-06-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
@@ -43,3 +50,9 @@
 - We recommend [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-Q
 
 
+<!----------------------------------------------------------------------------->
+
+[Badge License]: https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg
+[Badge Version]: https://badge.fury.io/gh/risgk%2Fdigital-synth-vra8-q.svg
+
+[License]: LICENSE
