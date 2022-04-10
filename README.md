@@ -7,6 +7,10 @@ Digital Synth VRA8-Q 
 
 </h1>
 
+*A Quadraphonic (4-voice Paraphonic) Synthesizer* <br>
+*(MIDI Sound Module) with Stereo Chorus Effector* <br>
+*for Arduino Uno.*
+
 ---
 
 <div align = 'center'>
@@ -21,9 +25,6 @@ Digital Synth VRA8-Q 
 - 2022-06-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-vra8-q>
 
-## Concept
-
-- Quadraphonic (4-voice Paraphonic) Synthesizer (MIDI Sound Module) with Stereo Chorus Effector for Arduino Uno
 
 ## Caution about Arduino
 
