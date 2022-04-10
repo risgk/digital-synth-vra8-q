@@ -73,7 +73,7 @@ Digital Synth VRA8-Q 
 [Badge License]: https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg
 [Badge Version]: https://badge.fury.io/gh/risgk%2Fdigital-synth-vra8-q.svg
 
-[Changelog]: Documentation/Changelog
-[Design]: Documentation/Changelog
+[Changelog]: Documentation/Changelog.md
+[Design]: Documentation/Design.md
 
 [License]: LICENSE
