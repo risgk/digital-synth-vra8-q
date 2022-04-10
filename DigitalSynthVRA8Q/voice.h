@@ -254,15 +254,17 @@ public:
         m_note_on_number[2] = m_note_on_number[3];
         m_note_on_number[3] = NOTE_NUMBER_INVALID;
 
-        IOsc<0>::set_portamento<0>(m_portamento);
-        IOsc<0>::set_portamento<2>(m_portamento);
-        IOsc<0>::note_on<0>(m_note_on_number[0]);
-        IOsc<0>::note_on<2>(m_note_on_number[0]);
+        if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
+          IOsc<0>::set_portamento<0>(m_portamento);
+          IOsc<0>::set_portamento<2>(m_portamento);
+          IOsc<0>::note_on<0>(m_note_on_number[0]);
+          IOsc<0>::note_on<2>(m_note_on_number[0]);
 
-        if (m_voice_mode == VOICE_MONOPHONIC) {
-          IOsc<0>::trigger_lfo();
-          IEnvGen<0>::note_on();
-          IEnvGen<1>::note_on();
+          if (m_voice_mode == VOICE_MONOPHONIC) {
+            IOsc<0>::trigger_lfo();
+            IEnvGen<0>::note_on();
+            IEnvGen<1>::note_on();
+          }
         }
       } else if (m_note_on_number[1] == note_number) {
         m_note_on_number[1] = m_note_on_number[2];
