@@ -76,6 +76,7 @@ class Osc {
 
   static boolean        m_mono_mode;
   static uint8_t        m_mono_osc2_mix;
+  static uint8_t        m_mono_osc2_pitch;
   static uint8_t        m_mono_osc2_detune;
 
   static uint8_t        m_rnd;
@@ -108,6 +109,7 @@ public:
     set_chorus_mode      (CHORUS_MODE_OFF);
     set_mono_mode        (false);
     set_mono_osc2_mix    (0);
+    set_mono_osc2_pitch  (0);
     set_mono_osc2_detune (0);
 
     m_chorus_depth_control_actual = 64;
@@ -269,6 +271,14 @@ public:
 
   INLINE static void set_mono_osc2_mix(uint8_t controller_value) {
     m_mono_osc2_mix = controller_value;
+  }
+
+  INLINE static void set_mono_osc2_pitch(uint8_t controller_value) {
+    if (controller_value > 24) {
+      m_mono_osc2_pitch = 24;
+    } else {
+      m_mono_osc2_pitch = controller_value;
+    }
   }
 
   INLINE static void set_mono_osc2_detune(uint8_t controller_value) {
@@ -491,6 +501,7 @@ private:
 
     if (N == 2) {
       if (m_mono_mode) {
+        m_pitch_real[N] += (m_mono_osc2_pitch << 8);
         m_pitch_real[N] += m_mono_osc2_detune;
       }
     }
@@ -727,6 +738,7 @@ template <uint8_t T> uint8_t         Osc<T>::m_osc_level;
 
 template <uint8_t T> boolean         Osc<T>::m_mono_mode;
 template <uint8_t T> uint8_t         Osc<T>::m_mono_osc2_mix;
+template <uint8_t T> uint8_t         Osc<T>::m_mono_osc2_pitch;
 template <uint8_t T> uint8_t         Osc<T>::m_mono_osc2_detune;
 
 template <uint8_t T> uint8_t         Osc<T>::m_rnd;

@@ -85,6 +85,7 @@ const VOICE_MODE      = 87;
 const PORTAMENTO      = 22;
 
 const MONO_O2_MIX     = 25;
+const MONO_O2_PITCH   = 20;
 const MONO_O2_DETUNE  = 21;
 
 const ALL_SOUND_OFF   = 120;
@@ -138,6 +139,7 @@ var controlNumberToStringMap = new Map([
   [ PORTAMENTO     , "PORTAMENTO     " ],
 
   [ MONO_O2_MIX    , "MONO_O2_MIX    " ],
+  [ MONO_O2_PITCH  , "MONO_O2_PITCH  " ],
   [ MONO_O2_DETUNE , "MONO_O2_DETUNE " ],
 ]);
 
@@ -174,6 +176,7 @@ var controllersInLocalStorage = [
   PORTAMENTO     ,
 
   MONO_O2_MIX    ,
+  MONO_O2_PITCH  ,
   MONO_O2_DETUNE ,
 ];
 
@@ -212,6 +215,7 @@ presetControllers[VOICE_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[MONO_O2_MIX    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
+presetControllers[MONO_O2_PITCH  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[MONO_O2_DETUNE ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -679,6 +683,7 @@ function fileExport() {
   str += fileExportOneLine(PORTAMENTO     );
   str += "\n";
   str += fileExportOneLine(MONO_O2_MIX    );
+  str += fileExportOneLine(MONO_O2_PITCH  );
   str += fileExportOneLine(MONO_O2_DETUNE );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
@@ -952,15 +957,15 @@ function getStoredCCValueString(index, number) {
     <td><span    id="spanCC22">-</span></td></tr>
 <tr><td>&nbsp;</td></tr>
 <tr><td colspan="2">MONO OSC2 MIX (-/HF/FL)</td>
+    <td colspan="2">MONO OSC2 PITCH      </td>
     <td colspan="2">MONO OSC2 DETUNE     </td>
-    <td colspan="2">                     </td>
     <td colspan="2">APP KBD TRANSPOSE    </td></tr>
 <tr><td><input  id="inputCC25" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_MIX    , value)"></td>
     <td><span    id="spanCC25">-</span></td>
+    <td><input  id="inputCC20" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_PITCH  , value)"></td>
+    <td><span    id="spanCC20">-</span></td>
     <td><input  id="inputCC21" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MONO_O2_DETUNE , value)"></td>
     <td><span    id="spanCC21">-</span></td>
-    <td></td>
-    <td></td>
     <td><input id="inputTranspose" type="range" min="-24" max="24" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td></tr>
 <tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

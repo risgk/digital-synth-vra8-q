@@ -475,6 +475,10 @@ public:
       IOsc<0>::set_mono_osc2_mix(controller_value);
       break;
 
+    case MONO_O2_PITCH :
+      IOsc<0>::set_mono_osc2_pitch(controller_value);
+      break;
+
     case MONO_O2_DETUNE :
       IOsc<0>::set_mono_osc2_detune(controller_value);
       break;
@@ -606,6 +610,7 @@ public:
     control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
 
     control_change(MONO_O2_MIX    , g_preset_table_MONO_O2_MIX    [program_number]);
+    control_change(MONO_O2_PITCH  , g_preset_table_MONO_O2_PITCH  [program_number]);
     control_change(MONO_O2_DETUNE , g_preset_table_MONO_O2_DETUNE [program_number]);
   }
 

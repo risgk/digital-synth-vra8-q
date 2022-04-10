@@ -15,7 +15,7 @@
 
 ## Change History
 
-- v5.1.0: Fix Portamento in Monophonic; Memory last 4 notes in Monophonic and Legato; Improve sound of Monophonic and Legato; Make envelopes smoother (Improve EG); Change the layout of VRA8-Q CTRL; Other changes
+- v5.1.0: Fix Portamento in Monophonic Mode; Add MONO OSC2 PITCH Control; Memory last 4 notes in Monophonic and Legato Modes; Improve sound of Monophonic and Legato Modes; Make envelopes smoother (Improve EG); Change the layout of VRA8-Q CTRL; Other changes
 - v5.0.1: Fix a bug that OSC LEVEL is not updated in program change
 - v5.0.0: Fix wave tables (Reduce noise); Change the range of CUTOFF frequency (min: 452.9 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
 - v4.0.0: Add PORTAMENTO Time; Remove AC coupling capacitors from the recommended circuit
@@ -106,11 +106,12 @@
     - 64 (32-95): Monophonic (Multi Trigger)
     - 127 (96-127): Legato (Monophonic, Single Trigger, Auto Portamento)
 - PORTAMENTO = Portament Time
-- MONO OSC2 MIX (-/HF/FL) = Oscillator 2 Mixing Level in Monophonic (or Legato) Mode
+- MONO OSC2 MIX (-/HF/FL) = Oscillator 2 Mixing Level in Monophonic and Legato Modes
     - 0 (0-31): Off, 0% (Oscillator 1: 200%)
     - 64 (32-95): Half, 100% (Oscillator 1: 175%)
     - 127 (96-127): Full, 150% (Oscillator 1: 150%)
-- MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic (or Legato) Mode
+- MONO OSC2 PITCH = Oscillator 2 Pitch in Monophonic and Legato Modes
+- MONO OSC2 DETUNE = Oscillator 2 Detune amount in Monophonic and Legato Modes
 
 ## Sample Chorus Settings
 
@@ -182,6 +183,7 @@
     |                            22 | x             | o             | PORTAMENTO              |
     |                               |               |               |                         |
     |                            25 | x             | o             | MONO OSC2 MIX (-/HF/FL) |
+    |                            20 | x             | o             | MONO OSC2 PITCH         |
     |                            21 | x             | o             | MONO OSC2 DETUNE        |
     |                               |               |               |                         |
     |                   90, 112-119 | x             | x             | (RESERVED)              |

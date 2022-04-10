@@ -85,6 +85,7 @@ const uint8_t   VOICE_MODE      = 87;
 const uint8_t   PORTAMENTO      = 22;
 
 const uint8_t   MONO_O2_MIX     = 25;
+const uint8_t   MONO_O2_PITCH   = 20;
 const uint8_t   MONO_O2_DETUNE  = 21;
 
 const uint8_t   ALL_SOUND_OFF   = 120;
