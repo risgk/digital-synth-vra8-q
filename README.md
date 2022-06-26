@@ -15,6 +15,7 @@
 
 ## Change History
 
+- v5.2.0: Improve Monophonic and Legato Modes (Oscillator 2 Pitch)
 - v5.1.0: Fix Portamento in Monophonic Mode; Add MONO OSC2 PITCH Control; Memory last 4 notes in Monophonic and Legato Modes; Improve sound of Monophonic and Legato Modes; Make envelopes smoother (Improve EG); Change the layout of VRA8-Q CTRL; Other changes
 - v5.0.1: Fix a bug that OSC LEVEL is not updated in program change
 - v5.0.0: Fix wave tables (Reduce noise); Change the range of CUTOFF frequency (min: 452.9 Hz, max: 14.5 kHz); Improve LFO RATE (min: 0.2 Hz, max: 20 Hz); Add EG > PITCH, LFO WAVE, LFO FADE TIME, MONO OSC2 MIX, and MONO OSC2 DETUNE; Add Legato Mode (Monophonic, Single Trigger, Auto Portamento); Change the recommended circuits; Rename PRESET #7 NEUTRAL to INITIAL; Other changes
